@@ -1,0 +1,67 @@
+# Starship prompt configuration
+# Starship is a fast, customizable prompt for any shell
+# Documentation: https://starship.rs/config/
+
+# Timeout for starship to complete (in milliseconds)
+command_timeout = 1000
+
+# Format of the prompt
+# This controls what information is shown
+format = """
+[┌─](bold green)$username$hostname$directory$git_branch$git_status$nix_shell
+[└─](bold green)$character"""
+
+# Show username
+[username]
+show_always = true
+format = "[$user]($style) "
+style_user = "bold blue"
+
+# Show hostname
+[hostname]
+ssh_only = false
+format = "on [$hostname]($style) "
+style = "bold purple"
+
+# Current directory
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+format = "in [$path]($style) "
+style = "bold cyan"
+
+# Git branch
+[git_branch]
+format = "on [$symbol$branch]($style) "
+symbol = " "
+style = "bold yellow"
+
+# Git status
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold red"
+
+# Nix shell indicator
+# Very useful to know when you're in a nix-shell environment!
+[nix_shell]
+format = 'via [$symbol$state( \($name\))]($style) '
+symbol = "❄️ "
+style = "bold blue"
+
+# Command prompt character
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+# Languages and tools
+[nodejs]
+format = "via [ $version]($style) "
+style = "bold green"
+
+[python]
+format = "via [ $version]($style) "
+style = "bold yellow"
+
+[rust]
+format = "via [ $version]($style) "
+style = "bold red"

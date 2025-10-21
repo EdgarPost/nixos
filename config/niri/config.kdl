@@ -1,0 +1,155 @@
+// Niri configuration
+// Niri is a scrollable-tiling Wayland compositor
+// Documentation: https://github.com/YaLTeR/niri
+
+// Input configuration
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+
+        // Key repeat settings
+        repeat-delay 600
+        repeat-rate 25
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+        accel-speed 0.2
+    }
+
+    // Disable touchpad while typing
+    disable-while-typing
+}
+
+// Output configuration (monitors)
+// You can configure specific monitors here
+output "eDP-1" {
+    // Framework laptop internal display
+    mode "1920x1200@60"
+    scale 1.0
+    position x=0 y=0
+}
+
+// Layout configuration
+layout {
+    gaps 8
+
+    // Center-focused tiling
+    center-focused-column "never"
+
+    // Default column width
+    default-column-width { proportion 0.5; }
+
+    // Border configuration
+    border {
+        width 2
+        active-color "#89b4fa"   // Blue for active window
+        inactive-color "#313244" // Dark gray for inactive
+    }
+
+    // Focus ring (shown around focused window)
+    focus-ring {
+        width 2
+        active-color "#89b4fa"
+        inactive-color "#313244"
+    }
+}
+
+// Animations
+animations {
+    // Smooth scrolling between workspaces
+    workspace-switch {
+        spring damping-ratio=0.9 stiffness=500
+    }
+
+    // Window animations
+    window-open {
+        duration-ms 200
+        curve "ease-out"
+    }
+
+    window-close {
+        duration-ms 150
+        curve "ease-in"
+    }
+}
+
+// Keybindings
+binds {
+    // Mod key is Super (Windows key)
+    Mod+Return { spawn "alacritty"; }  // Open terminal
+    Mod+D { spawn "fuzzel"; }          // Application launcher
+    Mod+L { spawn "swaylock"; }        // Lock screen
+
+    // Window management
+    Mod+Q { close-window; }
+    Mod+F { fullscreen-window; }
+    Mod+Space { toggle-floating; }
+
+    // Focus navigation
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up    { focus-window-up; }
+    Mod+Down  { focus-window-down; }
+
+    // Move windows
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Down  { move-window-down; }
+
+    // Workspaces
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+
+    // Move to workspace
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+
+    // Column width
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Plus  { set-column-width "+10%"; }
+
+    // Exit niri
+    Mod+Shift+E { quit; }
+
+    // Screenshot
+    Print { spawn "screenshot"; }
+}
+
+// Startup applications
+spawn-at-startup "waybar"
+
+// Cursor theme
+cursor {
+    xcursor-theme "Adwaita"
+    xcursor-size 24
+}
+
+// Window rules
+window-rule {
+    // Example: Make Firefox always start on workspace 2
+    // match app-id="firefox"
+    // open-on-workspace 2
+}
+
+// Environment variables for applications
+environment {
+    // Use Wayland for Qt apps
+    QT_QPA_PLATFORM "wayland"
+
+    // Use Wayland for SDL2 apps
+    SDL_VIDEODRIVER "wayland"
+
+    // Firefox Wayland
+    MOZ_ENABLE_WAYLAND "1"
+}

@@ -1,0 +1,25 @@
+# Nix result symlinks
+result
+result-*
+
+# Hardware-specific generated files
+# (Keep the template, but ignore if you generate a new one)
+hardware-configuration.nix.bak
+
+# Lock files are committed (they ensure reproducibility)
+# Don't ignore flake.lock!
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets (if you add any)
+secrets/
+*.age.key

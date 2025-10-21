@@ -1,0 +1,71 @@
+{
+    // Waybar configuration
+    // Waybar is a highly customizable status bar for Wayland compositors
+
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+
+    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-center": ["clock"],
+    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+
+    // Workspaces
+    "niri/workspaces": {
+        "format": "{name}",
+        "on-click": "activate"
+    },
+
+    // Active window title
+    "niri/window": {
+        "format": "{}",
+        "max-length": 50,
+        "separate-outputs": true
+    },
+
+    // Clock
+    "clock": {
+        "format": "{:%a %d %b %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d %H:%M:%S}"
+    },
+
+    // Audio
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "🔇 Muted",
+        "format-icons": {
+            "headphone": "🎧",
+            "default": ["🔈", "🔉", "🔊"]
+        },
+        "on-click": "pavucontrol"
+    },
+
+    // Network
+    "network": {
+        "format-wifi": "📶 {essid} ({signalStrength}%)",
+        "format-ethernet": "🌐 {ifname}",
+        "format-disconnected": "❌ Disconnected",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "nmtui"
+    },
+
+    // Battery
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "🔌 {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["🪫", "🔋", "🔋", "🔋", "🔋"]
+    },
+
+    // System tray
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    }
+}
