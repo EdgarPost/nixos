@@ -157,12 +157,14 @@ Using 1Password instead of SOPS for secrets:
 - [x] 3.1 Hyprland + Wayland base
 - [x] 3.2 greetd + tuigreet
 - [x] 3.3 Rofi launcher
+- [ ] 3.4 Waybar
 
 ### Phase 4: Terminal Environment
-- [ ] 4.1 Ghostty terminal (currently using foot)
+- [x] 4.1 Ghostty terminal (with tmux auto-attach)
 - [x] 4.2 Fish + Starship
-- [ ] 4.3 Atuin (cloud sync)
-- [ ] 4.4 Tmux + Yazi
+- [x] 4.3 Atuin (cloud sync)
+- [x] 4.4 Tmux
+- [ ] 4.5 Yazi
 
 ### Phase 5: Development Tools
 - [ ] 5.1 Neovim (nixCats + LazyVim)
@@ -177,7 +179,9 @@ Using 1Password instead of SOPS for secrets:
 - [ ] 6.4 Tailscale + Roon
 
 ### Phase 7: Catppuccin Theming
-- [ ] 7.1 Apply Catppuccin to all apps
+- [x] 7.1 Catppuccin flake added
+- [x] 7.2 Themed: Ghostty, Tmux, Fish, Starship, Bat
+- [ ] 7.3 Theme: Hyprland, Waybar, Rofi, GTK
 
 ### Phase 8: Multi-Host
 - [x] 8.1 Framework laptop profile

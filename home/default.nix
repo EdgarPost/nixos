@@ -7,6 +7,9 @@
     ../modules/home/atuin.nix
     ../modules/home/tmux.nix
     ../modules/home/catppuccin.nix
+    ../modules/home/waybar.nix
+    ../modules/home/yazi.nix
+    ../modules/home/nvim.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should manage
@@ -55,6 +58,8 @@
       ll = "eza -la";
       la = "eza -a";
       cat = "bat";
+      n = "nvim";
+      lg = "lazygit";
       g = "git";
       gs = "git status";
       gc = "git commit";
@@ -66,6 +71,14 @@
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
+  };
+
+  # Cursor theme (macOS-style)
+  home.pointerCursor = {
+    name = "macOS";
+    package = pkgs.apple-cursor;
+    size = 24;
+    gtk.enable = true;
   };
 
   # Let Home Manager manage itself

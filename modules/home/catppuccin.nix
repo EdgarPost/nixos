@@ -17,4 +17,5 @@
   catppuccin.starship.enable = true;
   catppuccin.tmux.enable = true;
   catppuccin.ghostty.enable = true;
+  catppuccin.waybar.enable = true;
 }
