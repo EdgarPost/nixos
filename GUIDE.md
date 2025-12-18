@@ -6,7 +6,7 @@ Claude can read this file to understand current state and continue where we left
 ## Project Status
 
 **Current Phase:** Phase 0 - Prerequisites
-**Last Updated:** 2024-12-18
+**Last Updated:** 2025-12-18
 
 ### Completed Steps
 - [x] Initial planning and architecture design
@@ -25,7 +25,7 @@ Claude can read this file to understand current state and continue where we left
 | Container runtime | Podman | Rootless, daemonless, Docker CLI compatible |
 | Launcher | Rofi (wayland) | Feature-rich, mature ecosystem |
 | Calendar | Calcurse + vdirsyncer | TUI-based, CalDAV/Gmail/Outlook support |
-| Neovim config | Nix-managed | Fully reproducible, all plugins declarative |
+| Neovim config | nixCats + LazyVim | Lua in repo, plugins via Nix, fully reproducible |
 | Shell history | Atuin (cloud sync) | Sync across machines, encrypted |
 | Secrets | SOPS + age | Generate new keypair |
 
@@ -68,7 +68,9 @@ nixos-config/
 │   │   └── tailscale.nix
 │   └── home/                    # Home-manager modules
 │       ├── fish.nix
-│       ├── nvim.nix
+│       ├── nvim/
+│       │   ├── default.nix      # nixCats config
+│       │   └── lua/             # Lua config (in repo)
 │       ├── tmux.nix
 │       ├── ghostty.nix
 │       ├── git.nix
@@ -238,3 +240,140 @@ When continuing this project:
 - One git commit per logical step
 - Challenge decisions when appropriate
 - Follow TDD/SOLID/KISS principles
+
+---
+
+## Research & References (December 2025)
+
+### Flake Inputs (Recommended)
+
+```nix
+{
+  inputs = {
+    # Core
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Home Manager
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Hardware profiles
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    # Secrets
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Theming
+    catppuccin.url = "github:catppuccin/nix";
+
+    # Zen Browser
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+  };
+}
+```
+
+### Key Documentation Links
+
+| Resource | URL |
+|----------|-----|
+| NixOS & Flakes Book | https://nixos-and-flakes.thiscute.world/ |
+| Nix Starter Configs | https://github.com/Misterio77/nix-starter-configs |
+| Home Manager Manual | https://nix-community.github.io/home-manager/ |
+| SOPS-nix | https://github.com/Mic92/sops-nix |
+| Catppuccin Nix | https://nix.catppuccin.com/ |
+| Hyprland Wiki | https://wiki.hypr.land/ |
+| Framework NixOS | https://wiki.nixos.org/wiki/Hardware/Framework/Laptop_13 |
+| NixOS Wiki | https://wiki.nixos.org/ |
+| nixCats-nvim | https://nixcats.org/ |
+
+### Best Practices Discovered
+
+**SOPS with Age:**
+- Use age over GPG (ed25519 > RSA)
+- Generate with: `age-keygen -o ~/.config/sops/age/keys.txt`
+- Can convert SSH host keys: `ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub`
+- Keep backup age key in password manager
+
+**Hyprland on NixOS:**
+```nix
+# System config
+{ programs.hyprland.enable = true; }
+
+# Home Manager (when using NixOS module)
+{ wayland.windowManager.hyprland = {
+    enable = true;
+    package = null;  # Use NixOS module's package
+    portalPackage = null;
+  };
+}
+```
+
+**greetd + tuigreet:**
+```nix
+{ pkgs, ... }: {
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        user = "greeter";
+      };
+    };
+  };
+}
+```
+
+**Atuin with SOPS:**
+```nix
+{ config, ... }: {
+  programs.atuin = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+      auto_sync = true;
+      sync_frequency = "5m";
+      sync_address = "https://api.atuin.sh";
+      key_path = config.sops.secrets.atuin_key.path;
+    };
+  };
+}
+```
+
+**Ghostty:**
+- Available in nixpkgs-unstable as `pkgs.ghostty`
+- Or use official flake: `github:ghostty-org/ghostty`
+
+**Zen Browser:**
+- Use `github:0xc000022070/zen-browser-flake` (most maintained)
+- Has Home Manager module: `programs.zen-browser.enable = true`
+- For 1Password: add "zen" to `/etc/1password/custom_allowed_browsers`
+
+**Neovim (nixCats + LazyVim):**
+- nixCats-nvim with LazyVim template recommended over nixvim
+- Nix handles plugin installation (reproducible)
+- Lua config files live in repo (familiar, portable)
+- Clone anywhere → rebuild → exact same editor
+
+**Framework 12th Gen:**
+- Use nixos-hardware module: `nixos-hardware.nixosModules.framework-12th-gen-intel`
+- Everything works out of box including fingerprint
+- No custom kernel needed on current NixOS
+
+**Catppuccin:**
+- Use `github:catppuccin/nix` flake
+- Provides modules for: Hyprland, Fish, Starship, Tmux, Nvim, GTK, etc.
+- Cachix: `catppuccin.cachix.org`
+
+### Sources
+
+- [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/)
+- [Nix Starter Configs](https://github.com/Misterio77/nix-starter-configs)
+- [SOPS-nix GitHub](https://github.com/Mic92/sops-nix)
+- [Hyprland Wiki - NixOS](https://wiki.hypr.land/Nix/)
+- [Catppuccin Nix](https://nix.catppuccin.com/)
+- [Framework Laptop 13 NixOS Wiki](https://wiki.nixos.org/wiki/Hardware/Framework/Laptop_13)
+- [Atuin NixOS Wiki](https://wiki.nixos.org/wiki/Atuin)
+- [Zen Browser Flake](https://github.com/0xc000022070/zen-browser-flake)
+- [nixCats-nvim](https://nixcats.org/)
