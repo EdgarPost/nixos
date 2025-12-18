@@ -1,6 +1,10 @@
 { config, pkgs, lib, inputs, user, ... }:
 
 {
+  imports = [
+    ../modules/home/hyprland.nix
+  ];
+
   # Home Manager needs a bit of information about you and the paths it should manage
   home.username = user.name;
   home.homeDirectory = "/home/${user.name}";
@@ -24,10 +28,15 @@
     enable = true;
     userName = user.fullName;
     userEmail = user.email;
+    signing = {
+      key = "~/.ssh/id_ed25519.pub";
+      signByDefault = false;  # Enable after SSH key setup
+    };
     extraConfig = {
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;
+      gpg.format = "ssh";
     };
   };
 

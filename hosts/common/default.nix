@@ -4,6 +4,8 @@
   imports = [
     ./users.nix
     ../../modules/nixos/1password.nix
+    ../../modules/nixos/hyprland.nix
+    ../../modules/nixos/greetd.nix
   ];
 
   # Nix settings
