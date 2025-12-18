@@ -25,6 +25,9 @@
     #   url = "github:Mic92/sops-nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+
+    # Catppuccin theming
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs = { self, nixpkgs, home-manager, nixos-hardware, zen-browser, ... }@inputs:
@@ -50,7 +53,12 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.${user.name} = import ./home;
+              home-manager.users.${user.name} = {
+                imports = [
+                  inputs.catppuccin.homeModules.catppuccin
+                  ./home
+                ];
+              };
               home-manager.extraSpecialArgs = { inherit inputs user; };
             }
 

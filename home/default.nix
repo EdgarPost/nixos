@@ -4,6 +4,9 @@
   imports = [
     ../modules/home/hyprland.nix
     ../modules/home/ghostty.nix
+    ../modules/home/atuin.nix
+    ../modules/home/tmux.nix
+    ../modules/home/catppuccin.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should manage
@@ -13,7 +16,6 @@
   # Packages installed to the user profile
   home.packages = with pkgs; [
     # CLI tools
-    bat           # Better cat
     eza           # Better ls
     fzf           # Fuzzy finder
     jq            # JSON processor
