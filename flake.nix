@@ -14,6 +14,12 @@
     # Hardware profiles
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    # Zen browser
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Secrets: using 1Password instead of SOPS
     # sops-nix = {
     #   url = "github:Mic92/sops-nix";
@@ -21,7 +27,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, zen-browser, ... }@inputs:
     let
       # ========== User Configuration ==========
       user = {

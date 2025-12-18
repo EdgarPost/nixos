@@ -3,7 +3,13 @@
 {
   imports = [
     ../modules/home/hyprland.nix
+    inputs.zen-browser.homeModules.beta
   ];
+
+  # Zen browser
+  programs.zen-browser = {
+    enable = true;
+  };
 
   # Home Manager needs a bit of information about you and the paths it should manage
   home.username = user.name;
@@ -20,7 +26,8 @@
     lazygit       # Git TUI
 
     # Development
-    nodejs_22     # For Claude Code, etc.
+    nodejs_22
+    claude-code   # AI coding assistant
   ];
 
   # Git
