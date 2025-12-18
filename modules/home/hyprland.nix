@@ -14,7 +14,7 @@
       "$mod" = "SUPER";
 
       # Default apps
-      "$terminal" = "foot";  # We'll switch to ghostty later
+      "$terminal" = "ghostty";
       "$menu" = "rofi -show drun";
 
       # Startup
