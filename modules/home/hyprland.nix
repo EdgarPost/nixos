@@ -88,7 +88,10 @@
         };
       };
 
-      # Touchpad gestures (new syntax - replaces deprecated gestures.workspace_swipe)
+      # Override deprecated gestures section (empty to prevent home-manager defaults)
+      gestures = {};
+
+      # Touchpad gestures (new syntax)
       gesture = [
         "3, horizontal, workspace"  # 3-finger swipe for workspace switching
       ];
