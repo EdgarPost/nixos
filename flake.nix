@@ -14,9 +14,9 @@
     # Hardware profiles
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    # Zen browser
+    # Zen browser (from NixOS wiki)
     zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
+      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
