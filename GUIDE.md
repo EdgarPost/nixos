@@ -5,8 +5,8 @@ Claude can read this file to understand current state and continue where we left
 
 ## Project Status
 
-**Current Phase:** Phase 4 - Terminal Environment
-**Last Updated:** 2025-12-18
+**Current Phase:** Phase 6 - Applications
+**Last Updated:** 2025-12-19
 
 ### Completed Steps
 - [x] Initial planning and architecture design
@@ -20,6 +20,12 @@ Claude can read this file to understand current state and continue where we left
 - [x] Git push from Framework working
 - [x] Zen browser added
 - [x] Claude Code added
+- [x] Waybar configured
+- [x] Yazi file manager added
+- [x] Neovim with LazyVim configured
+- [x] Ghostty cursor smear shader
+- [x] Tmux vim-navigator integration
+- [x] Hyprland animations + window move/resize keybindings
 
 ---
 
@@ -32,7 +38,7 @@ Claude can read this file to understand current state and continue where we left
 | Container runtime | Podman | Rootless, daemonless, Docker CLI compatible |
 | Launcher | Rofi (wayland) | Feature-rich, mature ecosystem |
 | Calendar | Calcurse + vdirsyncer | TUI-based, CalDAV/Gmail/Outlook support |
-| Neovim config | nixCats + LazyVim | Lua in repo, plugins via Nix, fully reproducible |
+| Neovim config | LazyVim (standalone) | Lua in repo, Mason disabled (LSPs via Nix) |
 | Shell history | Atuin (cloud sync) | Sync across machines, encrypted |
 | Secrets | 1Password | SSH agent, browser integration, already using it |
 | Browser | Zen | Firefox-based, privacy-focused |
@@ -157,17 +163,17 @@ Using 1Password instead of SOPS for secrets:
 - [x] 3.1 Hyprland + Wayland base
 - [x] 3.2 greetd + tuigreet
 - [x] 3.3 Rofi launcher
-- [ ] 3.4 Waybar
+- [x] 3.4 Waybar
 
 ### Phase 4: Terminal Environment
-- [x] 4.1 Ghostty terminal (with tmux auto-attach)
+- [x] 4.1 Ghostty terminal (with tmux auto-attach + cursor smear shader)
 - [x] 4.2 Fish + Starship
 - [x] 4.3 Atuin (cloud sync)
-- [x] 4.4 Tmux
-- [ ] 4.5 Yazi
+- [x] 4.4 Tmux (vim-navigator integration)
+- [x] 4.5 Yazi
 
 ### Phase 5: Development Tools
-- [ ] 5.1 Neovim (nixCats + LazyVim)
+- [x] 5.1 Neovim (LazyVim, LSPs via Nix)
 - [x] 5.2 Git configured
 - [ ] 5.3 Podman
 - [x] 5.4 Claude Code
@@ -180,8 +186,8 @@ Using 1Password instead of SOPS for secrets:
 
 ### Phase 7: Catppuccin Theming
 - [x] 7.1 Catppuccin flake added
-- [x] 7.2 Themed: Ghostty, Tmux, Fish, Starship, Bat
-- [ ] 7.3 Theme: Hyprland, Waybar, Rofi, GTK
+- [x] 7.2 Themed: Ghostty, Tmux, Fish, Starship, Bat, Yazi, Waybar, Neovim
+- [ ] 7.3 Theme: Hyprland, Rofi, GTK
 
 ### Phase 8: Multi-Host
 - [x] 8.1 Framework laptop profile
