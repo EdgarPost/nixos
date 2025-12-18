@@ -3,6 +3,7 @@
 {
   imports = [
     ./users.nix
+    ../../modules/nixos/1password.nix
   ];
 
   # Nix settings

@@ -19,11 +19,12 @@
     nodejs_22     # For Claude Code, etc.
   ];
 
-  # Git (basic config, secrets added later)
+  # Git
   programs.git = {
     enable = true;
-    # Email will be configured via SOPS later
-    settings = {
+    userName = user.fullName;
+    userEmail = user.email;
+    extraConfig = {
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;

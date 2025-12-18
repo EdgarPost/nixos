@@ -14,20 +14,20 @@
     # Hardware profiles
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    # Secrets management
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Secrets: using 1Password instead of SOPS
+    # sops-nix = {
+    #   url = "github:Mic92/sops-nix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }@inputs:
     let
       # ========== User Configuration ==========
       user = {
         name = "edgar";
         fullName = "Edgar Post-Buijs";
-        # email configured via SOPS secrets
+        email = "github@edgarpost.com";
       };
 
       # Helper function to create NixOS system
@@ -48,8 +48,6 @@
               home-manager.extraSpecialArgs = { inherit inputs user; };
             }
 
-            # SOPS for secrets
-            sops-nix.nixosModules.sops
           ] ++ extraModules;
         };
     in
