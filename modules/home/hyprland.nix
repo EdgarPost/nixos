@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
   wayland.windowManager.hyprland = {
@@ -6,8 +6,7 @@
     package = null;  # Use NixOS module's package
     portalPackage = null;
 
-    # Use mkForce to completely override home-manager defaults (fixes Hyprland 0.51 gestures error)
-    settings = lib.mkForce {
+    settings = {
       # Monitor config (auto-detect)
       monitor = ",preferred,auto,1";
 
@@ -91,8 +90,7 @@
 
     };
 
-    # Use extraConfig to bypass home-manager's outdated gestures defaults
-    # Hyprland 0.51+ removed gestures:workspace_swipe in favor of new syntax
+    # Touchpad gestures (Hyprland 0.51+ syntax)
     extraConfig = ''
       gesture = 3, horizontal, workspace
     '';
