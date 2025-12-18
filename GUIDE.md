@@ -5,15 +5,21 @@ Claude can read this file to understand current state and continue where we left
 
 ## Project Status
 
-**Current Phase:** Phase 2 - SOPS Secrets (next)
+**Current Phase:** Phase 4 - Terminal Environment
 **Last Updated:** 2025-12-18
 
 ### Completed Steps
 - [x] Initial planning and architecture design
 - [x] UTM VM setup with NixOS (aarch64-linux)
-- [x] Age keypair generation
 - [x] Git repository initialized with first commit
 - [x] Phase 1: Flake structure with home-manager
+- [x] Phase 2: Skipped SOPS - using 1Password instead
+- [x] Phase 3: Hyprland + greetd + rofi
+- [x] 1Password + SSH Agent working
+- [x] Framework laptop configured and working
+- [x] Git push from Framework working
+- [x] Zen browser added
+- [x] Claude Code added
 
 ---
 
@@ -28,7 +34,8 @@ Claude can read this file to understand current state and continue where we left
 | Calendar | Calcurse + vdirsyncer | TUI-based, CalDAV/Gmail/Outlook support |
 | Neovim config | nixCats + LazyVim | Lua in repo, plugins via Nix, fully reproducible |
 | Shell history | Atuin (cloud sync) | Sync across machines, encrypted |
-| Secrets | SOPS + age | Generate new keypair |
+| Secrets | 1Password | SSH agent, browser integration, already using it |
+| Browser | Zen | Firefox-based, privacy-focused |
 
 ---
 
@@ -36,8 +43,8 @@ Claude can read this file to understand current state and continue where we left
 
 | Host | Hardware | Status |
 |------|----------|--------|
-| `utm-vm` | UTM VM on macOS (x86_64) | **Active** - for testing |
-| `framework` | Framework 12" Intel 1280p | Planned |
+| `utm-vm` | UTM VM on macOS (aarch64) | Ready - for testing |
+| `framework` | Framework 12" Intel 1280p | **Active** - daily driver |
 | `asahi` | M1 Mac with Asahi Linux | Planned |
 | `server` | Headless dev servers | Planned |
 
@@ -84,16 +91,14 @@ nixos-config/
 
 ---
 
-## Secrets to Encrypt (SOPS)
+## Secrets Management (1Password)
 
-- [ ] Git user email
-- [ ] Git signing key (SSH)
-- [ ] SSH private keys
-- [ ] Atuin encryption key
-- [ ] CalDAV/Gmail/Outlook credentials
-- [ ] Any API tokens
+Using 1Password instead of SOPS for secrets:
+- [x] SSH keys (via 1Password SSH Agent)
+- [ ] Atuin encryption key (store in 1Password, reference in config)
+- [ ] API tokens (store in 1Password)
 
-**Age public key:** `<not yet generated>`
+**SSH Agent:** `~/.1password/agent.sock`
 
 ---
 
@@ -144,29 +149,30 @@ nixos-config/
 - [x] 1.2 Add home-manager as flake module
 - [x] 1.3 Create common host module
 
-### Phase 2: SOPS Secrets
-- [ ] 2.1 Set up SOPS infrastructure (.sops.yaml, initial secrets)
-- [ ] 2.2 First secret: git user email
+### Phase 2: Secrets (1Password)
+- [x] 2.1 ~~SOPS~~ → Using 1Password instead
+- [x] 2.2 1Password GUI + SSH Agent configured
 
 ### Phase 3: Wayland Desktop
-- [ ] 3.1 Hyprland + Wayland base
-- [ ] 3.2 greetd + tuigreet
-- [ ] 3.3 Rofi launcher
+- [x] 3.1 Hyprland + Wayland base
+- [x] 3.2 greetd + tuigreet
+- [x] 3.3 Rofi launcher
 
 ### Phase 4: Terminal Environment
-- [ ] 4.1 Ghostty terminal
-- [ ] 4.2 Fish + Starship
+- [ ] 4.1 Ghostty terminal (currently using foot)
+- [x] 4.2 Fish + Starship
 - [ ] 4.3 Atuin (cloud sync)
 - [ ] 4.4 Tmux + Yazi
 
 ### Phase 5: Development Tools
-- [ ] 5.1 Neovim (Nix-managed)
-- [ ] 5.2 Git with encrypted identity
-- [ ] 5.3 Podman + Claude Code
+- [ ] 5.1 Neovim (nixCats + LazyVim)
+- [x] 5.2 Git configured
+- [ ] 5.3 Podman
+- [x] 5.4 Claude Code
 
 ### Phase 6: Applications
-- [ ] 6.1 1Password
-- [ ] 6.2 Browsers (Zen, Slack, Teams)
+- [x] 6.1 1Password
+- [x] 6.2 Zen Browser
 - [ ] 6.3 Obsidian + Calcurse
 - [ ] 6.4 Tailscale + Roon
 
@@ -174,7 +180,7 @@ nixos-config/
 - [ ] 7.1 Apply Catppuccin to all apps
 
 ### Phase 8: Multi-Host
-- [ ] 8.1 Framework laptop profile
+- [x] 8.1 Framework laptop profile
 - [ ] 8.2 Server profile template
 
 ---
@@ -261,16 +267,12 @@ When continuing this project:
     # Hardware profiles
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    # Secrets
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Theming
-    catppuccin.url = "github:catppuccin/nix";
-
-    # Zen Browser
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    # Zen Browser (NixOS wiki recommended)
+    zen-browser.url = "github:youwen5/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Theming (future)
+    catppuccin.url = "github:catppuccin/nix";
   };
 }
 ```
@@ -347,8 +349,8 @@ When continuing this project:
 - Or use official flake: `github:ghostty-org/ghostty`
 
 **Zen Browser:**
-- Use `github:0xc000022070/zen-browser-flake` (most maintained)
-- Has Home Manager module: `programs.zen-browser.enable = true`
+- Use `github:youwen5/zen-browser-flake` (NixOS wiki recommended)
+- Add to home.packages: `inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default`
 - For 1Password: add "zen" to `/etc/1password/custom_allowed_browsers`
 
 **Neovim (nixCats + LazyVim):**
