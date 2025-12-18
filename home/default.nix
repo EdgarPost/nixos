@@ -23,7 +23,7 @@
   programs.git = {
     enable = true;
     # Email will be configured via SOPS later
-    extraConfig = {
+    settings = {
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;

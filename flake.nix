@@ -61,12 +61,11 @@
           system = "aarch64-linux";
         };
 
-        # Framework laptop (future)
-        # framework = mkSystem {
-        #   hostname = "framework";
-        #   system = "x86_64-linux";
-        #   extraModules = [ nixos-hardware.nixosModules.framework-12th-gen-intel ];
-        # };
+        # Framework laptop 12" 12th gen Intel
+        framework = mkSystem {
+          hostname = "framework";
+          system = "x86_64-linux";
+        };
       };
     };
 }

@@ -5,14 +5,15 @@ Claude can read this file to understand current state and continue where we left
 
 ## Project Status
 
-**Current Phase:** Phase 0 - Prerequisites
+**Current Phase:** Phase 2 - SOPS Secrets (next)
 **Last Updated:** 2025-12-18
 
 ### Completed Steps
 - [x] Initial planning and architecture design
-- [ ] UTM VM setup with NixOS
-- [ ] Age keypair generation
-- [ ] Git repository initialized with first commit
+- [x] UTM VM setup with NixOS (aarch64-linux)
+- [x] Age keypair generation
+- [x] Git repository initialized with first commit
+- [x] Phase 1: Flake structure with home-manager
 
 ---
 
@@ -131,17 +132,17 @@ nixos-config/
 ## Phase Checklist
 
 ### Phase 0: Prerequisites
-- [ ] Download NixOS ISO
-- [ ] Create UTM VM (x86_64, 8GB RAM, 50GB disk, UEFI)
-- [ ] Install minimal NixOS
-- [ ] Generate hardware-configuration.nix
-- [ ] Generate age keypair: `age-keygen -o ~/.config/sops/age/keys.txt`
-- [ ] Create GitHub repo and push initial commit
+- [x] Download NixOS ISO
+- [x] Create UTM VM (aarch64, 8GB RAM, 50GB disk, UEFI)
+- [x] Install minimal NixOS
+- [x] Generate hardware-configuration.nix
+- [x] Generate age keypair: `age-keygen -o ~/.config/sops/age/keys.txt`
+- [x] Create GitHub repo and push initial commit
 
 ### Phase 1: Foundation
-- [ ] 1.1 Create flake.nix with minimal bootable system
-- [ ] 1.2 Add home-manager as flake module
-- [ ] 1.3 Create common host module
+- [x] 1.1 Create flake.nix with minimal bootable system
+- [x] 1.2 Add home-manager as flake module
+- [x] 1.3 Create common host module
 
 ### Phase 2: SOPS Secrets
 - [ ] 2.1 Set up SOPS infrastructure (.sops.yaml, initial secrets)
