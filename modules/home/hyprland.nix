@@ -7,6 +7,8 @@
     portalPackage = null;
 
     settings = {
+      # Force disable deprecated gestures section (removed in Hyprland 0.51)
+      gestures = lib.mkForce {};
       # Monitor config (auto-detect)
       monitor = ",preferred,auto,1";
 
@@ -88,14 +90,13 @@
         };
       };
 
-      # Override deprecated gestures section (empty to prevent home-manager defaults)
-      gestures = {};
-
-      # Touchpad gestures (new syntax)
-      gesture = [
-        "3, horizontal, workspace"  # 3-finger swipe for workspace switching
-      ];
     };
+
+    # Use extraConfig to bypass home-manager's outdated gestures defaults
+    # Hyprland 0.51+ removed gestures:workspace_swipe in favor of new syntax
+    extraConfig = ''
+      gesture = 3, horizontal, workspace
+    '';
   };
 
   # Foot terminal (simple, fast, works out of box)
