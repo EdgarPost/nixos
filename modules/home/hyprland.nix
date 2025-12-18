@@ -107,7 +107,7 @@
 
   # Essential Wayland packages
   home.packages = with pkgs; [
-    rofi-wayland      # App launcher
+    rofi              # App launcher (Wayland support merged upstream)
     wl-clipboard      # Clipboard
     grim              # Screenshots
     slurp             # Screen region select
