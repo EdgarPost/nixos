@@ -26,17 +26,15 @@
   # Git
   programs.git = {
     enable = true;
-    userName = user.fullName;
-    userEmail = user.email;
-    signing = {
-      key = "~/.ssh/id_ed25519.pub";
-      signByDefault = false;  # Enable after SSH key setup
-    };
-    extraConfig = {
+    settings = {
+      user.name = user.fullName;
+      user.email = user.email;
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;
       gpg.format = "ssh";
+      user.signingKey = "~/.ssh/id_ed25519.pub";
+      commit.gpgSign = false;  # Enable after SSH key setup
     };
   };
 
