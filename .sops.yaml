@@ -1,0 +1,13 @@
+# SOPS configuration
+# Docs: https://github.com/Mic92/sops-nix
+
+keys:
+  # Edgar's personal age key (for encrypting/decrypting on any machine)
+  - &edgar age1k0zryeqc8jp6jjwazpmhx992c9pan7gplsygr2hwc6hxq3k5p3ps5rf0qw
+
+creation_rules:
+  # Default rule - encrypt with Edgar's key
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *edgar
