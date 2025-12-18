@@ -87,6 +87,11 @@
           natural_scroll = true;
         };
       };
+
+      # Touchpad gestures (new syntax - replaces deprecated gestures.workspace_swipe)
+      gesture = [
+        "3, horizontal, workspace"  # 3-finger swipe for workspace switching
+      ];
     };
   };
 
