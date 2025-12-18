@@ -6,9 +6,8 @@
     package = null;  # Use NixOS module's package
     portalPackage = null;
 
-    settings = {
-      # Force disable deprecated gestures section (removed in Hyprland 0.51)
-      gestures = lib.mkForce {};
+    # Use mkForce to completely override home-manager defaults (fixes Hyprland 0.51 gestures error)
+    settings = lib.mkForce {
       # Monitor config (auto-detect)
       monitor = ",preferred,auto,1";
 
