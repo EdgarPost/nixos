@@ -10,23 +10,20 @@
 #   gardenctl   - CLI for targeting and managing Gardener resources
 #   gardenlogin - kubectl credential plugin for shoot cluster auth
 #
-# SETUP:
-#   1. Configure garden cluster:
-#      gardenctl config set-garden mygarden \
-#        --kubeconfig ~/.kube/garden-kubeconfig.yaml
+# SETUP (1Password - portable across machines):
+#   1. Add these fields to your 1Password item (Pilosa/Gardener-Leafcloud):
+#      - garden_kubeconfig: (paste full kubeconfig YAML from Gardener dashboard)
+#      - garden_name: leafcloud (or your garden name)
+#      - project_name: your-project
+#      - shoot_name: your-shoot-cluster
 #
-#   2. Target a shoot cluster:
-#      gardenctl target --garden mygarden --project myproject --shoot myshoot
+#   2. Run: gardener-login
+#      This pulls kubeconfig from 1Password and configures gardenctl
 #
-#   3. Get kubeconfig for shoot:
-#      gardenctl kubeconfig --export > ~/.kube/gardener-prod.yaml
-#
-#   4. Use with kubie (safe context isolation):
-#      kubie ctx gardener-prod
+#   3. Use with kubie: kubie ctx gardener-prod
 #
 # OPENSTACK INTEGRATION:
-# If your shoot runs on OpenStack, gardenctl uses your OpenStack credentials
-# (from clouds.yaml or OS_* env vars) for infrastructure operations.
+# Run os-login first - gardenctl uses OS_* env vars for infrastructure ops.
 #
 # ============================================================================
 
@@ -120,8 +117,50 @@ in
     gardenlogin
   ];
 
-  # Shell aliases for quick access
-  programs.fish.shellAliases = {
-    g8r = "gardenctl";  # Short alias for gardenctl
+  programs.fish = {
+    # Shell aliases for quick access
+    shellAliases.g8r = "gardenctl";
+
+    # Fish functions for Gardener login via 1Password
+    interactiveShellInit = ''
+      function gardener-login --description "Setup Gardener access from 1Password"
+          # 1Password item reference
+          set -l op_item "op://Pilosa/Gardener-Leafcloud"
+
+          echo "Loading Gardener config from 1Password..."
+
+          # Read garden config from 1Password
+          set -l garden_name (op read "$op_item/garden_name")
+          set -l project_name (op read "$op_item/project_name")
+          set -l shoot_name (op read "$op_item/shoot_name")
+
+          # Write garden kubeconfig to file
+          set -l kubeconfig_path "$HOME/.kube/garden-$garden_name.yaml"
+          op read "$op_item/garden_kubeconfig" > $kubeconfig_path
+          chmod 600 $kubeconfig_path
+
+          # Configure gardenctl with this garden
+          gardenctl config set-garden $garden_name --kubeconfig $kubeconfig_path
+
+          # Target the shoot cluster
+          echo "Targeting shoot: $garden_name/$project_name/$shoot_name"
+          gardenctl target --garden $garden_name --project $project_name --shoot $shoot_name
+
+          # Export shoot kubeconfig for kubectl/kubie
+          set -l shoot_kubeconfig "$HOME/.kube/gardener-$shoot_name.yaml"
+          gardenctl kubeconfig --export > $shoot_kubeconfig
+          chmod 600 $shoot_kubeconfig
+
+          echo ""
+          echo "Gardener configured! Use with kubie:"
+          echo "  kubie ctx gardener-$shoot_name"
+      end
+
+      function gardener-logout --description "Clear Gardener kubeconfigs"
+          rm -f $HOME/.kube/garden-*.yaml
+          rm -f $HOME/.kube/gardener-*.yaml
+          echo "Gardener kubeconfigs removed"
+      end
+    '';
   };
 }
