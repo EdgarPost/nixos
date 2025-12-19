@@ -20,6 +20,15 @@
 
 { config, pkgs, ... }:
 
+let
+  # Catppuccin wallpapers - fetched at build time
+  catppuccin-wallpapers = pkgs.fetchFromGitHub {
+    owner = "zhichaoh";
+    repo = "catppuccin-wallpapers";
+    rev = "1023077979591cdeca76aae94e0359da1707a60e";
+    sha256 = "sha256-h+cFlTXvUVJPRMpk32jYVDDhHu1daWSezFcvhJqDpmU=";
+  };
+in
 {
   wayland.windowManager.hyprland = {
     enable = true;
@@ -44,12 +53,30 @@
       "$menu" = "rofi -show drun"; # Application launcher
 
       # =======================================================================
+      # ENVIRONMENT VARIABLES
+      # =======================================================================
+      # Required for XDG portals and Wayland apps to work correctly
+      env = [
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+      ];
+
+      # =======================================================================
       # STARTUP APPLICATIONS
       # =======================================================================
       # exec-once: Run once when Hyprland starts (not on config reload)
       # exec: Run on every config reload
       exec-once = [
+        # CRITICAL: Update DBus environment so portals and apps can access Wayland
+        # This MUST run first, before any apps that depend on DBus/portals
+        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "1password --silent"  # Start 1Password daemon for SSH agent
+        "waybar"              # Status bar
+        "swww-daemon"         # Wallpaper daemon (supports animated transitions)
+        # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
+        # First set Catppuccin Mocha crust color, then transition to wallpaper
+        "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
       ];
 
       # =======================================================================
@@ -150,8 +177,8 @@
       # Visual settings for windows and gaps
       # Border colors are set by the catppuccin module automatically
       general = {
-        gaps_in = 5;
-        gaps_out = 10;
+        gaps_in = 15;
+        gaps_out = 30;
         border_size = 2;
       };
 
@@ -159,8 +186,14 @@
         rounding = 8;
         blur = {
           enabled = true;
-          size = 5;
-          passes = 2;
+          size = 8;
+          passes = 3;
+          new_optimizations = true;
+          xray = false;  # Blur desktop behind floating windows, not window below
+          noise = 0.01;
+          contrast = 1.0;
+          brightness = 1.0;
+          vibrancy = 0.2;
         };
       };
 
@@ -197,6 +230,8 @@
       # =======================================================================
       misc = {
         focus_on_activate = true;  # Auto-focus windows when they request attention (e.g. browser from terminal)
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
       };
 
       # =======================================================================
@@ -295,6 +330,13 @@
   };
 
   # ==========================================================================
+  # WALLPAPERS
+  # ==========================================================================
+  # Symlink Catppuccin landscape wallpapers to ~/.wallpapers
+  # These are fetched from GitHub at build time
+  home.file.".wallpapers".source = "${catppuccin-wallpapers}/landscapes";
+
+  # ==========================================================================
   # WAYLAND UTILITIES
   # ==========================================================================
   # Essential tools for a functional Wayland desktop
@@ -304,5 +346,6 @@
     slurp          # Region selector (used with grim for area screenshots)
     brightnessctl  # Brightness: brightnessctl set 50%
     playerctl      # Media control: playerctl play-pause, next, previous
+    swww           # Wallpaper daemon: swww img ~/wallpaper.png
   ];
 }

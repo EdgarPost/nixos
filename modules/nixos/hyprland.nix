@@ -36,7 +36,12 @@
   # portal handles screen sharing. Both are needed for full functionality.
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-hyprland
+      pkgs.xdg-desktop-portal-gtk
+    ];
+    # Use Hyprland portal for screen sharing, GTK for file dialogs
+    config.common.default = [ "hyprland" "gtk" ];
   };
 
   # POLKIT - Privilege escalation UI

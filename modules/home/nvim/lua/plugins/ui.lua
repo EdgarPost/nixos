@@ -2,11 +2,14 @@ return {
   -- Disable indent guides
   { "lukas-reineke/indent-blankline.nvim", enabled = false },
 
-  -- Disable scroll animations
+  -- Disable all animations (mini.animate)
+  { "echasnovski/mini.animate", enabled = false },
+
+  -- Disable snacks.nvim scroll animation
   {
-    "echasnovski/mini.animate",
+    "folke/snacks.nvim",
     opts = {
-      scroll = { enable = false },
+      scroll = { enabled = false },
     },
   },
 }

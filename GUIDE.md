@@ -6,7 +6,7 @@ Claude can read this file to understand current state and continue where we left
 ## Project Status
 
 **Current Phase:** Phase 6 - Applications (nearly complete)
-**Last Updated:** 2025-12-19
+**Last Updated:** 2025-12-19 (evening)
 
 ### Completed Steps
 - [x] Initial planning and architecture design
@@ -38,6 +38,11 @@ Claude can read this file to understand current state and continue where we left
 - [x] Waybar: island styling, vertical bars (CPU/mem/volume), shared font variable
 - [x] Tailscale mesh VPN
 - [x] Roon Bridge audio endpoint
+- [x] Wallpapers: swww daemon, catppuccin-wallpapers repo, random on login with animation
+- [x] Transparency & blur: Ghostty opacity, Hyprland blur config, neovim transparent bg
+- [x] greetd: quiet boot (no log spam on tuigreet)
+- [x] Portal fix: dbus-update-activation-environment for re-login support
+- [x] Waybar: workspaces as separate islands, green active, layout reorganized
 
 ---
 

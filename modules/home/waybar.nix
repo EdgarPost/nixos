@@ -65,7 +65,7 @@ in
 
   programs.waybar = {
     enable = true;
-    systemd.enable = true;  # Start waybar as systemd user service
+    systemd.enable = false;  # Started by Hyprland exec-once instead
 
     # ========================================================================
     # WAYBAR CONFIGURATION (JSON)
@@ -76,21 +76,21 @@ in
       layer = "top";
       position = "top";
       height = 30;
+      margin-top = 15;
+      margin-left = 15;
+      margin-right = 15;
+      margin-bottom = 0;
 
-      modules-left = [ "custom/notification" "clock" ];
-      modules-center = [ "hyprland/workspaces" ];
+      modules-left = [ "hyprland/workspaces" ];
+      modules-center = [ "custom/notification" "clock" ];
       modules-right = [ "custom/cpu" "custom/memory" "custom/volume" "bluetooth" "network" "battery" "tray" ];
 
       "hyprland/workspaces" = {
-        format = "{icon}";
-        format-icons = {
-          "1" = "1";
-          "2" = "2";
-          "3" = "3";
-          "4" = "4";
-          "5" = "5";
-        };
+        format = "{id}";
         on-click = "activate";
+        persistent-workspaces = {
+          "*" = 5;  # Show workspaces 1-5 on all monitors
+        };
       };
 
       clock = {
@@ -190,37 +190,45 @@ in
         color: @text;
       }
 
-      /* Island styling for each section */
-      .modules-left,
+      /* Island styling for center and right sections */
       .modules-center,
       .modules-right {
         background: alpha(@base, 0.9);
         border-radius: 12px;
-        margin: 4px 0;
+        margin: 0 15px;
         padding: 0 4px;
       }
 
+      /* Left section is transparent - workspaces are individual islands */
       .modules-left {
-        margin-left: 8px;
+        background: transparent;
       }
 
-      .modules-right {
-        margin-right: 8px;
-      }
-
+      /* Each workspace button is its own island */
       #workspaces button {
-        padding: 0 8px;
+        background: alpha(@base, 0.9);
+        padding: 0 12px;
+        margin: 0 4px;
+        border-radius: 12px;
+        border: none;
+        color: @text;
+      }
+
+      #workspaces button.empty {
         color: @overlay0;
-        border-radius: 8px;
-        margin: 4px 2px;
       }
 
       #workspaces button.active {
-        color: @blue;
+        background: @green;
+        color: @base;
       }
 
       #workspaces button:hover {
-        background: alpha(@surface0, 0.8);
+        background: alpha(@surface1, 0.9);
+      }
+
+      #workspaces button.active:hover {
+        background: @green;
       }
 
       #clock, #battery, #network, #tray, #bluetooth, #custom-notification {
