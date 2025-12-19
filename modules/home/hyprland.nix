@@ -180,10 +180,14 @@ in
         gaps_in = 15;
         gaps_out = 30;
         border_size = 2;
+        "col.inactive_border" = "rgba(00000000)";  # Transparent - no border on inactive
       };
 
       decoration = {
         rounding = 8;
+        shadow = {
+          enabled = false;
+        };
         blur = {
           enabled = true;
           size = 8;
