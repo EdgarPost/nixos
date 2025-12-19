@@ -245,21 +245,14 @@
         grace = 5;  # Seconds before lock actually engages (can unlock without password)
       };
 
-      background = {
+      background = [{
         monitor = "";
         path = "screenshot";  # Use screenshot of current screen
         blur_passes = 3;
         blur_size = 8;
-      };
+      }];
 
-      input-field = {
-        monitor = "";
-        size = "300, 50";
-        outline_thickness = 2;
-        fade_on_empty = false;
-        placeholder_text = "Password...";
-        hide_input = false;
-      };
+      # No input-field = clean look, just type password blindly
     };
   };
 
