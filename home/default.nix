@@ -29,10 +29,10 @@
     nodejs_22
     claude-code   # AI coding assistant
 
-    # Browser
+    # Browser - Zen supports both x86_64 and aarch64
     inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
-
-    # Apps
+  ] ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+    # x86_64-only apps (no aarch64 Linux builds available)
     slack
   ];
 
