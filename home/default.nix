@@ -10,6 +10,7 @@
     ../modules/home/waybar.nix
     ../modules/home/yazi.nix
     ../modules/home/nvim.nix
+    ../modules/home/claude-code.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should manage
