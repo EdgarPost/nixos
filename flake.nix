@@ -45,7 +45,7 @@
     #   3. Can be used on non-NixOS systems (macOS, other Linux)
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";  # Use our nixpkgs, not its own
+      inputs.nixpkgs.follows = "nixpkgs"; # Use our nixpkgs, not its own
     };
 
     # Hardware-specific optimizations for common devices
@@ -84,7 +84,15 @@
   #                           Similar to: ({ a, b, ...rest }) in JS, but `inputs`
   #                           is the ENTIRE set including a and b
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, zen-browser, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixos-hardware,
+      zen-browser,
+      ...
+    }@inputs:
 
     # LET...IN - Nix's way of defining local variables
     # Everything in `let` is available in `in`, like function-scoped vars
@@ -95,7 +103,11 @@
       user = {
         name = "edgar";
         fullName = "Edgar Post-Buijs";
-        email = "github@edgarpost.com";
+        email = "info@edgarpost.com";
+
+        git = {
+          email = "github@edgarpost.com";
+        };
       };
 
       # ========== Helper Function ==========
@@ -105,7 +117,12 @@
       #   - Named arguments (like Python kwargs)
       #   - `?` sets default value
       #   - Explicit args: system, hostname, extraModules
-      mkSystem = { hostname, system ? "x86_64-linux", extraModules ? [] }:
+      mkSystem =
+        {
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
+        }:
         nixpkgs.lib.nixosSystem {
           # `inherit system` is shorthand for `system = system;`
           # Common pattern to avoid repetition
@@ -153,12 +170,13 @@
               home-manager.extraSpecialArgs = { inherit inputs user; };
             }
 
-          # LIST CONCATENATION: `++` joins two lists
-          # Allows mkSystem callers to add host-specific modules
-          ] ++ extraModules;
+            # LIST CONCATENATION: `++` joins two lists
+            # Allows mkSystem callers to add host-specific modules
+          ]
+          ++ extraModules;
         };
 
-    # IN - The actual return value (using vars from `let`)
+      # IN - The actual return value (using vars from `let`)
     in
     {
       # NIXOSCONFIGURAITONS - Named system profiles

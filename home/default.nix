@@ -22,20 +22,27 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, inputs, user, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  user,
+  ...
+}:
 
 {
   # Import modular configurations
   # Each module handles one aspect (terminal, editor, WM, etc.)
   imports = [
-    ../modules/home/hyprland.nix    # Window manager + keybindings
-    ../modules/home/ghostty.nix     # Terminal emulator
-    ../modules/home/atuin.nix       # Shell history
-    ../modules/home/tmux.nix        # Terminal multiplexer
-    ../modules/home/catppuccin.nix  # Unified theming
-    ../modules/home/waybar.nix      # Status bar
-    ../modules/home/yazi.nix        # File manager
-    ../modules/home/nvim.nix        # Text editor
+    ../modules/home/hyprland.nix # Window manager + keybindings
+    ../modules/home/ghostty.nix # Terminal emulator
+    ../modules/home/atuin.nix # Shell history
+    ../modules/home/tmux.nix # Terminal multiplexer
+    ../modules/home/catppuccin.nix # Unified theming
+    ../modules/home/waybar.nix # Status bar
+    ../modules/home/yazi.nix # File manager
+    ../modules/home/nvim.nix # Text editor
     ../modules/home/claude-code.nix # AI coding assistant config
   ];
 
@@ -59,30 +66,33 @@
   #   `lib.optionals condition [ list ]` - Conditional list items
   #   `stdenv.hostPlatform.system` - Current architecture string
 
-  home.packages = with pkgs; [
-    # CLI tools
-    eza           # Modern ls with colors and icons
-    fzf           # Fuzzy finder (Ctrl+R integration)
-    jq            # JSON query/manipulation
-    yq            # YAML query (like jq for YAML)
-    lazygit       # TUI for git operations
+  home.packages =
+    with pkgs;
+    [
+      # CLI tools
+      eza # Modern ls with colors and icons
+      fzf # Fuzzy finder (Ctrl+R integration)
+      jq # JSON query/manipulation
+      yq # YAML query (like jq for YAML)
+      lazygit # TUI for git operations
 
-    # Development
-    nodejs_22     # JavaScript runtime
-    claude-code   # AI coding assistant
+      # Development
+      nodejs_22 # JavaScript runtime
+      claude-code # AI coding assistant
 
-    # Browser from flake input
-    # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
-    # This pattern accesses architecture-specific packages from external flakes
-    inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
+      # Browser from flake input
+      # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
+      # This pattern accesses architecture-specific packages from external flakes
+      inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
 
-  # CONDITIONAL PACKAGES
-  # `lib.optionals` returns the list only if condition is true, else []
-  # List concatenation (++) merges the conditional packages into main list
-  # This enables architecture-specific packages (some apps lack ARM builds)
-  ] ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
-    slack  # Only available for x86_64 (no aarch64 build)
-  ];
+      # CONDITIONAL PACKAGES
+      # `lib.optionals` returns the list only if condition is true, else []
+      # List concatenation (++) merges the conditional packages into main list
+      # This enables architecture-specific packages (some apps lack ARM builds)
+    ]
+    ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+      slack # Only available for x86_64 (no aarch64 build)
+    ];
 
   # ==========================================================================
   # GIT CONFIGURATION
@@ -91,22 +101,22 @@
   # This is equivalent to running `git config --global` commands
 
   programs.git = {
-    enable = true;  # Install git and manage its config
+    enable = true; # Install git and manage its config
     settings = {
       # User identity (for commit authorship)
       user.name = user.fullName;
-      user.email = user.email;
+      user.email = user.git.email;
 
       # Modern defaults
-      init.defaultBranch = "main";       # Not master
-      push.autoSetupRemote = true;       # Auto-create upstream on first push
-      pull.rebase = true;                # Rebase instead of merge on pull
+      init.defaultBranch = "main"; # Not master
+      push.autoSetupRemote = true; # Auto-create upstream on first push
+      pull.rebase = true; # Rebase instead of merge on pull
 
       # SSH key signing (alternative to GPG)
       # Git can sign commits with your SSH key instead of GPG
       gpg.format = "ssh";
       user.signingKey = "~/.ssh/id_ed25519.pub";
-      commit.gpgSign = false;  # Enable after SSH key is set up
+      commit.gpgSign = false; # Enable after SSH key is set up
     };
   };
 
@@ -125,11 +135,11 @@
     # Shell aliases - shortcuts for common commands
     # Unlike bash, Fish aliases are just functions under the hood
     shellAliases = {
-      ll = "eza -la";      # Detailed list with eza
-      la = "eza -a";       # Show hidden files
-      cat = "bat";         # cat with syntax highlighting
-      n = "nvim";          # Quick editor access
-      lg = "lazygit";      # Git TUI
+      ll = "eza -la"; # Detailed list with eza
+      la = "eza -a"; # Show hidden files
+      cat = "bat"; # cat with syntax highlighting
+      n = "nvim"; # Quick editor access
+      lg = "lazygit"; # Git TUI
       g = "git";
       gs = "git status";
       gc = "git commit";
@@ -145,7 +155,7 @@
 
   programs.starship = {
     enable = true;
-    enableFishIntegration = true;  # Add init to fish config automatically
+    enableFishIntegration = true; # Add init to fish config automatically
   };
 
   # ==========================================================================
@@ -155,9 +165,9 @@
 
   home.pointerCursor = {
     name = "macOS";
-    package = pkgs.apple-cursor;  # macOS-style cursor for Linux
+    package = pkgs.apple-cursor; # macOS-style cursor for Linux
     size = 24;
-    gtk.enable = true;  # Apply to GTK applications too
+    gtk.enable = true; # Apply to GTK applications too
   };
 
   # ==========================================================================
