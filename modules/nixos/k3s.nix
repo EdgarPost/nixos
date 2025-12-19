@@ -54,7 +54,11 @@
   # K3s config is root-owned; this copies it with user permissions
   system.activationScripts.k3s-kubeconfig = lib.stringAfter [ "users" ] ''
     if [ -f /etc/rancher/k3s/k3s.yaml ]; then
+      # Create .kube directory with correct ownership
       mkdir -p /home/${user.name}/.kube
+      chown ${user.name}:users /home/${user.name}/.kube
+      chmod 700 /home/${user.name}/.kube
+
       # Copy and rename context from "default" to "k3s-local"
       ${pkgs.gnused}/bin/sed 's/: default/: k3s-local/g' /etc/rancher/k3s/k3s.yaml \
         > /home/${user.name}/.kube/k3s.yaml
