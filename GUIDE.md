@@ -31,6 +31,10 @@ Claude can read this file to understand current state and continue where we left
 - [x] Waybar notification module (mako integration)
 - [x] Slack added (x86_64 only)
 - [x] Multi-arch package handling (Zen on both, Slack x86_64 only)
+- [x] OpenStack CLI with 1Password integration (os-login)
+- [x] Gardener cluster management with 1Password (gardener-login)
+- [x] Hyprlock screen locker (Super+Escape)
+- [x] Auto-focus browser when opening URLs from terminal
 
 ---
 
@@ -106,10 +110,15 @@ nixos-config/
 
 Using 1Password instead of SOPS for secrets:
 - [x] SSH keys (via 1Password SSH Agent)
+- [x] OpenStack credentials (Pilosa/OpenStack-Leafcloud)
+- [x] Gardener kubeconfigs (Pilosa/Gardener-Leafcloud)
 - [ ] Atuin encryption key (store in 1Password, reference in config)
-- [ ] API tokens (store in 1Password)
 
 **SSH Agent:** `~/.1password/agent.sock`
+
+**Cloud CLI Functions:**
+- `os-login` - Load OpenStack credentials from 1Password
+- `gardener-login` - Load Gardener kubeconfigs from 1Password
 
 ---
 
@@ -134,6 +143,8 @@ Using 1Password instead of SOPS for secrets:
 - **Git:** With SOPS-encrypted identity
 - **Containers:** Podman (rootless)
 - **AI:** Claude Code
+- **Kubernetes:** k3s (local), kubie (context isolation), Gardener (prod)
+- **Cloud:** OpenStack CLI (Leafcloud, 1Password auth)
 
 ### Applications
 - **Password Manager:** 1Password
@@ -184,12 +195,15 @@ Using 1Password instead of SOPS for secrets:
 - [x] 5.3 Podman (rootless, Docker-compatible)
 - [x] 5.4 Claude Code
 - [x] 5.5 k3s + kubie (local Kubernetes with context isolation)
+- [x] 5.6 OpenStack CLI (1Password integration for credentials)
+- [x] 5.7 Gardener cluster management (1Password integration)
 
 ### Phase 6: Applications
 - [x] 6.1 1Password
 - [x] 6.2 Zen Browser
-- [ ] 6.3 Obsidian + Calcurse
-- [ ] 6.4 Tailscale + Roon
+- [x] 6.3 Hyprlock screen locker
+- [ ] 6.4 Obsidian + Calcurse
+- [ ] 6.5 Tailscale + Roon
 
 ### Phase 7: Catppuccin Theming
 - [x] 7.1 Catppuccin flake added

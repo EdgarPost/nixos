@@ -98,7 +98,7 @@
         ", XF86AudioStop, exec, playerctl stop"
 
         # Lock and sleep
-        "$mod, Escape, exec, hyprlock --immediate"    # Lock screen (5s grace to cancel)
+        "$mod, Escape, exec, hyprlock"                 # Lock screen
         "$mod SHIFT, Escape, exec, systemctl suspend"  # Sleep/suspend
       ];
 
@@ -242,8 +242,6 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 5;               # Seconds before password required
-        ignore_empty_input = true;  # Don't unlock on empty password, only during grace
       };
 
       background = [{
