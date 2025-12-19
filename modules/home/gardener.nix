@@ -11,15 +11,19 @@
 #   gardenlogin - kubectl credential plugin for shoot cluster auth
 #
 # SETUP (1Password - portable across machines):
-#   1. In Gardener dashboard: select your shoot → Download Kubeconfig
+#   1. In Gardener dashboard:
+#      - Account page → Download garden kubeconfig
+#      - Select shoot → Download shoot kubeconfig
+#
 #   2. Create 1Password item (Pilosa/Gardener-Leafcloud) with fields:
-#      - shoot_kubeconfig: (paste the downloaded kubeconfig YAML)
-#      - shoot_name: och-prod (or your shoot name)
+#      - garden_identity: leafcloud-production
+#      - garden_kubeconfig: (paste garden kubeconfig YAML)
+#      - shoot_kubeconfig: (paste shoot kubeconfig YAML)
 #
 #   3. Run: gardener-login
-#      This pulls kubeconfig from 1Password to ~/.kube/
+#      First run opens browser for OIDC authentication
 #
-#   4. Use with kubie: kubie ctx <shoot_name>
+#   4. Use with kubie: kubie ctx garden-dgrmt8xvux--och-prod-external
 #
 # ============================================================================
 
@@ -111,6 +115,7 @@ in
   home.packages = [
     gardenctl
     gardenlogin
+    pkgs.kubelogin-oidc  # For OIDC authentication (kubectl oidc-login)
   ];
 
   programs.fish = {
@@ -119,29 +124,42 @@ in
 
     # Fish functions for Gardener login via 1Password
     interactiveShellInit = ''
-      function gardener-login --description "Setup Gardener shoot access from 1Password"
+      function gardener-login --description "Setup Gardener access from 1Password"
           # 1Password item reference
           set -l op_item "op://Pilosa/Gardener-Leafcloud"
 
-          # Ensure ~/.kube exists with correct permissions
+          # Ensure directories exist
           mkdir -p $HOME/.kube
           chmod 700 $HOME/.kube
+          mkdir -p $HOME/.garden
 
-          echo "Loading Gardener kubeconfig from 1Password..."
+          echo "Loading Gardener config from 1Password..."
 
-          # Read shoot name and kubeconfig from 1Password
-          set -l shoot_name (op read "$op_item/shoot_name")
-          or begin; echo "Failed to read shoot_name"; return 1; end
+          # Read config values from 1Password
+          set -l garden_identity (op read "$op_item/garden_identity")
+          or begin; echo "Failed to read garden_identity"; return 1; end
 
-          # Write shoot kubeconfig to file
-          set -l kubeconfig_path "$HOME/.kube/gardener-$shoot_name.yaml"
-          op read "$op_item/shoot_kubeconfig" > $kubeconfig_path
+          # Save garden kubeconfig (needed by gardenlogin for auth)
+          set -l garden_kubeconfig_path "$HOME/.kube/garden-$garden_identity.yaml"
+          op read "$op_item/garden_kubeconfig" > $garden_kubeconfig_path
+          or begin; echo "Failed to read garden_kubeconfig"; return 1; end
+          chmod 600 $garden_kubeconfig_path
+
+          # Create gardenctl/gardenlogin config pointing to garden kubeconfig
+          echo "gardens:
+  - identity: $garden_identity
+    kubeconfig: $garden_kubeconfig_path" > $HOME/.garden/gardenctl-v2.yaml
+
+          # Save shoot kubeconfig
+          set -l shoot_kubeconfig_path "$HOME/.kube/gardener-shoot.yaml"
+          op read "$op_item/shoot_kubeconfig" > $shoot_kubeconfig_path
           or begin; echo "Failed to read shoot_kubeconfig"; return 1; end
-          chmod 600 $kubeconfig_path
+          chmod 600 $shoot_kubeconfig_path
 
           echo ""
-          echo "Gardener kubeconfig installed! Use with kubie:"
-          echo "  kubie ctx $shoot_name"
+          echo "Gardener configured! First login opens browser for OIDC auth."
+          echo "Use with kubie:"
+          echo "  kubie ctx garden-dgrmt8xvux--och-prod-external"
       end
 
       function gardener-logout --description "Clear Gardener kubeconfigs"
