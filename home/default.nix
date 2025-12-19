@@ -44,6 +44,7 @@
     ../modules/home/yazi.nix # File manager
     ../modules/home/nvim.nix # Text editor
     ../modules/home/claude-code.nix # AI coding assistant config
+    ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
   ];
 
   # ==========================================================================
@@ -156,6 +157,29 @@
   programs.starship = {
     enable = true;
     enableFishIntegration = true; # Add init to fish config automatically
+
+    # Kubernetes context display - essential for safety with kubie
+    settings = {
+      kubernetes = {
+        disabled = false;
+        # Show context and namespace
+        format = "[$symbol$context( \\($namespace\\))]($style) ";
+        symbol = "󱃾 ";  # Kubernetes helm icon (nerd font)
+        style = "cyan";
+
+        # Color-code contexts for safety (prod = red, local = green)
+        contexts = [
+          { context_pattern = "k3s-local"; style = "green"; context_alias = "k3s"; }
+          { context_pattern = ".*prod.*"; style = "bold red"; }
+          { context_pattern = ".*acc.*"; style = "bold yellow"; }
+        ];
+
+        # Only show when kubeconfig exists (kubie session active)
+        detect_files = [ ];
+        detect_folders = [ ];
+        detect_env_vars = [ "KUBECONFIG" ];
+      };
+    };
   };
 
   # ==========================================================================

@@ -183,6 +183,7 @@ Using 1Password instead of SOPS for secrets:
 - [x] 5.2 Git configured
 - [x] 5.3 Podman (rootless, Docker-compatible)
 - [x] 5.4 Claude Code
+- [x] 5.5 k3s + kubie (local Kubernetes with context isolation)
 
 ### Phase 6: Applications
 - [x] 6.1 1Password
