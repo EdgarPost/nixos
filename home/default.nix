@@ -45,6 +45,8 @@
     ../modules/home/nvim.nix # Text editor
     ../modules/home/claude-code.nix # AI coding assistant config
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
+    ../modules/home/openstack.nix # OpenStack CLI
+    ../modules/home/gardener.nix # Gardener cluster management
   ];
 
   # ==========================================================================
