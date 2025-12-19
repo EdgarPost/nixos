@@ -11,19 +11,15 @@
 #   gardenlogin - kubectl credential plugin for shoot cluster auth
 #
 # SETUP (1Password - portable across machines):
-#   1. Add these fields to your 1Password item (Pilosa/Gardener-Leafcloud):
-#      - garden_kubeconfig: (paste full kubeconfig YAML from Gardener dashboard)
-#      - garden_name: leafcloud (or your garden name)
-#      - project_name: your-project
-#      - shoot_name: your-shoot-cluster
+#   1. In Gardener dashboard: select your shoot → Download Kubeconfig
+#   2. Create 1Password item (Pilosa/Gardener-Leafcloud) with fields:
+#      - shoot_kubeconfig: (paste the downloaded kubeconfig YAML)
+#      - shoot_name: och-prod (or your shoot name)
 #
-#   2. Run: gardener-login
-#      This pulls kubeconfig from 1Password and configures gardenctl
+#   3. Run: gardener-login
+#      This pulls kubeconfig from 1Password to ~/.kube/
 #
-#   3. Use with kubie: kubie ctx gardener-prod
-#
-# OPENSTACK INTEGRATION:
-# Run os-login first - gardenctl uses OS_* env vars for infrastructure ops.
+#   4. Use with kubie: kubie ctx <shoot_name>
 #
 # ============================================================================
 
@@ -123,54 +119,29 @@ in
 
     # Fish functions for Gardener login via 1Password
     interactiveShellInit = ''
-      function gardener-login --description "Setup Gardener access from 1Password"
+      function gardener-login --description "Setup Gardener shoot access from 1Password"
           # 1Password item reference
           set -l op_item "op://Pilosa/Gardener-Leafcloud"
-
-          # Set up gardenctl session ID first (required for gardenctl v2)
-          set -gx GCTL_SESSION_ID (cat /proc/sys/kernel/random/uuid)
 
           # Ensure ~/.kube exists with correct permissions
           mkdir -p $HOME/.kube
           chmod 700 $HOME/.kube
 
-          echo "Loading Gardener config from 1Password..."
+          echo "Loading Gardener kubeconfig from 1Password..."
 
-          # Read garden config from 1Password
-          set -l garden_name (op read "$op_item/garden_name")
-          or begin; echo "Failed to read garden_name"; return 1; end
-
-          set -l project_name (op read "$op_item/project_name")
-          or begin; echo "Failed to read project_name"; return 1; end
-
+          # Read shoot name and kubeconfig from 1Password
           set -l shoot_name (op read "$op_item/shoot_name")
           or begin; echo "Failed to read shoot_name"; return 1; end
 
-          # Write garden kubeconfig to file
-          set -l kubeconfig_path "$HOME/.kube/garden-$garden_name.yaml"
-          op read "$op_item/garden_kubeconfig" > $kubeconfig_path
-          or begin; echo "Failed to read garden_kubeconfig"; return 1; end
+          # Write shoot kubeconfig to file
+          set -l kubeconfig_path "$HOME/.kube/gardener-$shoot_name.yaml"
+          op read "$op_item/shoot_kubeconfig" > $kubeconfig_path
+          or begin; echo "Failed to read shoot_kubeconfig"; return 1; end
           chmod 600 $kubeconfig_path
 
-          # Configure gardenctl with this garden
-          echo "Configuring garden: $garden_name"
-          gardenctl config set-garden $garden_name --kubeconfig $kubeconfig_path
-          or begin; echo "Failed to configure garden"; return 1; end
-
-          # Target the shoot cluster
-          echo "Targeting shoot: $garden_name/$project_name/$shoot_name"
-          gardenctl target --garden $garden_name --project $project_name --shoot $shoot_name
-          or begin; echo "Failed to target shoot"; return 1; end
-
-          # Export shoot kubeconfig for kubectl/kubie
-          set -l shoot_kubeconfig "$HOME/.kube/gardener-$shoot_name.yaml"
-          gardenctl kubeconfig --export > $shoot_kubeconfig
-          or begin; echo "Failed to export kubeconfig"; return 1; end
-          chmod 600 $shoot_kubeconfig
-
           echo ""
-          echo "Gardener configured! Use with kubie:"
-          echo "  kubie ctx gardener-$shoot_name"
+          echo "Gardener kubeconfig installed! Use with kubie:"
+          echo "  kubie ctx $shoot_name"
       end
 
       function gardener-logout --description "Clear Gardener kubeconfigs"
