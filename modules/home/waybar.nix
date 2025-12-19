@@ -1,17 +1,50 @@
+# ============================================================================
+# WAYBAR - Status Bar for Wayland
+# ============================================================================
+#
+# WHAT IS WAYBAR?
+# A highly customizable status bar for Wayland compositors (Hyprland, Sway).
+# Shows system info, workspaces, and integrates with various services.
+#
+# CONFIGURATION STRUCTURE:
+#   settings = [ { ... } ]  - JSON config (modules, layout)
+#   style = "..."           - CSS styling (colors, fonts, padding)
+#
+# MODULES USED HERE:
+#   - hyprland/workspaces: Workspace indicators
+#   - clock: Date and time
+#   - battery: Battery status with warnings
+#   - cpu/memory: System resource usage
+#   - pulseaudio: Volume with click-to-open pavucontrol
+#   - bluetooth: Bluetooth status with click-to-open blueman
+#   - network: WiFi/Ethernet status
+#   - tray: System tray for background apps
+#   - custom/notification: Unread notification count from mako
+#
+# CLICK HANDLERS:
+# Many modules open GUI apps when clicked (requires packages below)
+#
+# ============================================================================
+
 { pkgs, ... }:
 
 {
-  # GUI tools for waybar clicks
+  # GUI applications opened by clicking waybar modules
   home.packages = with pkgs; [
-    pavucontrol        # Volume control
-    blueman            # Bluetooth manager
-    networkmanagerapplet  # nm-connection-editor
+    pavucontrol          # Volume control (pulseaudio module click)
+    blueman              # Bluetooth manager (bluetooth module click)
+    networkmanagerapplet # Network settings (network module click)
   ];
 
   programs.waybar = {
     enable = true;
-    systemd.enable = true;
+    systemd.enable = true;  # Start waybar as systemd user service
 
+    # ========================================================================
+    # WAYBAR CONFIGURATION (JSON)
+    # ========================================================================
+    # settings is a list because waybar can have multiple bars
+    # We only use one bar here
     settings = [{
       layer = "top";
       position = "top";
@@ -108,6 +141,11 @@
       };
     }];
 
+    # ========================================================================
+    # WAYBAR STYLING (CSS)
+    # ========================================================================
+    # Colors like @base, @text, @blue come from catppuccin module
+    # which injects CSS variables matching the selected flavor
     style = ''
       * {
         font-family: "JetBrains Mono";

@@ -1,28 +1,62 @@
+# ============================================================================
+# HYPRLAND HOME MODULE - Window Manager Configuration
+# ============================================================================
+#
+# SYSTEM VS HOME MANAGER:
+# System module (modules/nixos/hyprland.nix): Installs Hyprland, portals, fonts
+# This module: User preferences - keybindings, appearance, startup apps
+#
+# HYPRLAND KEYBINDING TYPES:
+#   bind   - Normal binding, executes once per keypress
+#   binde  - Repeating binding, executes while held (volume, resize)
+#   bindl  - Locked binding, works on lockscreen too
+#   bindm  - Mouse binding (drag to move/resize windows)
+#
+# VARIABLE SYNTAX:
+#   $varname = "value"     # Define a variable
+#   $varname, action       # Use the variable
+#
+# ============================================================================
+
 { config, pkgs, ... }:
 
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null; # Use NixOS module's package
+    # Use the Hyprland package from NixOS module (avoid duplicate installations)
+    package = null;
     portalPackage = null;
 
     settings = {
-      # Monitor config (prefer highest refresh rate)
+      # =======================================================================
+      # MONITOR CONFIGURATION
+      # =======================================================================
+      # Format: name,resolution,position,scale
+      # "highrr" = prefer highest refresh rate available
+      # "auto" = let Hyprland position the monitor
+      # Use `hyprctl monitors` to see detected monitors
       monitor = ",highrr,auto,1";
 
-      # Mod key (SUPER = Windows key)
-      "$mod" = "SUPER";
+      # Define variables for use throughout config
+      # Similar to shell variables, but Hyprland-specific
+      "$mod" = "SUPER";           # Windows/Super key as modifier
+      "$terminal" = "ghostty";    # Default terminal emulator
+      "$menu" = "rofi -show drun"; # Application launcher
 
-      # Default apps
-      "$terminal" = "ghostty";
-      "$menu" = "rofi -show drun";
-
-      # Startup
+      # =======================================================================
+      # STARTUP APPLICATIONS
+      # =======================================================================
+      # exec-once: Run once when Hyprland starts (not on config reload)
+      # exec: Run on every config reload
       exec-once = [
-        "1password --silent" # Start 1Password in background
+        "1password --silent"  # Start 1Password daemon for SSH agent
       ];
 
-      # Basic keybindings
+      # =======================================================================
+      # KEYBINDINGS - bind (normal, single press)
+      # =======================================================================
+      # Format: "MODIFIERS, key, action, args"
+      # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
       bind = [
         "$mod, Return, exec, $terminal"
         "$mod, D, exec, $menu"
@@ -64,7 +98,11 @@
         ", XF86AudioStop, exec, playerctl stop"
       ];
 
-      # Repeat keys (volume, brightness, resize)
+      # =======================================================================
+      # KEYBINDINGS - binde (repeating, held keys)
+      # =======================================================================
+      # These trigger repeatedly while the key is held down
+      # Perfect for volume, brightness, and window resizing
       binde = [
         ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
@@ -78,7 +116,11 @@
         "$mod CTRL, J, resizeactive, 0 20"
       ];
 
-      # Locked keys (work on lockscreen too)
+      # =======================================================================
+      # KEYBINDINGS - bindl (locked, work on lockscreen)
+      # =======================================================================
+      # These work even when the screen is locked
+      # Useful for mute and hardware switches
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
@@ -88,13 +130,21 @@
         ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
       ];
 
-      # Mouse bindings
+      # =======================================================================
+      # KEYBINDINGS - bindm (mouse bindings)
+      # =======================================================================
+      # Mod + click/drag to move or resize windows
+      # mouse:272 = left click, mouse:273 = right click
       bindm = [
         "$mod, mouse:272, movewindow"
         "$mod, mouse:273, resizewindow"
       ];
 
-      # Appearance (colors handled by catppuccin module)
+      # =======================================================================
+      # APPEARANCE
+      # =======================================================================
+      # Visual settings for windows and gaps
+      # Border colors are set by the catppuccin module automatically
       general = {
         gaps_in = 5;
         gaps_out = 10;
@@ -138,32 +188,44 @@
         ];
       };
 
+      # =======================================================================
+      # INPUT CONFIGURATION
+      # =======================================================================
       input = {
         kb_layout = "us";
-        follow_mouse = 1;
-        sensitivity = 0; # Global default
-        accel_profile = "flat";
+        follow_mouse = 1;      # Focus follows mouse
+        sensitivity = 0;       # 0 = no modification to input speed
+        accel_profile = "flat"; # No acceleration (1:1 mouse movement)
         touchpad = {
-          natural_scroll = true;
+          natural_scroll = true;  # Two-finger scroll direction (like macOS)
         };
       };
 
-      # Per-device sensitivity
+      # Per-device input settings
+      # Find device names with: hyprctl devices
       device = {
-        name = "pixa3854:00-093a:0274-touchpad";  # Framework touchpad
-        sensitivity = 0.3;
-        accel_profile = "adaptive";  # Enable acceleration for trackpad
+        name = "pixa3854:00-093a:0274-touchpad";  # Framework's Pixart touchpad
+        sensitivity = 0.3;        # Higher sensitivity for trackpad
+        accel_profile = "adaptive"; # Enable acceleration for trackpad
       };
 
-    };
+    };  # End of settings
 
-    # Touchpad gestures (Hyprland 0.51+ syntax)
+    # =======================================================================
+    # EXTRA CONFIGURATION
+    # =======================================================================
+    # Raw Hyprland config for features not yet in Home Manager module
     extraConfig = ''
+      # Touchpad gestures: 3-finger horizontal swipe switches workspace
       gesture = 3, horizontal, workspace
     '';
   };
 
-  # Rofi launcher with catppuccin
+  # ==========================================================================
+  # ROFI - Application Launcher
+  # ==========================================================================
+  # Rofi: dmenu replacement with nice UI for launching apps
+  # Triggered by: Super+D (defined in keybindings above)
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
@@ -176,9 +238,14 @@
       drun-display-format = "{name}";
     };
   };
+  # Enable Catppuccin theme for Rofi (from catppuccin flake)
   catppuccin.rofi.enable = true;
 
-  # Mako notifications (centered at top)
+  # ==========================================================================
+  # MAKO - Notification Daemon
+  # ==========================================================================
+  # Lightweight notification daemon for Wayland
+  # Test with: notify-send "Title" "Body text"
   services.mako = {
     enable = true;
     settings = {
@@ -192,12 +259,15 @@
     };
   };
 
-  # Essential Wayland packages
+  # ==========================================================================
+  # WAYLAND UTILITIES
+  # ==========================================================================
+  # Essential tools for a functional Wayland desktop
   home.packages = with pkgs; [
-    wl-clipboard # Clipboard
-    grim # Screenshots
-    slurp # Screen region select
-    brightnessctl # Brightness control
-    playerctl # Media control
+    wl-clipboard   # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
+    grim           # Screenshots: grim -g "$(slurp)" screenshot.png
+    slurp          # Region selector (used with grim for area screenshots)
+    brightnessctl  # Brightness: brightnessctl set 50%
+    playerctl      # Media control: playerctl play-pause, next, previous
   ];
 }
