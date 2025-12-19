@@ -242,7 +242,8 @@
     settings = {
       general = {
         hide_cursor = true;
-        grace = 5;  # Seconds before lock actually engages (can unlock without password)
+        grace = 5;               # Seconds before password required
+        ignore_empty_input = true;  # Don't unlock on empty password, only during grace
       };
 
       background = [{
