@@ -181,7 +181,7 @@ Using 1Password instead of SOPS for secrets:
 ### Phase 5: Development Tools
 - [x] 5.1 Neovim (LazyVim, LSPs via Nix)
 - [x] 5.2 Git configured
-- [ ] 5.3 Podman
+- [x] 5.3 Podman (rootless, Docker-compatible)
 - [x] 5.4 Claude Code
 
 ### Phase 6: Applications
