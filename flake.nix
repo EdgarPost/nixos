@@ -110,6 +110,12 @@
         };
       };
 
+      # ========== Network Hosts ==========
+      # IPs of other machines on the network
+      hosts = {
+        pbstation = "192.168.2.10";  # Synology NAS (Roon Core)
+      };
+
       # ========== Helper Function ==========
       # DRY: One function to create system configs for any host
       #
@@ -132,7 +138,7 @@
           # Modules are functions: { config, pkgs, lib, ... }: { ... }
           # specialArgs adds extra args (inputs, user) available in all modules
           # This is THE way to pass custom data through your config
-          specialArgs = { inherit inputs user; };
+          specialArgs = { inherit inputs user hosts; };
 
           # MODULES - The composition system
           # Each module is a function that returns an attrset of config
@@ -167,7 +173,7 @@
               };
 
               # Pass same custom args to Home Manager modules
-              home-manager.extraSpecialArgs = { inherit inputs user; };
+              home-manager.extraSpecialArgs = { inherit inputs user hosts; };
             }
 
             # LIST CONCATENATION: `++` joins two lists

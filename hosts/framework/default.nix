@@ -32,6 +32,9 @@
     # The `inputs` variable comes from specialArgs (defined in flake.nix)
     # Browse available: github.com/NixOS/nixos-hardware
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
+
+    # Framework-specific services
+    ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
   ];
 
   # Machine identity on the network
