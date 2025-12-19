@@ -98,7 +98,7 @@
         ", XF86AudioStop, exec, playerctl stop"
 
         # Lock and sleep
-        "$mod, Escape, exec, hyprlock"              # Lock screen
+        "$mod, Escape, exec, hyprlock --immediate"    # Lock screen (5s grace to cancel)
         "$mod SHIFT, Escape, exec, systemctl suspend"  # Sleep/suspend
       ];
 
