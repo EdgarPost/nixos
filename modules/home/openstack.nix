@@ -12,16 +12,16 @@
 # Credentials are stored securely in 1Password and injected at runtime.
 #
 # SETUP:
-#   1. Create an item in 1Password (Pilosa vault) named "OpenStack-Leafcloud" with fields:
+#   1. Create Application Credentials in Leafcloud Horizon:
+#      Identity → Application Credentials → Create Application Credential
+#
+#   2. Create an item in 1Password (Pilosa vault) named "OpenStack-Leafcloud" with fields:
 #      - auth_url: https://create.leaf.cloud:5000
-#      - username: your-leafcloud-email
-#      - password: your-leafcloud-password
-#      - project_name: och_org_XXXX
-#      - project_id: your-project-uuid
-#      - user_domain_name: Default (optional)
+#      - application_credential_id: (from step 1)
+#      - application_credential_secret: (from step 1)
 #      - region_name: europe-nl (optional)
 #
-#   2. Run: os-login
+#   3. Run: os-login
 #      This authenticates with 1Password and sets OS_* environment variables
 #
 # USAGE:
@@ -56,27 +56,25 @@
 
           # Read credentials from 1Password (will prompt for auth if needed)
           set -gx OS_AUTH_URL (op read "$op_item/auth_url")
-          set -gx OS_USERNAME (op read "$op_item/username")
-          set -gx OS_PASSWORD (op read "$op_item/password")
-          set -gx OS_PROJECT_NAME (op read "$op_item/project_name")
-          set -gx OS_PROJECT_ID (op read "$op_item/project_id")
-          set -gx OS_USER_DOMAIN_NAME (op read "$op_item/user_domain_name" 2>/dev/null; or echo "Default")
           set -gx OS_REGION_NAME (op read "$op_item/region_name" 2>/dev/null; or echo "europe-nl")
+
+          # Application credential authentication (more secure than password)
+          set -gx OS_AUTH_TYPE v3applicationcredential
+          set -gx OS_APPLICATION_CREDENTIAL_ID (op read "$op_item/application_credential_id")
+          set -gx OS_APPLICATION_CREDENTIAL_SECRET (op read "$op_item/application_credential_secret")
 
           # OpenStack identity API version
           set -gx OS_IDENTITY_API_VERSION 3
           set -gx OS_INTERFACE public
 
-          echo "OpenStack environment configured for $OS_PROJECT_NAME @ $OS_REGION_NAME"
+          echo "OpenStack environment configured (Leafcloud @ $OS_REGION_NAME)"
       end
 
       function os-logout --description "Clear OpenStack credentials from environment"
           set -e OS_AUTH_URL
-          set -e OS_USERNAME
-          set -e OS_PASSWORD
-          set -e OS_PROJECT_NAME
-          set -e OS_PROJECT_ID
-          set -e OS_USER_DOMAIN_NAME
+          set -e OS_AUTH_TYPE
+          set -e OS_APPLICATION_CREDENTIAL_ID
+          set -e OS_APPLICATION_CREDENTIAL_SECRET
           set -e OS_REGION_NAME
           set -e OS_IDENTITY_API_VERSION
           set -e OS_INTERFACE
