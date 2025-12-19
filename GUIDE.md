@@ -26,6 +26,11 @@ Claude can read this file to understand current state and continue where we left
 - [x] Ghostty cursor smear shader
 - [x] Tmux vim-navigator integration
 - [x] Hyprland animations + window move/resize keybindings
+- [x] Catppuccin theming (Hyprland, Rofi, Mako, Qt/Kvantum)
+- [x] Framework: lid switch, 120Hz display, per-device input
+- [x] Waybar notification module (mako integration)
+- [x] Slack added (x86_64 only)
+- [x] Multi-arch package handling (Zen on both, Slack x86_64 only)
 
 ---
 
@@ -51,7 +56,7 @@ Claude can read this file to understand current state and continue where we left
 |------|----------|--------|
 | `utm-vm` | UTM VM on macOS (aarch64) | Ready - for testing |
 | `framework` | Framework 12" Intel 1280p | **Active** - daily driver |
-| `asahi` | M1 Mac with Asahi Linux | Planned |
+| `asahi` | M1 Mac with Asahi Linux | Planned (aarch64 support ready) |
 | `server` | Headless dev servers | Planned |
 
 ---
@@ -134,7 +139,8 @@ Using 1Password instead of SOPS for secrets:
 - **Password Manager:** 1Password
 - **Notes:** Obsidian
 - **Calendar:** Calcurse + vdirsyncer
-- **Browsers:** Zen Browser, Slack, MS Teams (web)
+- **Browsers:** Zen Browser (x86_64 + aarch64)
+- **Communication:** Slack (x86_64 only), MS Teams (web)
 - **VPN:** Tailscale
 - **Media:** Roon client
 
@@ -187,11 +193,12 @@ Using 1Password instead of SOPS for secrets:
 ### Phase 7: Catppuccin Theming
 - [x] 7.1 Catppuccin flake added
 - [x] 7.2 Themed: Ghostty, Tmux, Fish, Starship, Bat, Yazi, Waybar, Neovim
-- [ ] 7.3 Theme: Hyprland, Rofi, GTK
+- [x] 7.3 Theme: Hyprland, Rofi, Mako, Qt/Kvantum (GTK archived upstream)
 
 ### Phase 8: Multi-Host
-- [x] 8.1 Framework laptop profile
-- [ ] 8.2 Server profile template
+- [x] 8.1 Framework laptop profile (lid switch, 120Hz, touchpad sensitivity)
+- [x] 8.2 Multi-arch support (x86_64 + aarch64-linux)
+- [ ] 8.3 Server profile template
 
 ---
 
@@ -360,8 +367,21 @@ When continuing this project:
 
 **Zen Browser:**
 - Use `github:youwen5/zen-browser-flake` (NixOS wiki recommended)
+- Supports both x86_64-linux and aarch64-linux
 - Add to home.packages: `inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default`
 - For 1Password: add "zen" to `/etc/1password/custom_allowed_browsers`
+
+**Multi-Architecture Packages:**
+```nix
+# Conditional packages (use lib.optionals, NOT lib.mkIf in lists)
+home.packages = with pkgs; [
+  # Universal packages
+  somePackage
+] ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+  # x86_64-only packages (no aarch64 builds)
+  slack
+];
+```
 
 **Neovim (nixCats + LazyVim):**
 - nixCats-nvim with LazyVim template recommended over nixvim
