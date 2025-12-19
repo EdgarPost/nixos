@@ -127,34 +127,45 @@ in
           # 1Password item reference
           set -l op_item "op://Pilosa/Gardener-Leafcloud"
 
-          echo "Loading Gardener config from 1Password..."
+          # Set up gardenctl session ID first (required for gardenctl v2)
+          set -gx GCTL_SESSION_ID (cat /proc/sys/kernel/random/uuid)
 
-          # Ensure ~/.kube exists
+          # Ensure ~/.kube exists with correct permissions
           mkdir -p $HOME/.kube
+          chmod 700 $HOME/.kube
+
+          echo "Loading Gardener config from 1Password..."
 
           # Read garden config from 1Password
           set -l garden_name (op read "$op_item/garden_name")
+          or begin; echo "Failed to read garden_name"; return 1; end
+
           set -l project_name (op read "$op_item/project_name")
+          or begin; echo "Failed to read project_name"; return 1; end
+
           set -l shoot_name (op read "$op_item/shoot_name")
+          or begin; echo "Failed to read shoot_name"; return 1; end
 
           # Write garden kubeconfig to file
           set -l kubeconfig_path "$HOME/.kube/garden-$garden_name.yaml"
           op read "$op_item/garden_kubeconfig" > $kubeconfig_path
+          or begin; echo "Failed to read garden_kubeconfig"; return 1; end
           chmod 600 $kubeconfig_path
 
           # Configure gardenctl with this garden
+          echo "Configuring garden: $garden_name"
           gardenctl config set-garden $garden_name --kubeconfig $kubeconfig_path
-
-          # Set up gardenctl session ID (required for gardenctl v2)
-          set -gx GCTL_SESSION_ID (cat /proc/sys/kernel/random/uuid)
+          or begin; echo "Failed to configure garden"; return 1; end
 
           # Target the shoot cluster
           echo "Targeting shoot: $garden_name/$project_name/$shoot_name"
           gardenctl target --garden $garden_name --project $project_name --shoot $shoot_name
+          or begin; echo "Failed to target shoot"; return 1; end
 
           # Export shoot kubeconfig for kubectl/kubie
           set -l shoot_kubeconfig "$HOME/.kube/gardener-$shoot_name.yaml"
           gardenctl kubeconfig --export > $shoot_kubeconfig
+          or begin; echo "Failed to export kubeconfig"; return 1; end
           chmod 600 $shoot_kubeconfig
 
           echo ""
