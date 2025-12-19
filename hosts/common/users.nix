@@ -32,6 +32,7 @@
       "networkmanager"  # Can configure WiFi, VPN without sudo
       "video"           # Can control screen brightness (backlight device access)
       "audio"           # Can control audio devices directly
+      "pipewire"        # Can access system-wide PipeWire audio
     ];
 
     # PASSWORD MANAGEMENT:
