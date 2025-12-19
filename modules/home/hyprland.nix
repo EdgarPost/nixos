@@ -87,6 +87,7 @@ in
       bind = [
         "$mod, Return, exec, $terminal"
         "$mod, D, exec, $menu"
+        "$mod, C, exec, $terminal -e khal interactive"
         "$mod, Q, killactive"
         "$mod, M, exit"
         "$mod, V, togglefloating"

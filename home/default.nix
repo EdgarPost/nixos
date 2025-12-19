@@ -57,6 +57,7 @@ in
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
     ../modules/home/openstack.nix # OpenStack CLI
     ../modules/home/gardener.nix # Gardener cluster management
+    ../modules/home/calendar.nix # Calendar & contacts (vdirsyncer + khal + khard)
   ];
 
   # ==========================================================================
