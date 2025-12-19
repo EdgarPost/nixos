@@ -43,6 +43,9 @@
   # Required: bat must be enabled for catppuccin.bat to work
   programs.bat.enable = true;
 
+  # Shell alias: use bat instead of cat
+  programs.fish.shellAliases.cat = "bat";
+
   # ==========================================================================
   # PER-PROGRAM THEMING
   # ==========================================================================

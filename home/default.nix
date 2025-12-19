@@ -135,12 +135,13 @@
 
     # Shell aliases - shortcuts for common commands
     # Unlike bash, Fish aliases are just functions under the hood
+    # Module-specific aliases live in their modules (nvim.nix, catppuccin.nix, etc.)
     shellAliases = {
-      ll = "eza -la"; # Detailed list with eza
-      la = "eza -a"; # Show hidden files
-      cat = "bat"; # cat with syntax highlighting
-      n = "nvim"; # Quick editor access
-      lg = "lazygit"; # Git TUI
+      # eza (ls replacement)
+      ll = "eza -la";
+      la = "eza -a";
+      # git shortcuts (config is above, aliases stay together)
+      lg = "lazygit";
       g = "git";
       gs = "git status";
       gc = "git commit";

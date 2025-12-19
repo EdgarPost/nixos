@@ -21,6 +21,9 @@
 { pkgs, ... }:
 
 {
+  # Shell alias for quick access
+  programs.fish.shellAliases.n = "nvim";
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;  # Set $EDITOR to nvim
