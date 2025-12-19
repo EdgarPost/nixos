@@ -71,40 +71,44 @@ Claude can read this file to understand current state and continue where we left
 ## Repository Structure
 
 ```
-nixos-config/
-├── flake.nix                    # Main entry point
+nixos/
+├── flake.nix                    # Main entry point (user, hosts config)
 ├── flake.lock                   # Locked dependencies
-├── .sops.yaml                   # SOPS configuration
-├── secrets/
-│   └── secrets.yaml             # Encrypted secrets
+├── GUIDE.md                     # This file
 ├── hosts/
 │   ├── common/
-│   │   ├── default.nix          # Shared config
+│   │   ├── default.nix          # Shared config (all hosts)
 │   │   └── users.nix            # User definitions
 │   ├── utm-vm/
 │   │   ├── default.nix
 │   │   └── hardware-configuration.nix
-│   ├── framework/
-│   └── asahi/
+│   └── framework/
+│       ├── default.nix          # Framework-specific (lid, 120Hz, etc.)
+│       └── hardware-configuration.nix
 ├── modules/
-│   ├── nixos/                   # System modules
-│   │   ├── hyprland.nix
-│   │   ├── greetd.nix
-│   │   ├── podman.nix
-│   │   └── tailscale.nix
+│   ├── nixos/                   # System-level modules
+│   │   ├── 1password.nix        # Password manager + SSH agent
+│   │   ├── greetd.nix           # Login manager
+│   │   ├── hyprland.nix         # Wayland compositor (system)
+│   │   ├── k3s.nix              # Local Kubernetes
+│   │   ├── podman.nix           # Container runtime
+│   │   ├── roon-bridge.nix      # Audio endpoint for Roon
+│   │   └── tailscale.nix        # Mesh VPN
 │   └── home/                    # Home-manager modules
-│       ├── fish.nix
-│       ├── nvim/
-│       │   ├── default.nix      # nixCats config
-│       │   └── lua/             # Lua config (in repo)
-│       ├── tmux.nix
-│       ├── ghostty.nix
-│       ├── git.nix
-│       ├── starship.nix
-│       ├── atuin.nix
-│       └── yazi.nix
+│       ├── atuin.nix            # Shell history (cloud sync)
+│       ├── catppuccin.nix       # Unified theming
+│       ├── claude-code.nix      # AI coding assistant
+│       ├── gardener.nix         # Kubernetes cluster management
+│       ├── ghostty.nix          # Terminal emulator
+│       ├── hyprland.nix         # WM keybindings + rules
+│       ├── kubernetes.nix       # k8s tools (kubie, kubectx)
+│       ├── nvim.nix             # Neovim (LazyVim)
+│       ├── openstack.nix        # Cloud CLI
+│       ├── tmux.nix             # Terminal multiplexer
+│       ├── waybar.nix           # Status bar
+│       └── yazi.nix             # File manager
 └── home/
-    └── default.nix              # Home-manager entry
+    └── default.nix              # Home-manager entry (packages, shell, git)
 ```
 
 ---
@@ -143,7 +147,7 @@ Using 1Password instead of SOPS for secrets:
 
 ### Development
 - **Editor:** Neovim (Nix-managed, LazyVim-style)
-- **Git:** With SOPS-encrypted identity
+- **Git:** SSH signing via 1Password agent
 - **Containers:** Podman (rootless)
 - **AI:** Claude Code
 - **Kubernetes:** k3s (local), kubie (context isolation), Gardener (prod)
@@ -155,8 +159,8 @@ Using 1Password instead of SOPS for secrets:
 - **Calendar:** Calcurse + vdirsyncer
 - **Browsers:** Zen Browser (x86_64 + aarch64)
 - **Communication:** Slack (x86_64 only), MS Teams (web)
-- **VPN:** Tailscale
-- **Media:** Roon client
+- **VPN:** Tailscale (mesh VPN, trustedInterface)
+- **Media:** Roon Bridge (audio endpoint, connects to Roon Core on NAS)
 
 ---
 
@@ -274,12 +278,12 @@ When continuing this project:
 2. Check the Phase Checklist for next steps
 3. Each completed step should be committed to git
 4. Update this file after completing steps
-5. All secrets go in `secrets/secrets.yaml` encrypted with SOPS
+5. Secrets are managed via 1Password (SSH agent, CLI integrations)
 6. User wants to learn - explain each step
 
 **User preferences:**
 - Explain each step thoroughly
-- One git commit per logical step
+- One git commit per logical step (atomic commits)
 - Challenge decisions when appropriate
 - Follow TDD/SOLID/KISS principles
 
