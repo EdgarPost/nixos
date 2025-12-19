@@ -96,6 +96,10 @@
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
         ", XF86AudioStop, exec, playerctl stop"
+
+        # Lock and sleep
+        "$mod, Escape, exec, hyprlock"              # Lock screen
+        "$mod SHIFT, Escape, exec, systemctl suspend"  # Sleep/suspend
       ];
 
       # =======================================================================
@@ -226,6 +230,37 @@
       # Touchpad gestures: 3-finger horizontal swipe switches workspace
       gesture = 3, horizontal, workspace
     '';
+  };
+
+  # ==========================================================================
+  # HYPRLOCK - Screen Locker
+  # ==========================================================================
+  # Hyprland-native lock screen with blur and customization
+  # Lock: Super+Escape | Sleep: Super+Shift+Escape
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general = {
+        hide_cursor = true;
+        grace = 5;  # Seconds before lock actually engages (can unlock without password)
+      };
+
+      background = {
+        monitor = "";
+        path = "screenshot";  # Use screenshot of current screen
+        blur_passes = 3;
+        blur_size = 8;
+      };
+
+      input-field = {
+        monitor = "";
+        size = "300, 50";
+        outline_thickness = 2;
+        fade_on_empty = false;
+        placeholder_text = "Password...";
+        hide_input = false;
+      };
+    };
   };
 
   # ==========================================================================
