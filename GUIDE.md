@@ -5,7 +5,7 @@ Claude can read this file to understand current state and continue where we left
 
 ## Project Status
 
-**Current Phase:** Phase 6 - Applications
+**Current Phase:** Phase 6 - Applications (nearly complete)
 **Last Updated:** 2025-12-19
 
 ### Completed Steps
@@ -35,6 +35,9 @@ Claude can read this file to understand current state and continue where we left
 - [x] Gardener cluster management with 1Password (gardener-login)
 - [x] Hyprlock screen locker (Super+Escape)
 - [x] Auto-focus browser when opening URLs from terminal
+- [x] Waybar: island styling, vertical bars (CPU/mem/volume), shared font variable
+- [x] Tailscale mesh VPN
+- [x] Roon Bridge audio endpoint
 
 ---
 
@@ -203,7 +206,7 @@ Using 1Password instead of SOPS for secrets:
 - [x] 6.2 Zen Browser
 - [x] 6.3 Hyprlock screen locker
 - [ ] 6.4 Obsidian + Calcurse
-- [ ] 6.5 Tailscale + Roon
+- [x] 6.5 Tailscale + Roon
 
 ### Phase 7: Catppuccin Theming
 - [x] 7.1 Catppuccin flake added
