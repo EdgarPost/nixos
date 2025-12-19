@@ -129,6 +129,9 @@ in
 
           echo "Loading Gardener config from 1Password..."
 
+          # Ensure ~/.kube exists
+          mkdir -p $HOME/.kube
+
           # Read garden config from 1Password
           set -l garden_name (op read "$op_item/garden_name")
           set -l project_name (op read "$op_item/project_name")
@@ -141,6 +144,9 @@ in
 
           # Configure gardenctl with this garden
           gardenctl config set-garden $garden_name --kubeconfig $kubeconfig_path
+
+          # Set up gardenctl session ID (required for gardenctl v2)
+          set -gx GCTL_SESSION_ID (cat /proc/sys/kernel/random/uuid)
 
           # Target the shoot cluster
           echo "Targeting shoot: $garden_name/$project_name/$shoot_name"
