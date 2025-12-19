@@ -23,6 +23,13 @@
   services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
 
+  # Lid close behavior
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";           # Suspend when lid closed
+    HandleLidSwitchExternalPower = "suspend";  # Also suspend on AC power
+    HandleLidSwitchDocked = "ignore";      # Ignore if external monitor connected
+  };
+
   # Firmware updates
   services.fwupd.enable = true;
 

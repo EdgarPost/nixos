@@ -18,7 +18,7 @@
       height = 30;
 
       modules-left = [ "hyprland/workspaces" ];
-      modules-center = [ "clock" ];
+      modules-center = [ "custom/notification" "clock" ];
       modules-right = [ "cpu" "memory" "pulseaudio" "bluetooth" "network" "battery" "tray" ];
 
       "hyprland/workspaces" = {
@@ -90,6 +90,22 @@
       tray = {
         spacing = 10;
       };
+
+      "custom/notification" = {
+        tooltip = false;
+        format = "{icon}";
+        format-icons = {
+          notification = "󰂚";
+          none = "󰂜";
+          dnd-notification = "󰂛";
+          dnd-none = "󰪑";
+        };
+        return-type = "json";
+        exec = "makoctl list | jq -r '{\"text\": (.data[0] | length | tostring), \"alt\": (if .data[0] | length > 0 then \"notification\" else \"none\" end), \"class\": \"notification\"}'";
+        on-click = "makoctl dismiss";
+        on-click-right = "makoctl dismiss -a";
+        interval = 1;
+      };
     }];
 
     style = ''
@@ -117,7 +133,7 @@
         background: alpha(@surface0, 0.8);
       }
 
-      #clock, #battery, #network, #pulseaudio, #tray, #cpu, #memory, #bluetooth {
+      #clock, #battery, #network, #pulseaudio, #tray, #cpu, #memory, #bluetooth, #custom-notification {
         padding: 0 12px;
       }
 

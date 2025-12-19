@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   # Global catppuccin settings
@@ -18,4 +18,15 @@
   catppuccin.tmux.enable = true;
   catppuccin.ghostty.enable = true;
   catppuccin.waybar.enable = true;
+  catppuccin.yazi.enable = true;
+  catppuccin.hyprland.enable = true;
+  catppuccin.mako.enable = true;  # Notifications
+
+  # Qt theming
+  qt = {
+    enable = true;
+    platformTheme.name = "kvantum";
+    style.name = "kvantum";
+  };
+  catppuccin.kvantum.enable = true;
 }

@@ -31,6 +31,9 @@
 
     # Browser
     inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
+
+    # Apps
+    slack
   ];
 
   # Git

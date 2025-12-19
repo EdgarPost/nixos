@@ -3,12 +3,12 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null;  # Use NixOS module's package
+    package = null; # Use NixOS module's package
     portalPackage = null;
 
     settings = {
-      # Monitor config (auto-detect)
-      monitor = ",preferred,auto,1";
+      # Monitor config (prefer highest refresh rate)
+      monitor = ",highrr,auto,1";
 
       # Mod key (SUPER = Windows key)
       "$mod" = "SUPER";
@@ -19,7 +19,7 @@
 
       # Startup
       exec-once = [
-        "1password --silent"  # Start 1Password in background
+        "1password --silent" # Start 1Password in background
       ];
 
       # Basic keybindings
@@ -82,6 +82,10 @@
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        # Lid close: disable laptop screen and move workspaces to external
+        ", switch:on:Lid Switch, exec, hyprctl keyword monitor eDP-1,disable"
+        # Lid open: re-enable laptop screen
+        ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
       ];
 
       # Mouse bindings
@@ -90,13 +94,11 @@
         "$mod, mouse:273, resizewindow"
       ];
 
-      # Appearance
+      # Appearance (colors handled by catppuccin module)
       general = {
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        "col.active_border" = "rgba(89b4faee)";  # Catppuccin blue
-        "col.inactive_border" = "rgba(313244aa)";
       };
 
       decoration = {
@@ -139,9 +141,18 @@
       input = {
         kb_layout = "us";
         follow_mouse = 1;
+        sensitivity = 0; # Global default
+        accel_profile = "flat";
         touchpad = {
           natural_scroll = true;
         };
+      };
+
+      # Per-device sensitivity
+      device = {
+        name = "pixa3854:00-093a:0274-touchpad";  # Framework touchpad
+        sensitivity = 0.3;
+        accel_profile = "adaptive";  # Enable acceleration for trackpad
       };
 
     };
@@ -152,29 +163,41 @@
     '';
   };
 
-  # Foot terminal (simple, fast, works out of box)
-  programs.foot = {
+  # Rofi launcher with catppuccin
+  programs.rofi = {
+    enable = true;
+    package = pkgs.rofi;
+    extraConfig = {
+      modi = "drun,run,window";
+      show-icons = true;
+      display-drun = " Apps";
+      display-run = " Run";
+      display-window = " Windows";
+      drun-display-format = "{name}";
+    };
+  };
+  catppuccin.rofi.enable = true;
+
+  # Mako notifications (centered at top)
+  services.mako = {
     enable = true;
     settings = {
-      main = {
-        font = "JetBrainsMono Nerd Font:size=11";
-      };
-      colors = {
-        # Catppuccin Mocha
-        background = "1e1e2e";
-        foreground = "cdd6f4";
-      };
+      anchor = "top-center";
+      default-timeout = 5000;
+      width = 400;
+      margin = "10";
+      padding = "15";
+      border-radius = 8;
+      border-size = 2;
     };
   };
 
   # Essential Wayland packages
   home.packages = with pkgs; [
-    rofi              # App launcher
-    wl-clipboard      # Clipboard
-    grim              # Screenshots
-    slurp             # Screen region select
-    mako              # Notifications
-    brightnessctl     # Brightness control
-    playerctl         # Media control
+    wl-clipboard # Clipboard
+    grim # Screenshots
+    slurp # Screen region select
+    brightnessctl # Brightness control
+    playerctl # Media control
   ];
 }
