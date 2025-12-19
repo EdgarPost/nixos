@@ -31,7 +31,17 @@
   ...
 }:
 
+let
+  # Shared font configuration - used by terminal, waybar, etc.
+  font = {
+    family = "JetBrains Mono";
+    size = 14;
+  };
+in
 {
+  # Make font available to all imported modules
+  _module.args.font = font;
+
   # Import modular configurations
   # Each module handles one aspect (terminal, editor, WM, etc.)
   imports = [
@@ -79,9 +89,13 @@
       yq # YAML query (like jq for YAML)
       lazygit # TUI for git operations
 
+
       # Development
       nodejs_22 # JavaScript runtime
       claude-code # AI coding assistant
+
+      # Communication
+      signal-desktop # Encrypted messaging
 
       # Browser from flake input
       # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"

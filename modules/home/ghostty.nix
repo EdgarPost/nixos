@@ -17,7 +17,7 @@
 #
 # ============================================================================
 
-{ pkgs, ... }:
+{ pkgs, font, ... }:
 
 {
   programs.ghostty = {
@@ -28,8 +28,8 @@
       # =======================================================================
       # APPEARANCE
       # =======================================================================
-      font-family = "JetBrains Mono";  # Nerd Font with ligatures
-      font-size = 13;
+      font-family = font.family;
+      font-size = font.size;
       window-padding-x = 8;            # Pixels of padding inside window
       window-padding-y = 8;
 
