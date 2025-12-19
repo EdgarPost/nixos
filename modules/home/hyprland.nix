@@ -252,7 +252,8 @@
         blur_size = 8;
       }];
 
-      # No input-field = clean look, just type password blindly
+      # No input-field or label = completely clean look
+      label = [];  # Remove default keyboard layout indicator
     };
   };
 
