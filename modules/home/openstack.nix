@@ -12,7 +12,7 @@
 # Credentials are stored securely in 1Password and injected at runtime.
 #
 # SETUP:
-#   1. Create an item in 1Password (Pilosa vault) named "OpenStack" with fields:
+#   1. Create an item in 1Password (Pilosa vault) named "OpenStack-Leafcloud" with fields:
 #      - auth_url: https://create.leaf.cloud:5000
 #      - username: your-leafcloud-email
 #      - password: your-leafcloud-password
@@ -50,7 +50,7 @@
       function os-login --description "Load OpenStack credentials from 1Password"
           # 1Password item reference for Leafcloud
           # Format: op://Vault/Item/field
-          set -l op_item "op://Pilosa/OpenStack"
+          set -l op_item "op://Pilosa/OpenStack-Leafcloud"
 
           echo "Loading OpenStack credentials from 1Password..."
 
