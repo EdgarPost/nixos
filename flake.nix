@@ -203,5 +203,40 @@
           system = "x86_64-linux";
         };
       };
+
+      # ========================================================================
+      # HOMECONFIGURATIONS - Standalone Home Manager for non-NixOS servers
+      # ========================================================================
+      # Use on Ubuntu, Debian, or any Linux with Nix installed.
+      # Apply with: nix run home-manager/master -- switch --flake .#edgar@server
+      #
+      # 1PASSWORD: Set OP_SERVICE_ACCOUNT_TOKEN env var for op CLI access
+      homeConfigurations = {
+        # x86_64 servers (most cloud providers: AWS, GCP, Azure, etc.)
+        "edgar@server" = home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = { inherit inputs user hosts; };
+          modules = [
+            inputs.catppuccin.homeModules.catppuccin
+            ./home/server.nix
+          ];
+        };
+
+        # ARM servers (AWS Graviton, Oracle Cloud free tier, etc.)
+        "edgar@server-arm" = home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            system = "aarch64-linux";
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = { inherit inputs user hosts; };
+          modules = [
+            inputs.catppuccin.homeModules.catppuccin
+            ./home/server.nix
+          ];
+        };
+      };
     };
 }
