@@ -37,9 +37,10 @@
       # =======================================================================
       # STATUS BAR
       # =======================================================================
-      # Minimal status bar - catppuccin module provides the theme
-      # @catppuccin_status_session shows the session name
-      set -g status-right "#{E:@catppuccin_status_session}"
+      # Transparent status bar - shows windows only, no session name
+      set -g status-style "bg=default"
+      set -g status-left ""
+      set -g status-right ""
 
       # =======================================================================
       # PANE SPLITTING
