@@ -48,8 +48,8 @@ in
 
       # Define variables for use throughout config
       # Similar to shell variables, but Hyprland-specific
-      "$mod" = "SUPER";           # Windows/Super key as modifier
-      "$terminal" = "ghostty";    # Default terminal emulator
+      "$mod" = "SUPER"; # Windows/Super key as modifier
+      "$terminal" = "ghostty"; # Default terminal emulator
       "$menu" = "rofi -show drun"; # Application launcher
 
       # =======================================================================
@@ -71,9 +71,10 @@ in
         # CRITICAL: Update DBus environment so portals and apps can access Wayland
         # This MUST run first, before any apps that depend on DBus/portals
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "1password --silent"  # Start 1Password daemon for SSH agent
-        "waybar"              # Status bar
-        "swww-daemon"         # Wallpaper daemon (supports animated transitions)
+        "wl-paste --watch cliphist store" # Clipboard history daemon
+        "1password --silent" # Start 1Password daemon for SSH agent
+        "waybar" # Status bar
+        "swww-daemon" # Wallpaper daemon (supports animated transitions)
         # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
         # First set Catppuccin Mocha crust color, then transition to wallpaper
         "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
@@ -92,6 +93,7 @@ in
         "$mod, M, exit"
         "$mod, V, togglefloating"
         "$mod, F, fullscreen"
+        "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
 
         # Move focus
         "$mod, H, movefocus, l"
@@ -126,8 +128,15 @@ in
         ", XF86AudioStop, exec, playerctl stop"
 
         # Lock and sleep
-        "$mod, Escape, exec, hyprlock"                 # Lock screen
-        "$mod SHIFT, Escape, exec, systemctl suspend"  # Sleep/suspend
+        "$mod, Escape, exec, hyprlock" # Lock screen
+        "$mod SHIFT, Escape, exec, systemctl suspend" # Sleep/suspend
+
+        # Screenshots (to clipboard)
+        ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
+        "SHIFT, Print, exec, grim - | wl-copy" # Full screen
+
+        # Clipboard history
+        "CTRL SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
       ];
 
       # =======================================================================
@@ -181,7 +190,7 @@ in
         gaps_in = 15;
         gaps_out = 30;
         border_size = 2;
-        "col.inactive_border" = "rgba(00000000)";  # Transparent - no border on inactive
+        "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
       };
 
       decoration = {
@@ -194,7 +203,7 @@ in
           size = 8;
           passes = 3;
           new_optimizations = true;
-          xray = false;  # Blur desktop behind floating windows, not window below
+          xray = false; # Blur desktop behind floating windows, not window below
           noise = 0.01;
           contrast = 1.0;
           brightness = 1.0;
@@ -234,7 +243,7 @@ in
       # MISC SETTINGS
       # =======================================================================
       misc = {
-        focus_on_activate = true;  # Auto-focus windows when they request attention (e.g. browser from terminal)
+        focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
       };
@@ -244,23 +253,23 @@ in
       # =======================================================================
       input = {
         kb_layout = "us";
-        follow_mouse = 1;      # Focus follows mouse
-        sensitivity = 0;       # 0 = no modification to input speed
+        follow_mouse = 1; # Focus follows mouse
+        sensitivity = 0; # 0 = no modification to input speed
         accel_profile = "flat"; # No acceleration (1:1 mouse movement)
         touchpad = {
-          natural_scroll = true;  # Two-finger scroll direction (like macOS)
+          natural_scroll = true; # Two-finger scroll direction (like macOS)
         };
       };
 
       # Per-device input settings
       # Find device names with: hyprctl devices
       device = {
-        name = "pixa3854:00-093a:0274-touchpad";  # Framework's Pixart touchpad
-        sensitivity = 0.3;        # Higher sensitivity for trackpad
+        name = "pixa3854:00-093a:0274-touchpad"; # Framework's Pixart touchpad
+        sensitivity = 0.3; # Higher sensitivity for trackpad
         accel_profile = "adaptive"; # Enable acceleration for trackpad
       };
 
-    };  # End of settings
+    }; # End of settings
 
     # =======================================================================
     # EXTRA CONFIGURATION
@@ -284,15 +293,17 @@ in
         hide_cursor = true;
       };
 
-      background = [{
-        monitor = "";
-        path = "screenshot";  # Use screenshot of current screen
-        blur_passes = 3;
-        blur_size = 8;
-      }];
+      background = [
+        {
+          monitor = "";
+          path = "screenshot"; # Use screenshot of current screen
+          blur_passes = 3;
+          blur_size = 8;
+        }
+      ];
 
       # No input-field or label = completely clean look
-      label = [];  # Remove default keyboard layout indicator
+      label = [ ]; # Remove default keyboard layout indicator
     };
   };
 
@@ -346,11 +357,12 @@ in
   # ==========================================================================
   # Essential tools for a functional Wayland desktop
   home.packages = with pkgs; [
-    wl-clipboard   # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
-    grim           # Screenshots: grim -g "$(slurp)" screenshot.png
-    slurp          # Region selector (used with grim for area screenshots)
-    brightnessctl  # Brightness: brightnessctl set 50%
-    playerctl      # Media control: playerctl play-pause, next, previous
-    swww           # Wallpaper daemon: swww img ~/wallpaper.png
+    wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
+    cliphist # Clipboard history manager (stores history, pairs with rofi)
+    grim # Screenshots: grim -g "$(slurp)" screenshot.png
+    slurp # Region selector (used with grim for area screenshots)
+    brightnessctl # Brightness: brightnessctl set 50%
+    playerctl # Media control: playerctl play-pause, next, previous
+    swww # Wallpaper daemon: swww img ~/wallpaper.png
   ];
 }

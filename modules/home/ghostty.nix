@@ -39,6 +39,7 @@
       # =======================================================================
       shell-integration = "fish";      # Enable Fish-specific features
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
+      copy-on-select = "clipboard";    # Auto-copy selections to clipboard
 
       # =======================================================================
       # CURSOR - Custom shader for macOS-like cursor smear effect

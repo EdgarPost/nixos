@@ -35,6 +35,14 @@
 
     extraConfig = ''
       # =======================================================================
+      # CLIPBOARD - Copy to system clipboard via OSC 52
+      # =======================================================================
+      # Ghostty handles OSC 52 and puts text in Wayland clipboard
+      set -g set-clipboard on
+      # When mouse-selecting text, auto-copy to clipboard and stay in copy mode
+      bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel
+
+      # =======================================================================
       # STATUS BAR
       # =======================================================================
       # Transparent status bar - shows windows only, no session name
