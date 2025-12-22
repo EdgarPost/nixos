@@ -69,7 +69,7 @@
     gc = {
       automatic = true;
       dates = "daily";                    # Run daily (lightweight operation)
-      options = "--delete-generations +5"; # Always keep last 5 generations
+      options = "--delete-older-than 30d"; # Delete generations older than 30 days
     };
   };
 
