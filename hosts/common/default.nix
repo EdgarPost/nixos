@@ -68,8 +68,8 @@
     # rollback to any previous generation. GC removes unreferenced packages.
     gc = {
       automatic = true;
-      dates = "weekly";                    # systemd calendar format
-      options = "--delete-older-than 7d";  # Keep 7 days of generations
+      dates = "daily";                    # Run daily (lightweight operation)
+      options = "--delete-generations +5"; # Always keep last 5 generations
     };
   };
 
