@@ -140,6 +140,15 @@ in
       gpg.format = "ssh";
       user.signingKey = "~/.ssh/id_ed25519.pub";
       commit.gpgSign = false; # Enable after SSH key is set up
+
+      # Use SSH instead of HTTPS for common hosts
+      url."git@github.com:".insteadOf = "https://github.com/";
+      url."git@gitlab.com:".insteadOf = "https://gitlab.com/";
+      url."git@bitbucket.org:".insteadOf = "https://bitbucket.org/";
+      url."git@ssh.dev.azure.com:v3/".insteadOf = "https://dev.azure.com/";
+
+      # Include private git config from synced ~/Code directory
+      include.path = "~/Code/gitconfig";
     };
   };
 
