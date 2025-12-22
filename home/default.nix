@@ -153,6 +153,12 @@ in
     enable = true;
     interactiveShellInit = ''
       set fish_greeting  # Disable "Welcome to fish" message
+
+      # ghq + fzf: fuzzy cd to repo
+      function repo
+        set -l dir (ghq list -p | fzf)
+        and cd $dir
+      end
     '';
 
     # Shell aliases - shortcuts for common commands
