@@ -136,7 +136,7 @@ in
         "SHIFT, Print, exec, grim - | wl-copy" # Full screen
 
         # Clipboard history
-        "CTRL SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
+        #"CTRL SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
       ];
 
       # =======================================================================
