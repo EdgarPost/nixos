@@ -90,6 +90,7 @@ in
       yq # YAML query (like jq for YAML)
       lazygit # TUI for git operations
       impala # WiFi management TUI
+      ghq # Git repository manager (ghq get, ghq list)
 
 
       # Development
@@ -131,6 +132,9 @@ in
       push.autoSetupRemote = true; # Auto-create upstream on first push
       pull.rebase = true; # Rebase instead of merge on pull
 
+      # ghq repository manager
+      ghq.root = "~/Code";
+
       # SSH key signing (alternative to GPG)
       # Git can sign commits with your SSH key instead of GPG
       gpg.format = "ssh";
@@ -164,6 +168,8 @@ in
       gs = "git status";
       gc = "git commit";
       gp = "git push";
+      # ghq bootstrap - clone all repos from config
+      ghq-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
     };
   };
 
