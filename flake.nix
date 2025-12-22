@@ -15,9 +15,9 @@
 # the same system on any machine, at any time.
 #
 # REBUILDING YOUR SYSTEM:
-#   sudo nixos-rebuild switch --flake .#framework   # Apply config
-#   sudo nixos-rebuild test --flake .#framework     # Test without making default
-#   sudo nixos-rebuild boot --flake .#framework     # Apply on next boot
+#   sudo nixos-rebuild switch --flake .#framework-laptop   # Apply config
+#   sudo nixos-rebuild test --flake .#framework-laptop     # Test without making default
+#   sudo nixos-rebuild boot --flake .#framework-laptop     # Apply on next boot
 #   nix flake update                                # Update all inputs (like npm update)
 #   nix flake lock --update-input nixpkgs           # Update just nixpkgs
 #
@@ -198,8 +198,8 @@
 
         # Primary machine: Framework laptop
         # x86_64-linux = Intel/AMD 64-bit
-        framework = mkSystem {
-          hostname = "framework";
+        framework-laptop = mkSystem {
+          hostname = "framework-laptop";
           system = "x86_64-linux";
         };
       };

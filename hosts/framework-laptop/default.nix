@@ -41,7 +41,7 @@
   services.syncthing.paraFolders = true;
 
   # Machine identity on the network
-  networking.hostName = "framework";
+  networking.hostName = "edgar-framework-laptop";
 
   # ==========================================================================
   # BOOTLOADER

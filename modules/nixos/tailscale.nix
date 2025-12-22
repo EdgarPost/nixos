@@ -10,7 +10,7 @@
 #   - Connect to home machines from anywhere
 #   - Access Roon server remotely
 #   - SSH to any machine via Tailscale IP
-#   - MagicDNS: access machines by hostname (framework.tailnet-name.ts.net)
+#   - MagicDNS: access machines by hostname (edgar-framework-laptop.tailnet-name.ts.net)
 #
 # POST-INSTALL:
 #   sudo tailscale up    # Authenticate via browser
