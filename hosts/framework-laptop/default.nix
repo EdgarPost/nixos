@@ -51,7 +51,8 @@
   # Alternative: GRUB for legacy BIOS or dual-boot scenarios
 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;  # Allow UEFI variable writes
+  boot.loader.systemd-boot.configurationLimit = 5;  # Only show 5 generations in boot menu
+  boot.loader.efi.canTouchEfiVariables = true;      # Allow UEFI variable writes
 
   # ==========================================================================
   # FRAMEWORK-SPECIFIC HARDWARE

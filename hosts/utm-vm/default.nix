@@ -11,6 +11,7 @@
 
   # Bootloader
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;  # Only show 5 generations
   boot.loader.efi.canTouchEfiVariables = true;
 
   # VM-specific settings
