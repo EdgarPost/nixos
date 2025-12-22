@@ -35,6 +35,7 @@
 
     # Framework-specific services
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
+    ../../modules/nixos/syncthing.nix # File sync
   ];
 
   # Machine identity on the network

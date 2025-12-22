@@ -175,7 +175,7 @@ in
       gc = "git commit";
       gp = "git push";
       # ghq bootstrap - clone all repos from config
-      ghq-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
+      repo-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
     };
   };
 
