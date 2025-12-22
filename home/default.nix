@@ -146,10 +146,10 @@ in
       url."git@gitlab.com:".insteadOf = "https://gitlab.com/";
       url."git@bitbucket.org:".insteadOf = "https://bitbucket.org/";
       url."git@ssh.dev.azure.com:v3/".insteadOf = "https://dev.azure.com/";
-
-      # Include private git config from synced ~/Code directory
-      include.path = "~/Code/gitconfig";
     };
+
+    # Include private git config AFTER main settings (for per-directory overrides)
+    includes = [{ path = "~/Code/gitconfig"; }];
   };
 
   # ==========================================================================
