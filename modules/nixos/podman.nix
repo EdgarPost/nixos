@@ -32,10 +32,6 @@
     # Allows running `docker` commands that actually use podman
     dockerCompat = true;
 
-    # Enable Docker Compose compatibility via `podman compose`
-    # Uses podman's native compose implementation
-    dockerSocket.enable = true;
-
     # Default OCI runtime (crun is faster than runc, written in C)
     defaultNetwork.settings.dns_enabled = true;
   };

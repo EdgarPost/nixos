@@ -50,20 +50,40 @@
     k9s              # Terminal UI for Kubernetes
   ];
 
-  # Create user-accessible kubeconfig on system activation
+  # Create user-accessible kubeconfig after k3s starts
   # K3s config is root-owned; this copies it with user permissions
-  system.activationScripts.k3s-kubeconfig = lib.stringAfter [ "users" ] ''
-    if [ -f /etc/rancher/k3s/k3s.yaml ]; then
-      # Create .kube directory with correct ownership
-      mkdir -p /home/${user.name}/.kube
-      chown ${user.name}:users /home/${user.name}/.kube
-      chmod 700 /home/${user.name}/.kube
+  # Using a systemd service (not activation script) to avoid race condition
+  systemd.services.k3s-kubeconfig = {
+    description = "Copy k3s kubeconfig for user access";
+    after = [ "k3s.service" ];
+    wants = [ "k3s.service" ];
+    wantedBy = [ "multi-user.target" ];
 
-      # Copy and rename context from "default" to "k3s-local"
-      ${pkgs.gnused}/bin/sed 's/: default/: k3s-local/g' /etc/rancher/k3s/k3s.yaml \
-        > /home/${user.name}/.kube/k3s.yaml
-      chown ${user.name}:users /home/${user.name}/.kube/k3s.yaml
-      chmod 600 /home/${user.name}/.kube/k3s.yaml
-    fi
-  '';
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+
+    script = ''
+      # Wait for k3s to generate the config file
+      timeout=60
+      while [ ! -f /etc/rancher/k3s/k3s.yaml ] && [ $timeout -gt 0 ]; do
+        sleep 1
+        timeout=$((timeout - 1))
+      done
+
+      if [ -f /etc/rancher/k3s/k3s.yaml ]; then
+        # Create .kube directory with correct ownership
+        mkdir -p /home/${user.name}/.kube
+        chown ${user.name}:users /home/${user.name}/.kube
+        chmod 700 /home/${user.name}/.kube
+
+        # Copy and rename context from "default" to "k3s-local"
+        ${pkgs.gnused}/bin/sed 's/: default/: k3s-local/g' /etc/rancher/k3s/k3s.yaml \
+          > /home/${user.name}/.kube/k3s.yaml
+        chown ${user.name}:users /home/${user.name}/.kube/k3s.yaml
+        chmod 600 /home/${user.name}/.kube/k3s.yaml
+      fi
+    '';
+  };
 }

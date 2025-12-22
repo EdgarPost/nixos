@@ -54,12 +54,29 @@
     # Actions: Read, Edit, Bash (execute)
     permissions = {
       deny = [
-        "Edit ~/.ssh/**"              # SSH keys and config
-        "Edit ~/.gnupg/**"            # GPG keys
-        "Edit ~/.aws/**"              # AWS credentials
-        "Edit ~/.config/1Password/**" # 1Password config
-        "Read ~/.ssh/id_*"            # Private key contents
-        "Read ~/.gnupg/**"            # GPG secret keys
+        # SSH keys and config
+        "Read ~/.ssh/**"
+        "Edit ~/.ssh/**"
+        "Bash cat ~/.ssh/*"
+        "Bash head ~/.ssh/*"
+        "Bash tail ~/.ssh/*"
+        "Bash less ~/.ssh/*"
+        "Bash more ~/.ssh/*"
+        # GPG keys
+        "Read ~/.gnupg/**"
+        "Edit ~/.gnupg/**"
+        # AWS credentials
+        "Read ~/.aws/**"
+        "Edit ~/.aws/**"
+        # 1Password config
+        "Read ~/.config/1Password/**"
+        "Edit ~/.config/1Password/**"
+        # Kubernetes configs (contain auth tokens)
+        "Read ~/.kube/**"
+        "Edit ~/.kube/**"
+        # Gardener configs
+        "Read ~/.garden/**"
+        "Edit ~/.garden/**"
       ];
     };
   };

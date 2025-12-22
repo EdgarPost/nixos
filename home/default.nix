@@ -134,11 +134,9 @@ in
       # ghq repository manager
       ghq.root = "~/Code";
 
-      # SSH key signing (alternative to GPG)
-      # Git can sign commits with your SSH key instead of GPG
-      gpg.format = "ssh";
-      user.signingKey = "~/.ssh/id_ed25519.pub";
-      commit.gpgSign = false; # Enable after SSH key is set up
+      # Commit signing disabled (no local key files with 1Password SSH agent)
+      # To enable: export public key from 1Password and configure signing
+      commit.gpgSign = false;
 
       # Use SSH instead of HTTPS for common hosts
       url."git@github.com:".insteadOf = "https://github.com/";

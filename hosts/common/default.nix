@@ -69,7 +69,7 @@
     gc = {
       automatic = true;
       dates = "daily";                    # Run daily (lightweight operation)
-      options = "--delete-older-than 30d"; # Delete generations older than 30 days
+      options = "--delete-older-than 14d"; # Delete generations older than 14 days
     };
   };
 
@@ -87,6 +87,9 @@
   # NetworkManager: The standard Linux network configuration tool
   # Provides nmcli, nmtui, and integrates with desktop applets
   networking.networkmanager.enable = true;
+
+  # Explicit firewall enable (NixOS default, but explicit is better)
+  networking.firewall.enable = true;
 
   # ==========================================================================
   # SYSTEM PACKAGES
@@ -125,6 +128,13 @@
       PasswordAuthentication = false;  # SSH keys only (more secure)
       PermitRootLogin = "no";          # Force normal user + sudo
     };
+  };
+
+  # Fail2ban: Protect SSH from brute force attacks
+  services.fail2ban = {
+    enable = true;
+    maxretry = 5;
+    bantime = "1h";
   };
 
   # ==========================================================================
