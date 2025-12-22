@@ -35,7 +35,11 @@
     ../../modules/nixos/podman.nix     # Container runtime
     ../../modules/nixos/k3s.nix        # Local Kubernetes cluster
     ../../modules/nixos/tailscale.nix  # Mesh VPN
+    ../../modules/nixos/syncthing.nix  # File sync (Code folder on all hosts)
   ];
+
+  # Syncthing - Code folder sync on all hosts (PARA folders per-host)
+  services.syncthing.enable = true;
 
   # ==========================================================================
   # NIX DAEMON SETTINGS

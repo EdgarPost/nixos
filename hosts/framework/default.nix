@@ -35,8 +35,10 @@
 
     # Framework-specific services
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
-    ../../modules/nixos/syncthing.nix # File sync
   ];
+
+  # Syncthing - full PARA sync on this machine
+  services.syncthing.paraFolders = true;
 
   # Machine identity on the network
   networking.hostName = "framework";
