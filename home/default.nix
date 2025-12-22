@@ -257,8 +257,14 @@ in
     enable = true;
     enableDefaultConfig = false;
     matchBlocks = {
+      "*" = {
+        extraOptions = {
+          IdentityAgent = "~/.1password/agent.sock";
+        };
+      };
       "pbstation" = {
         hostname = "pbstation";
+        forwardAgent = true;
         setEnv = {
           TERM = "xterm-256color";  # Synology lacks tmux/ghostty terminfo
         };
