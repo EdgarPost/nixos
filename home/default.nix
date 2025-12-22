@@ -92,7 +92,6 @@ in
       impala # WiFi management TUI
       ghq # Git repository manager (ghq get, ghq list)
 
-
       # Development
       nodejs_22 # JavaScript runtime
       claude-code # AI coding assistant
@@ -149,7 +148,7 @@ in
     };
 
     # Include private git config AFTER main settings (for per-directory overrides)
-    includes = [{ path = "~/Code/gitconfig"; }];
+    includes = [ { path = "~/Code/gitconfig"; } ];
   };
 
   # ==========================================================================
@@ -185,6 +184,9 @@ in
       gp = "git push";
       # ghq bootstrap - clone all repos from config
       repo-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
+      # claude code
+      c = "claude";
+      cc = "claude --continue";
     };
   };
 
@@ -204,14 +206,24 @@ in
         disabled = false;
         # Show context and namespace
         format = "[$symbol$context( \\($namespace\\))]($style) ";
-        symbol = "󱃾 ";  # Kubernetes helm icon (nerd font)
+        symbol = "󱃾 "; # Kubernetes helm icon (nerd font)
         style = "cyan";
 
         # Color-code contexts for safety (prod = red, local = green)
         contexts = [
-          { context_pattern = "k3s-local"; style = "green"; context_alias = "k3s"; }
-          { context_pattern = ".*prod.*"; style = "bold red"; }
-          { context_pattern = ".*acc.*"; style = "bold yellow"; }
+          {
+            context_pattern = "k3s-local";
+            style = "green";
+            context_alias = "k3s";
+          }
+          {
+            context_pattern = ".*prod.*";
+            style = "bold red";
+          }
+          {
+            context_pattern = ".*acc.*";
+            style = "bold yellow";
+          }
         ];
 
         # Only show when kubeconfig exists (kubie session active)
