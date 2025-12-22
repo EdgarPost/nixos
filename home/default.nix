@@ -162,9 +162,13 @@ in
     interactiveShellInit = ''
       set fish_greeting  # Disable "Welcome to fish" message
 
-      # ghq + fzf: fuzzy cd to repo
+      # ghq + fzf: fuzzy cd to repo (sorted by most recently modified files)
       function repo
-        set -l dir (ghq list -p | fzf)
+        set -l dir (ghq list -p | while read -l repo
+          set -l ts (find $repo -type f -not -path '*/.git/*' -printf '%T@\n' 2>/dev/null | sort -rn | head -1)
+          test -n "$ts"; or set ts 0
+          echo "$ts $repo"
+        end | sort -rn | cut -d' ' -f2- | fzf)
         and cd $dir
       end
     '';
@@ -244,6 +248,22 @@ in
     package = pkgs.apple-cursor; # macOS-style cursor for Linux
     size = 24;
     gtk.enable = true; # Apply to GTK applications too
+  };
+
+  # ==========================================================================
+  # SSH CONFIGURATION
+  # ==========================================================================
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    matchBlocks = {
+      "pbstation" = {
+        hostname = "pbstation";
+        setEnv = {
+          TERM = "xterm-256color";  # Synology lacks tmux/ghostty terminfo
+        };
+      };
+    };
   };
 
   # ==========================================================================

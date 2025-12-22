@@ -161,6 +161,7 @@
               # Ensures same package versions between system and user
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";  # Auto-backup conflicting files
 
               # Configure this user's home (${user.name} = string interpolation)
               home-manager.users.${user.name} = {

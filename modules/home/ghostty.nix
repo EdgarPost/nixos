@@ -37,6 +37,7 @@
       # =======================================================================
       # BEHAVIOR
       # =======================================================================
+      term = "xterm-256color";         # Compatibility for SSH to systems without ghostty terminfo
       shell-integration = "fish";      # Enable Fish-specific features
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
       copy-on-select = "clipboard";    # Auto-copy selections to clipboard
