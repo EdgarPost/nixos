@@ -39,13 +39,13 @@
         user = "greeter";  # Run greeter as unprivileged user
       };
 
-      # AUTO-LOGIN (optional)
-      # Uncomment to skip login screen entirely (less secure)
+      # AUTO-LOGIN
       # initial_session runs once on first boot, then default_session
-      # initial_session = {
-      #   command = "Hyprland";
-      #   user = user.name;
-      # };
+      # Safe with full disk encryption since password is required at boot
+      initial_session = {
+        command = "Hyprland";
+        user = user.name;
+      };
     };
   };
 }
