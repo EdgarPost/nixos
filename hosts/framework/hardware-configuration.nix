@@ -13,6 +13,10 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  boot.initrd.luks.devices."crypthome" = {
+    device = "/dev/disk/by-uuid/b10cb0d1-03aa-4db1-9607-46f87d292a5f";
+  };
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/1fdd3c15-2b79-43cc-a22b-65124f2af7cf";
       fsType = "ext4";
@@ -22,6 +26,11 @@
     { device = "/dev/disk/by-uuid/135B-7EDA";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+  fileSystems."/home" =
+    { device = "/dev/disk/by-uuid/a1095002-f602-49cc-befd-62b8cbb4877c";
+      fsType = "ext4";
     };
 
   swapDevices = [ ];
