@@ -45,6 +45,7 @@ in
   # Import modular configurations
   # Each module handles one aspect (terminal, editor, WM, etc.)
   imports = [
+    ../modules/home/aliases.nix # Shared shell aliases (eza, git shortcuts)
     ../modules/home/hyprland.nix # Window manager + keybindings
     ../modules/home/ghostty.nix # Terminal emulator
     ../modules/home/atuin.nix # Shell history
@@ -173,17 +174,9 @@ in
 
     # Shell aliases - shortcuts for common commands
     # Unlike bash, Fish aliases are just functions under the hood
+    # Common aliases (ll, git shortcuts) are in modules/home/aliases.nix
     # Module-specific aliases live in their modules (nvim.nix, catppuccin.nix, etc.)
     shellAliases = {
-      # eza (ls replacement)
-      ll = "eza -la";
-      la = "eza -a";
-      # git shortcuts (config is above, aliases stay together)
-      lg = "lazygit";
-      g = "git";
-      gs = "git status";
-      gc = "git commit";
-      gp = "git push";
       # ghq bootstrap - clone all repos from config
       repo-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
       # claude code

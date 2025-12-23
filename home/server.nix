@@ -30,6 +30,7 @@
 {
   # Import CLI-only modules (no desktop/GUI modules)
   imports = [
+    ../modules/home/aliases.nix # Shared shell aliases (eza, git shortcuts)
     ../modules/home/atuin.nix # Shell history sync
     ../modules/home/catppuccin.nix # Theming for tmux/fish/bat/yazi
     ../modules/home/claude-code.nix # AI coding assistant config
@@ -97,15 +98,7 @@
       set fish_greeting  # Disable welcome message
     '';
 
-    shellAliases = {
-      ll = "eza -la";
-      la = "eza -a";
-      lg = "lazygit";
-      g = "git";
-      gs = "git status";
-      gc = "git commit";
-      gp = "git push";
-    };
+    # Common aliases (ll, git shortcuts) are in modules/home/aliases.nix
   };
 
   # ==========================================================================
