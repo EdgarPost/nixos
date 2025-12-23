@@ -62,6 +62,11 @@
   # After enabling, enroll fingerprint with: fprintd-enroll
   services.fprintd.enable = true;
 
+  # Enable fingerprint authentication for sudo, screen unlock, and 1Password
+  security.pam.services.sudo.fprintAuth = true;
+  security.pam.services.hyprlock.fprintAuth = true;
+  security.pam.services.polkit-1.fprintAuth = true;
+
   # Power management for better battery life
   # power-profiles-daemon: GUI-controllable profiles (power-saver, balanced, performance)
   # powerManagement: kernel-level power saving features
