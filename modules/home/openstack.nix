@@ -56,12 +56,18 @@
 
           # Read credentials from 1Password (will prompt for auth if needed)
           set -gx OS_AUTH_URL (op read "$op_item/auth_url")
+          or begin; echo "Failed to read auth_url from 1Password"; return 1; end
+
           set -gx OS_REGION_NAME (op read "$op_item/region_name" 2>/dev/null; or echo "europe-nl")
 
           # Application credential authentication (more secure than password)
           set -gx OS_AUTH_TYPE v3applicationcredential
+
           set -gx OS_APPLICATION_CREDENTIAL_ID (op read "$op_item/application_credential_id")
+          or begin; echo "Failed to read application_credential_id"; return 1; end
+
           set -gx OS_APPLICATION_CREDENTIAL_SECRET (op read "$op_item/application_credential_secret")
+          or begin; echo "Failed to read application_credential_secret"; return 1; end
 
           # OpenStack identity API version
           set -gx OS_IDENTITY_API_VERSION 3
