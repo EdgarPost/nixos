@@ -113,7 +113,7 @@
       # ========== Network Hosts ==========
       # Hostnames of other machines on the network (resolved via Tailscale/mDNS)
       hosts = {
-        pbstation = "pbstation";  # Synology NAS (Roon Core)
+        pbstation = "192.168.2.10";  # Synology NAS (Roon Core) - static LAN IP
       };
 
       # ========== Helper Function ==========
