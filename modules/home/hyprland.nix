@@ -135,8 +135,9 @@ in
         ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
         "SHIFT, Print, exec, grim - | wl-copy" # Full screen
 
-        # Clipboard history
-        #"CTRL SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
+        # Clipboard history picker (SUPER+SHIFT+V)
+        # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
+        "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
       ];
 
       # =======================================================================
@@ -263,8 +264,9 @@ in
 
       # Per-device input settings
       # Find device names with: hyprctl devices
+      # The name must match exactly (case-sensitive, including colons)
       device = {
-        name = "pixa3854:00-093a:0274-touchpad"; # Framework's Pixart touchpad
+        name = "pixa3854:00-093a:0274-touchpad"; # Framework 12th gen Pixart touchpad
         sensitivity = 0.3; # Higher sensitivity for trackpad
         accel_profile = "adaptive"; # Enable acceleration for trackpad
       };
@@ -359,6 +361,7 @@ in
   home.packages = with pkgs; [
     wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
     cliphist # Clipboard history manager (stores history, pairs with rofi)
+    wtype # Wayland keyboard input simulator (for auto-paste after clipboard selection)
     grim # Screenshots: grim -g "$(slurp)" screenshot.png
     slurp # Region selector (used with grim for area screenshots)
     brightnessctl # Brightness: brightnessctl set 50%
