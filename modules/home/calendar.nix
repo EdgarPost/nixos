@@ -42,12 +42,11 @@ let
   contactsDir = "${config.xdg.dataHome}/contacts";
 
   # Helper scripts for 1Password credential fetching
-  # Uses system `op` wrapper (/run/wrappers/bin/op) which has desktop app integration
   getFastmailUser = pkgs.writeShellScript "get-fastmail-user" ''
-    /run/wrappers/bin/op read "op://Personal/FastMail/username"
+    op read "op://Personal/FastMail/username"
   '';
   getFastmailPass = pkgs.writeShellScript "get-fastmail-pass" ''
-    /run/wrappers/bin/op read "op://Personal/FastMail/app-password"
+    op read "op://Personal/FastMail/app-password"
   '';
 
   # Notification script for upcoming events
