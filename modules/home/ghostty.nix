@@ -29,7 +29,7 @@
       # APPEARANCE
       # =======================================================================
       font-family = font.family;
-      font-size = font.size;
+      font-size = font.size - 1;  # Slightly smaller than global default
       window-padding-x = 8;            # Pixels of padding inside window
       window-padding-y = 8;
       background-opacity = 0.9;        # Subtle transparency (blurred by Hyprland)
@@ -41,6 +41,13 @@
       shell-integration = "fish";      # Enable Fish-specific features
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
       copy-on-select = "clipboard";    # Auto-copy selections to clipboard
+
+      # =======================================================================
+      # KEYBINDINGS
+      # =======================================================================
+      # CTRL+V for paste (standard, works with Hyprland clipboard history)
+      # CTRL+SHIFT+V is captured by Hyprland for clipboard history picker
+      keybind = "ctrl+v=paste:clipboard";
 
       # =======================================================================
       # CURSOR - Custom shader for macOS-like cursor smear effect
@@ -69,9 +76,4 @@
   # The cursor smear shader creates a trailing effect when the cursor moves
   # Symlink the GLSL shader to Ghostty's config directory
   xdg.configFile."ghostty/shaders/cursor-smear.glsl".source = ./ghostty/cursor-smear.glsl;
-
-  # Ensure the font is available (redundant with system fonts, but explicit)
-  home.packages = with pkgs; [
-    jetbrains-mono
-  ];
 }
