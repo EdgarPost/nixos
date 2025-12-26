@@ -59,6 +59,7 @@ in
     ../modules/home/openstack.nix # OpenStack CLI
     ../modules/home/gardener.nix # Gardener cluster management
     ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
+    ../modules/home/github.nix # GitHub CLI with 1Password
     # ../modules/home/calendar.nix # Calendar & contacts (vdirsyncer + khal + khard)
   ];
 
