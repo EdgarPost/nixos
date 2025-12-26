@@ -80,6 +80,7 @@
     HandleLidSwitch = "suspend";              # Suspend when lid closed (battery)
     HandleLidSwitchExternalPower = "suspend"; # Also suspend on AC power
     HandleLidSwitchDocked = "ignore";         # Keep running if external monitor
+    HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
   };
 
   # FIRMWARE UPDATES via fwupd

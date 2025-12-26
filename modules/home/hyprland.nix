@@ -44,7 +44,11 @@ in
       # "highrr" = prefer highest refresh rate available
       # "auto" = let Hyprland position the monitor
       # Use `hyprctl monitors` to see detected monitors
-      monitor = ",highrr,auto,1";
+      monitor = [
+        "DP-1,5120x2160@60,0x0,1"  # Dell U4025QW ultrawide
+        "eDP-1,preferred,5120x0,1"
+        ",preferred,auto,1"  # Fallback for any other monitors
+      ];
 
       # Define variables for use throughout config
       # Similar to shell variables, but Hyprland-specific
@@ -138,6 +142,10 @@ in
         # Clipboard history picker (SUPER+SHIFT+V)
         # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
         "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
+
+        # Power menu (triggered by power button or SUPER+P)
+        # Shows rofi menu with power options instead of immediate shutdown
+        ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
       ];
 
       # =======================================================================
