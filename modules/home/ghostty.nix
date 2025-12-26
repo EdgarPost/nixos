@@ -47,7 +47,7 @@
       # =======================================================================
       # CTRL+V for paste (standard, works with Hyprland clipboard history)
       # CTRL+SHIFT+V is captured by Hyprland for clipboard history picker
-      keybind = "ctrl+v=paste:clipboard";
+      keybind = "ctrl+v=paste_from_clipboard";
 
       # =======================================================================
       # CURSOR - Custom shader for macOS-like cursor smear effect
