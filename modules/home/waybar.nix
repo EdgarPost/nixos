@@ -136,6 +136,7 @@ in
       };
 
       network = {
+        interface = "wl*";
         format-wifi = "󰖩";
         format-ethernet = "󰈀";
         format-disconnected = "󰖪";

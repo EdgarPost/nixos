@@ -143,4 +143,13 @@
 
   # Require password for sudo (wheel group can sudo, but must authenticate)
   security.sudo.wheelNeedsPassword = true;
+
+  # ==========================================================================
+  # COMPATIBILITY
+  # ==========================================================================
+
+  # nix-ld: Run dynamically linked executables (uv, npm global tools, etc.)
+  # NixOS can't run standard Linux binaries by default - this provides the
+  # dynamic linker and common libraries they expect.
+  programs.nix-ld.enable = true;
 }
