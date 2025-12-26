@@ -70,6 +70,12 @@
     # Unified theming across applications
     # One config → consistent colors in terminal, editor, status bar, etc.
     catppuccin.url = "github:catppuccin/nix";
+
+    # Roon CLI - control Roon music player from terminal
+    roon-cli = {
+      url = "github:EdgarPost/roon-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ==========================================================================
@@ -91,6 +97,7 @@
       home-manager,
       nixos-hardware,
       zen-browser,
+      roon-cli,
       ...
     }@inputs:
 
@@ -168,6 +175,8 @@
                 imports = [
                   # Catppuccin theme module - adds catppuccin.* options
                   inputs.catppuccin.homeModules.catppuccin
+                  # Roon CLI - adds services.roon-cli options
+                  inputs.roon-cli.homeManagerModules.default
                   # Main home configuration
                   ./home
                 ];
