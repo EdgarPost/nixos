@@ -76,6 +76,12 @@
       url = "github:EdgarPost/roon-cli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # OpenCode - AI coding agent from SST
+    opencode = {
+      url = "github:sst/opencode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ==========================================================================
@@ -98,6 +104,7 @@
       nixos-hardware,
       zen-browser,
       roon-cli,
+      opencode,
       ...
     }@inputs:
 

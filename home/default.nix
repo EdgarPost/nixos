@@ -98,7 +98,7 @@ in
       # Development
       nodejs_22 # JavaScript runtime
       claude-code # AI coding assistant
-      opencode # AI coding agent (Mistral, etc.)
+      inputs.opencode.packages.${stdenv.hostPlatform.system}.default # AI coding agent (latest from GitHub)
 
       # Communication
       signal-desktop # Encrypted messaging
