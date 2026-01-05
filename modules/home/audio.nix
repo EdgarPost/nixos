@@ -110,9 +110,17 @@ let
     fi
   '';
 
-  # Keep old name for keybinding compatibility
+  # Main audio menu - choose mode first
   audio-menu = pkgs.writeShellScriptBin "audio-menu" ''
-    exec ${audio-select}/bin/audio-select
+    mode=$(echo -e "Output only (HQ)\nOutput + Input" | rofi -dmenu -p "Audio Mode" -i)
+    case "$mode" in
+      "Output only (HQ)")
+        exec ${audio-output}/bin/audio-output
+        ;;
+      "Output + Input")
+        exec ${audio-select}/bin/audio-select
+        ;;
+    esac
   '';
 
 in
