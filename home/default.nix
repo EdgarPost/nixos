@@ -61,6 +61,7 @@ in
     ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
     ../modules/home/github.nix # GitHub CLI with 1Password
     ../modules/home/audio.nix # Audio profile switching (headset, meeting, mobile, analog)
+    ../modules/home/roon-cli.nix # Roon CLI for terminal music control
     # ../modules/home/calendar.nix # Calendar & contacts (vdirsyncer + khal + khard)
   ];
 
