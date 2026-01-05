@@ -35,6 +35,7 @@
 
     # Framework-specific services
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
+    ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
   ];
 
   # Syncthing - full PARA sync on this machine
