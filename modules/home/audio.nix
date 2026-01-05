@@ -34,7 +34,7 @@ let
     get_sinks() { ${getSinks} }
     get_sources() { ${getSources} }
 
-    # Build combo menu: "Output → Input"
+    # Build combo menu: "Out: X | In: Y"
     build_combos() {
       sinks=$(get_sinks)
       sources=$(get_sources)
@@ -45,7 +45,7 @@ let
           source_name=$(echo "$source" | sed 's/^[0-9]*\.\s*//')
           sink_id=$(echo "$sink" | grep -oP '^\d+')
           source_id=$(echo "$source" | grep -oP '^\d+')
-          echo "$sink_id:$source_id:$sink_name → $source_name"
+          echo "$sink_id:$source_id:Out: $sink_name | In: $source_name"
         done <<< "$sources"
       done <<< "$sinks"
     }
