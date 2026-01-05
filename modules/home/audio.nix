@@ -144,7 +144,7 @@ in
       }
       {
         matches = [
-          { device.name = "~alsa_card.usb-Sennheiser_BTD_700*" }
+          { device.name = "~alsa_card.usb-*" }
         ]
         actions = {
           update-props = {

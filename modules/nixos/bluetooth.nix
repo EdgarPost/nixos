@@ -2,9 +2,8 @@
 # BLUETOOTH AUDIO CONFIGURATION
 # ============================================================================
 #
-# Enables Bluetooth with high-quality audio codec support for:
-# - Sennheiser HD 600 wireless (via BT700 USB adapter)
-# - Other Bluetooth audio devices
+# Enables Bluetooth with high-quality audio codec support for wireless
+# headphones, speakers, and other Bluetooth audio devices.
 #
 # Codecs enabled:
 # - SBC-XQ: High-quality SBC variant
