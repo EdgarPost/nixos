@@ -5,7 +5,7 @@
 # Select audio input/output combos from available devices.
 #
 # Commands:
-#   audio-select        Select output+input combo (wofi menu)
+#   audio-select        Select output+input combo (rofi menu)
 #   audio-output        Select output only
 #   audio-input         Select input only
 #
@@ -57,7 +57,7 @@ let
     fi
 
     # Show menu with just the names
-    choice=$(echo "$combos" | cut -d: -f3- | ${pkgs.wofi}/bin/wofi --dmenu -p "Audio" -i)
+    choice=$(echo "$combos" | cut -d: -f3- | rofi -dmenu -p "Audio" -i)
 
     if [ -n "$choice" ]; then
       # Find matching combo and extract IDs
@@ -82,7 +82,7 @@ let
       exit 1
     fi
 
-    choice=$(echo "$sinks" | ${pkgs.wofi}/bin/wofi --dmenu -p "Output" -i)
+    choice=$(echo "$sinks" | rofi -dmenu -p "Output" -i)
     if [ -n "$choice" ]; then
       sink_id=$(echo "$choice" | grep -oP '^\d+')
       wpctl set-default "$sink_id"
@@ -101,7 +101,7 @@ let
       exit 1
     fi
 
-    choice=$(echo "$sources" | ${pkgs.wofi}/bin/wofi --dmenu -p "Input" -i)
+    choice=$(echo "$sources" | rofi -dmenu -p "Input" -i)
     if [ -n "$choice" ]; then
       source_id=$(echo "$choice" | grep -oP '^\d+')
       wpctl set-default "$source_id"
