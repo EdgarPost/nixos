@@ -77,7 +77,7 @@ in
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "wl-paste --watch cliphist store" # Clipboard history daemon
         "1password --silent" # Start 1Password daemon for SSH agent
-        "waybar" # Status bar
+        # waybar is now managed by systemd (see waybar.nix)
         "swww-daemon" # Wallpaper daemon (supports animated transitions)
         # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
         # First set Catppuccin Mocha crust color, then transition to wallpaper

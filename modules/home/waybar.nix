@@ -65,7 +65,8 @@ in
 
   programs.waybar = {
     enable = true;
-    systemd.enable = false;  # Started by Hyprland exec-once instead
+    systemd.enable = true;  # Managed by systemd - restarts after rebuild/crash
+    systemd.target = "hyprland-session.target";  # Start with Hyprland
 
     # ========================================================================
     # WAYBAR CONFIGURATION (JSON)
