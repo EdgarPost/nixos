@@ -84,7 +84,12 @@ in
 
       modules-left = [ "hyprland/workspaces" ];
       modules-center = [ "custom/notification" "clock" ];
-      modules-right = [ "custom/cpu" "custom/memory" "custom/volume" "bluetooth" "network" "battery" "tray" ];
+      modules-right = [ "group/status" "tray" ];
+
+      "group/status" = {
+        orientation = "horizontal";
+        modules = [ "custom/cpu" "custom/memory" "custom/volume" "bluetooth" "network" "battery" ];
+      };
 
       "hyprland/workspaces" = {
         format = "{id}";
@@ -192,13 +197,33 @@ in
         color: @text;
       }
 
-      /* Island styling for center and right sections */
-      .modules-center,
-      .modules-right {
+      /* Island styling for center section */
+      .modules-center {
         background: alpha(@base, 0.9);
-        border-radius: 12px;
+        border-radius: 8px;
         margin: 0 15px;
         padding: 0 4px;
+      }
+
+      /* Right section is transparent - status group and tray are separate islands */
+      .modules-right {
+        background: transparent;
+      }
+
+      /* Status group island */
+      #status {
+        background: alpha(@base, 0.9);
+        border-radius: 8px;
+        padding: 0 4px;
+        margin-right: 8px;
+      }
+
+      /* Tray island */
+      #tray {
+        background: alpha(@base, 0.9);
+        border-radius: 8px;
+        padding: 0 12px;
+        margin-right: 15px;
       }
 
       /* Left section is transparent - workspaces are individual islands */
@@ -211,7 +236,7 @@ in
         background: alpha(@base, 0.9);
         padding: 0 12px;
         margin: 0 4px;
-        border-radius: 12px;
+        border-radius: 8px;
         border: none;
         color: @text;
       }
@@ -233,7 +258,7 @@ in
         background: @green;
       }
 
-      #clock, #battery, #network, #tray, #bluetooth, #custom-notification {
+      #clock, #battery, #network, #bluetooth, #custom-notification {
         padding: 0 12px;
       }
 
