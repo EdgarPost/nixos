@@ -18,6 +18,21 @@
         "type": "github"
       }
     },
+    "claude-code": {
+      "locked": {
+        "lastModified": 1767791825,
+        "narHash": "sha256-mYpcFycn0uf/XfkMHlr5syTzry1+QFVHAhX886IZ82M=",
+        "owner": "EdgarPost",
+        "repo": "claude-code",
+        "rev": "5aab5851041b0f7431b864f769c22cb27dbfdbdc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "EdgarPost",
+        "repo": "claude-code",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -148,6 +163,7 @@
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
+        "claude-code": "claude-code",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",

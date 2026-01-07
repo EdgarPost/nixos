@@ -82,6 +82,12 @@
       url = "github:sst/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Claude Code extensions - custom commands, agents, and skills
+    claude-code = {
+      url = "github:EdgarPost/claude-code";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ==========================================================================
@@ -105,6 +111,7 @@
       zen-browser,
       roon-cli,
       opencode,
+      claude-code,
       ...
     }@inputs:
 
@@ -184,6 +191,8 @@
                   inputs.catppuccin.homeModules.catppuccin
                   # Roon CLI - adds services.roon-cli options
                   inputs.roon-cli.homeManagerModules.default
+                  # Claude Code extensions - commands, agents, skills
+                  inputs.claude-code.homeManagerModules.default
                   # Main home configuration
                   ./home
                 ];
