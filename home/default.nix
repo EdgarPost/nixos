@@ -117,7 +117,16 @@ in
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
       slack # Only available for x86_64 (no aarch64 build)
+      teams-for-linux # Microsoft Teams client (community Electron wrapper)
     ];
+
+  # ==========================================================================
+  # MICROSOFT TEAMS CONFIGURATION
+  # ==========================================================================
+  # Spoof user agent to get full functionality (Microsoft limits Linux clients)
+  xdg.configFile."teams-for-linux/config.json".text = builtins.toJSON {
+    chromeUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
+  };
 
   # ==========================================================================
   # GIT CONFIGURATION
