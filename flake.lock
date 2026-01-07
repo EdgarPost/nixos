@@ -19,12 +19,17 @@
       }
     },
     "claude-code": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1767791825,
-        "narHash": "sha256-mYpcFycn0uf/XfkMHlr5syTzry1+QFVHAhX886IZ82M=",
+        "lastModified": 1767792315,
+        "narHash": "sha256-C72AP8nb7jAybi9y1mTuVPKlXvpr1KvWhGN9T2dOkIE=",
         "owner": "EdgarPost",
         "repo": "claude-code",
-        "rev": "5aab5851041b0f7431b864f769c22cb27dbfdbdc",
+        "rev": "f501d4030758f8bf71196da89dcd0ba8e82048ee",
         "type": "github"
       },
       "original": {
