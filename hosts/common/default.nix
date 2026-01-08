@@ -113,6 +113,11 @@
     tree      # Directory tree
     ripgrep   # Fast grep (rg)
     fd        # Fast find
+
+    # Spell checking
+    hunspell
+    hunspellDicts.nl_NL
+    hunspellDicts.en_US
   ];
 
   # ==========================================================================

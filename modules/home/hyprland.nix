@@ -45,8 +45,8 @@ in
       # "auto" = let Hyprland position the monitor
       # Use `hyprctl monitors` to see detected monitors
       monitor = [
-        "DP-1,5120x2160@60,0x0,1" # Dell U4025QW ultrawide
-        "eDP-1,preferred,5120x0,1"
+        "DP-1,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
+        "eDP-1,preferred,5120x0,1.5"
         ",preferred,auto,1" # Fallback for any other monitors
       ];
 
