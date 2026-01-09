@@ -35,6 +35,8 @@ in
     # Use the Hyprland package from NixOS module (avoid duplicate installations)
     package = null;
     portalPackage = null;
+    # Let systemd manage the session (creates hyprland-session.target for waybar)
+    systemd.enable = true;
 
     settings = {
       # =======================================================================
@@ -45,8 +47,8 @@ in
       # "auto" = let Hyprland position the monitor
       # Use `hyprctl monitors` to see detected monitors
       monitor = [
-        "DP-1,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
-        "eDP-1,preferred,5120x0,1.5"
+        "desc:Dell Inc. DELL U4025QW,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
+        "eDP-1,preferred,auto,1" # Built-in (auto-positioned next to external)
         ",preferred,auto,1" # Fallback for any other monitors
       ];
 
@@ -111,12 +113,17 @@ in
         "$mod SHIFT, K, movewindow, u"
         "$mod SHIFT, J, movewindow, d"
 
-        # Workspaces
+        # Workspaces (1-5 on laptop, 6-10 on external monitor)
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
         "$mod, 3, workspace, 3"
         "$mod, 4, workspace, 4"
         "$mod, 5, workspace, 5"
+        "$mod, 6, workspace, 6"
+        "$mod, 7, workspace, 7"
+        "$mod, 8, workspace, 8"
+        "$mod, 9, workspace, 9"
+        "$mod, 0, workspace, 10"
 
         # Move to workspace
         "$mod SHIFT, 1, movetoworkspace, 1"
@@ -124,6 +131,11 @@ in
         "$mod SHIFT, 3, movetoworkspace, 3"
         "$mod SHIFT, 4, movetoworkspace, 4"
         "$mod SHIFT, 5, movetoworkspace, 5"
+        "$mod SHIFT, 6, movetoworkspace, 6"
+        "$mod SHIFT, 7, movetoworkspace, 7"
+        "$mod SHIFT, 8, movetoworkspace, 8"
+        "$mod SHIFT, 9, movetoworkspace, 9"
+        "$mod SHIFT, 0, movetoworkspace, 10"
 
         # Media controls
         ", XF86AudioPlay, exec, playerctl play-pause"
@@ -177,8 +189,9 @@ in
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        # Lid close: disable laptop screen and move workspaces to external
-        ", switch:on:Lid Switch, exec, hyprctl keyword monitor eDP-1,disable"
+        # Lid close: move focus to external monitor, then disable laptop screen
+        # The sleep prevents a race condition that can cause monitor signal loss
+        ", switch:on:Lid Switch, exec, hyprctl dispatch focusmonitor 'desc:Dell Inc. DELL U4025QW' && sleep 0.5 && hyprctl keyword monitor eDP-1,disable"
         # Lid open: re-enable laptop screen
         ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
       ];
@@ -252,6 +265,24 @@ in
       };
 
       # =======================================================================
+      # WORKSPACE RULES
+      # =======================================================================
+      # Bind workspaces to specific monitors
+      # 1-5 on laptop (eDP-1), 6-10 on external (Dell ultrawide)
+      workspace = [
+        "1, monitor:eDP-1, default:true"
+        "2, monitor:eDP-1"
+        "3, monitor:eDP-1"
+        "4, monitor:eDP-1"
+        "5, monitor:eDP-1"
+        "6, monitor:desc:Dell Inc. DELL U4025QW, default:true"
+        "7, monitor:desc:Dell Inc. DELL U4025QW"
+        "8, monitor:desc:Dell Inc. DELL U4025QW"
+        "9, monitor:desc:Dell Inc. DELL U4025QW"
+        "10, monitor:desc:Dell Inc. DELL U4025QW"
+      ];
+
+      # =======================================================================
       # MISC SETTINGS
       # =======================================================================
       misc = {
@@ -276,11 +307,20 @@ in
       # Per-device input settings
       # Find device names with: hyprctl devices
       # The name must match exactly (case-sensitive, including colons)
-      device = {
-        name = "pixa3854:00-093a:0274-touchpad"; # Framework 12th gen Pixart touchpad
-        sensitivity = 0.3; # Higher sensitivity for trackpad
-        accel_profile = "adaptive"; # Enable acceleration for trackpad
-      };
+      device = [
+        {
+          name = "pixa3854:00-093a:0274-touchpad"; # Framework 12th gen Pixart touchpad
+          sensitivity = 0.3; # Higher sensitivity for trackpad
+          accel_profile = "adaptive"; # Enable acceleration for trackpad
+        }
+        {
+          # Logitech G502 - lower sensitivity and scroll speed
+          name = "logitech-g502-1";
+          sensitivity = -0.5; # Lower sensitivity (-1.0 to 1.0, negative = slower)
+          scroll_factor = 0.3; # Lower scroll speed (default 1.0)
+          accel_profile = "flat"; # No acceleration for mouse
+        }
+      ];
 
     }; # End of settings
 
