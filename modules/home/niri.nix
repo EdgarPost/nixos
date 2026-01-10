@@ -62,6 +62,7 @@ in
     workspace "browser"
     workspace "terminal"
     workspace "communication"
+    workspace "other"
 
     // =======================================================================
     // WINDOW RULES - assign apps to workspaces
@@ -176,22 +177,11 @@ in
         Mod+1 { focus-workspace "browser"; }
         Mod+2 { focus-workspace "terminal"; }
         Mod+3 { focus-workspace "communication"; }
+        Mod+4 { focus-workspace "other"; }
         Mod+Ctrl+1 { move-column-to-workspace "browser"; }
         Mod+Ctrl+2 { move-column-to-workspace "terminal"; }
         Mod+Ctrl+3 { move-column-to-workspace "communication"; }
-        // Dynamic workspaces
-        Mod+4 { focus-workspace 4; }
-        Mod+5 { focus-workspace 5; }
-        Mod+6 { focus-workspace 6; }
-        Mod+7 { focus-workspace 7; }
-        Mod+8 { focus-workspace 8; }
-        Mod+9 { focus-workspace 9; }
-        Mod+Ctrl+4 { move-column-to-workspace 4; }
-        Mod+Ctrl+5 { move-column-to-workspace 5; }
-        Mod+Ctrl+6 { move-column-to-workspace 6; }
-        Mod+Ctrl+7 { move-column-to-workspace 7; }
-        Mod+Ctrl+8 { move-column-to-workspace 8; }
-        Mod+Ctrl+9 { move-column-to-workspace 9; }
+        Mod+Ctrl+4 { move-column-to-workspace "other"; }
 
         // Scroll wheel
         Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
