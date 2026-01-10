@@ -27,10 +27,10 @@
     enableFishIntegration = false;  # Don't auto-start zellij in every shell
 
     settings = {
-      # Keybindings for session picker
       keybinds = {
         shared = {
-          "bind \"Ctrl p\"" = {
+          # Session picker - Alt+P opens floating pane with project selector
+          "bind \"Alt p\"" = {
             "Run \"zellij-picker\"" = {
               floating = true;
               close_on_exit = true;

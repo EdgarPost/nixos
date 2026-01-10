@@ -131,10 +131,14 @@ in
         # Session name from repo basename
         session_name=$(basename "$dir")
 
-        # Switch to session (creates if doesn't exist)
-        # Using zellij attach -c creates session if needed
-        # The -f (force) flag needed when running from within zellij
-        cd "$dir" && exec zellij attach -c "$session_name"
+        # Check if session exists
+        if zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
+          # Switch to existing session
+          zellij action go-to-session "$session_name"
+        else
+          # Create new session with cwd and switch to it
+          zellij action new-session --name "$session_name" --cwd "$dir"
+        fi
       '')
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
