@@ -111,6 +111,7 @@ in
         format = "{name}";
         on-click = "activate";
         all-outputs = false;  # Per-monitor workspaces (Niri default)
+        sort-by = "id";       # Sort by workspace id (declaration order)
       };
 
       clock = {
