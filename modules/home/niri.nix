@@ -57,9 +57,13 @@ in
         }
 
         touchpad {
+            tap
             natural-scroll
             accel-profile "adaptive"
         }
+
+        // Focus follows mouse
+        focus-follows-mouse
     }
 
     // =======================================================================
@@ -115,17 +119,25 @@ in
         Mod+Q { close-window; }
         Mod+Shift+E { quit; }
 
-        // Focus (arrow keys)
+        // Focus (arrow keys + HJKL)
         Mod+Left { focus-column-left; }
         Mod+Right { focus-column-right; }
         Mod+Up { focus-window-up; }
         Mod+Down { focus-window-down; }
+        Mod+H { focus-column-left; }
+        Mod+L { focus-column-right; }
+        Mod+K { focus-window-up; }
+        Mod+J { focus-window-down; }
 
-        // Move window
+        // Move window (arrow keys + HJKL)
         Mod+Shift+Left { move-column-left; }
         Mod+Shift+Right { move-column-right; }
         Mod+Shift+Up { move-window-up; }
         Mod+Shift+Down { move-window-down; }
+        Mod+Shift+H { move-column-left; }
+        Mod+Shift+L { move-column-right; }
+        Mod+Shift+K { move-window-up; }
+        Mod+Shift+J { move-window-down; }
 
         // Workspaces
         Mod+1 { focus-workspace 1; }
