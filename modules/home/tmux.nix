@@ -23,6 +23,9 @@
 { pkgs, ... }:
 
 {
+  # Zellij - modern terminal multiplexer alternative
+  programs.zellij.enable = true;
+
   programs.tmux = {
     enable = true;
     shell = "${pkgs.fish}/bin/fish";   # Use Fish as tmux shell
