@@ -89,11 +89,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Niri - scrollable tiling Wayland compositor with declarative config
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   # ==========================================================================
@@ -118,7 +113,6 @@
       roon-cli,
       opencode,
       claude-code,
-      niri,
       ...
     }@inputs:
 
@@ -179,9 +173,6 @@
             # Host-specific configuration (hardware, hostname, bootloader)
             # String interpolation: ${hostname} embeds variable in path
             ./hosts/${hostname}
-
-            # Niri compositor - system-level module
-            niri.nixosModules.niri
 
             # Integrate Home Manager as a NixOS module
             # Alternative: standalone home-manager (separate `home-manager switch`)

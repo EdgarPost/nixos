@@ -4,25 +4,22 @@
 #
 # SYSTEM VS HOME MANAGER SPLIT:
 # This module handles system-level Niri setup:
-#   - Enable the compositor
+#   - Enable the compositor (nixpkgs version)
 #   - XDG portals (desktop integration)
 #   - System-wide fonts
 #   - Polkit (privilege escalation dialogs)
 #   - PAM for swaylock
 #
 # User-level configuration (keybindings, appearance) is in:
-#   modules/home/niri.nix
+#   modules/home/niri.nix (config.kdl file)
 #
 # ============================================================================
 
 { config, pkgs, ... }:
 
 {
-  # Enable Niri Wayland compositor via niri-flake
-  # The flake module handles polkit agent setup
+  # Enable Niri Wayland compositor from nixpkgs
   programs.niri.enable = true;
-  # Use niri-unstable since niri-stable has build test failures
-  programs.niri.package = pkgs.niri-unstable;
 
   # ==========================================================================
   # XDG DESKTOP PORTALS
