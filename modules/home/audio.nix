@@ -129,6 +129,7 @@ in
     # Audio control tools
     pwvucontrol # Modern PipeWire volume control (better than pavucontrol)
     helvum      # Visual patchbay for complex audio routing
+    pasystray   # System tray applet for quick audio device switching
 
     # Device selection scripts
     audio-select
@@ -171,5 +172,46 @@ in
       node.stream.restore-props = false
       node.stream.restore-target = true
     }
+  '';
+
+  # WirePlumber: Prioritize Logitech C920 webcam over built-in camera
+  # Higher priority = preferred default when multiple cameras available
+  xdg.configFile."wireplumber/wireplumber.conf.d/53-prefer-c920-webcam.conf".text = ''
+    monitor.libcamera.rules = [
+      {
+        matches = [
+          { node.name = "~libcamera_device.*" }
+        ]
+        actions = {
+          update-props = {
+            node.priority.session = 1000
+          }
+        }
+      }
+    ]
+
+    monitor.v4l2.rules = [
+      {
+        matches = [
+          { node.name = "~v4l2_input.*C920*" }
+        ]
+        actions = {
+          update-props = {
+            node.priority.session = 2000
+            node.description = "Logitech C920"
+          }
+        }
+      }
+      {
+        matches = [
+          { device.product.name = "HD Pro Webcam C920" }
+        ]
+        actions = {
+          update-props = {
+            device.priority.session = 2000
+          }
+        }
+      }
+    ]
   '';
 }
