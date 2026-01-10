@@ -56,6 +56,9 @@ in
         default-column-width { proportion 0.5; }
     }
 
+    // Remove client-side decorations (title bars)
+    prefer-no-csd
+
     // =======================================================================
     // NAMED WORKSPACES
     // =======================================================================
