@@ -21,6 +21,8 @@
   # Enable Niri Wayland compositor via niri-flake
   # The flake module handles polkit agent setup
   programs.niri.enable = true;
+  # Use niri-unstable since niri-stable has build test failures
+  programs.niri.package = pkgs.niri-unstable;
 
   # ==========================================================================
   # XDG DESKTOP PORTALS
