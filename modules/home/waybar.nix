@@ -30,10 +30,30 @@
 
 let
   waybar-cpu = pkgs.writers.writeBash "waybar-cpu" ''
-    awk '{u=$2+$4; t=$2+$4+$5; if(NR==1){u1=u;t1=t} else {
-      p=(u-u1)*100/(t-t1); lvl=int(p/10)*10
-      printf "{\"text\":\" \",\"tooltip\":\"CPU: %.0f%%\",\"class\":\"level-%d\",\"percentage\":%.0f}\n", p, lvl, p
-    }}' <(grep 'cpu ' /proc/stat) <(sleep 1; grep 'cpu ' /proc/stat)
+    # Get CPU usage
+    read -r cpu_info < <(awk '{u=$2+$4; t=$2+$4+$5; if(NR==1){u1=u;t1=t} else {
+      printf "%.0f %d", (u-u1)*100/(t-t1), int((u-u1)*100/(t-t1)/10)*10
+    }}' <(grep 'cpu ' /proc/stat) <(sleep 1; grep 'cpu ' /proc/stat))
+    usage=$(echo "$cpu_info" | cut -d' ' -f1)
+    lvl=$(echo "$cpu_info" | cut -d' ' -f2)
+
+    # Get CPU temperature (try common thermal zones)
+    temp=""
+    for zone in /sys/class/thermal/thermal_zone*/temp; do
+      if [ -f "$zone" ]; then
+        t=$(cat "$zone" 2>/dev/null)
+        if [ -n "$t" ] && [ "$t" -gt 0 ]; then
+          temp=$((t / 1000))
+          break
+        fi
+      fi
+    done
+
+    if [ -n "$temp" ]; then
+      printf '{"text":" ","tooltip":"CPU: %s%% · %s°C","class":"level-%s","percentage":%s}\n' "$usage" "$temp" "$lvl" "$usage"
+    else
+      printf '{"text":" ","tooltip":"CPU: %s%%","class":"level-%s","percentage":%s}\n' "$usage" "$lvl" "$usage"
+    fi
   '';
 
   waybar-mem = pkgs.writers.writeBash "waybar-mem" ''
