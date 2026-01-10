@@ -29,7 +29,7 @@
     settings = {
       keybinds = {
         shared = {
-          # Session picker - Alt+P opens floating pane with project selector
+          # Project picker - Alt+P opens floating pane, creates new tab for selected project
           "bind \"Alt p\"" = {
             "Run \"zellij-picker\"" = {
               floating = true;
