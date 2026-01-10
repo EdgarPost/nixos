@@ -102,108 +102,108 @@ in
       # =======================================================================
       # KEYBINDINGS (Niri defaults - arrow keys)
       # =======================================================================
-      binds = with config.lib.niri.actions; {
+      binds = {
         # Terminal and launcher
-        "Mod+Return".action = spawn "ghostty";
-        "Mod+D".action = spawn "rofi" "-show" "drun";
-        "Mod+C".action = spawn "ghostty" "-e" "khal" "interactive";
-        "Mod+Q".action = close-window;
-        "Mod+Shift+E".action = quit;
+        "Mod+Return".action.spawn = [ "ghostty" ];
+        "Mod+D".action.spawn = [ "rofi" "-show" "drun" ];
+        "Mod+C".action.spawn = [ "ghostty" "-e" "khal" "interactive" ];
+        "Mod+Q".action.close-window = [];
+        "Mod+Shift+E".action.quit = [];
 
         # Focus (arrow keys - Niri default)
-        "Mod+Left".action = focus-column-left;
-        "Mod+Right".action = focus-column-right;
-        "Mod+Up".action = focus-window-up;
-        "Mod+Down".action = focus-window-down;
+        "Mod+Left".action.focus-column-left = [];
+        "Mod+Right".action.focus-column-right = [];
+        "Mod+Up".action.focus-window-up = [];
+        "Mod+Down".action.focus-window-down = [];
 
         # Move window
-        "Mod+Shift+Left".action = move-column-left;
-        "Mod+Shift+Right".action = move-column-right;
-        "Mod+Shift+Up".action = move-window-up;
-        "Mod+Shift+Down".action = move-window-down;
+        "Mod+Shift+Left".action.move-column-left = [];
+        "Mod+Shift+Right".action.move-column-right = [];
+        "Mod+Shift+Up".action.move-window-up = [];
+        "Mod+Shift+Down".action.move-window-down = [];
 
         # Workspaces (1-10)
-        "Mod+1".action = focus-workspace 1;
-        "Mod+2".action = focus-workspace 2;
-        "Mod+3".action = focus-workspace 3;
-        "Mod+4".action = focus-workspace 4;
-        "Mod+5".action = focus-workspace 5;
-        "Mod+6".action = focus-workspace 6;
-        "Mod+7".action = focus-workspace 7;
-        "Mod+8".action = focus-workspace 8;
-        "Mod+9".action = focus-workspace 9;
-        "Mod+0".action = focus-workspace 10;
+        "Mod+1".action.focus-workspace = 1;
+        "Mod+2".action.focus-workspace = 2;
+        "Mod+3".action.focus-workspace = 3;
+        "Mod+4".action.focus-workspace = 4;
+        "Mod+5".action.focus-workspace = 5;
+        "Mod+6".action.focus-workspace = 6;
+        "Mod+7".action.focus-workspace = 7;
+        "Mod+8".action.focus-workspace = 8;
+        "Mod+9".action.focus-workspace = 9;
+        "Mod+0".action.focus-workspace = 10;
 
         # Move to workspace
-        "Mod+Shift+1".action = move-column-to-workspace 1;
-        "Mod+Shift+2".action = move-column-to-workspace 2;
-        "Mod+Shift+3".action = move-column-to-workspace 3;
-        "Mod+Shift+4".action = move-column-to-workspace 4;
-        "Mod+Shift+5".action = move-column-to-workspace 5;
-        "Mod+Shift+6".action = move-column-to-workspace 6;
-        "Mod+Shift+7".action = move-column-to-workspace 7;
-        "Mod+Shift+8".action = move-column-to-workspace 8;
-        "Mod+Shift+9".action = move-column-to-workspace 9;
-        "Mod+Shift+0".action = move-column-to-workspace 10;
+        "Mod+Shift+1".action.move-column-to-workspace = 1;
+        "Mod+Shift+2".action.move-column-to-workspace = 2;
+        "Mod+Shift+3".action.move-column-to-workspace = 3;
+        "Mod+Shift+4".action.move-column-to-workspace = 4;
+        "Mod+Shift+5".action.move-column-to-workspace = 5;
+        "Mod+Shift+6".action.move-column-to-workspace = 6;
+        "Mod+Shift+7".action.move-column-to-workspace = 7;
+        "Mod+Shift+8".action.move-column-to-workspace = 8;
+        "Mod+Shift+9".action.move-column-to-workspace = 9;
+        "Mod+Shift+0".action.move-column-to-workspace = 10;
 
         # Window sizing
-        "Mod+F".action = maximize-column;
-        "Mod+Shift+F".action = fullscreen-window;
-        "Mod+V".action = toggle-window-floating;
-        "Mod+R".action = switch-preset-column-width;
-        "Mod+Minus".action = set-column-width "-10%";
-        "Mod+Equal".action = set-column-width "+10%";
+        "Mod+F".action.maximize-column = [];
+        "Mod+Shift+F".action.fullscreen-window = [];
+        "Mod+V".action.toggle-window-floating = [];
+        "Mod+R".action.switch-preset-column-width = [];
+        "Mod+Minus".action.set-column-width = "-10%";
+        "Mod+Equal".action.set-column-width = "+10%";
 
         # Media controls
-        "XF86AudioPlay".action = spawn "playerctl" "play-pause";
-        "XF86AudioNext".action = spawn "playerctl" "next";
-        "XF86AudioPrev".action = spawn "playerctl" "previous";
-        "XF86AudioStop".action = spawn "playerctl" "stop";
+        "XF86AudioPlay".action.spawn = [ "playerctl" "play-pause" ];
+        "XF86AudioNext".action.spawn = [ "playerctl" "next" ];
+        "XF86AudioPrev".action.spawn = [ "playerctl" "previous" ];
+        "XF86AudioStop".action.spawn = [ "playerctl" "stop" ];
 
         # Volume (allow when locked)
         "XF86AudioRaiseVolume" = {
           allow-when-locked = true;
-          action = spawn "sh" "-c" "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar";
+          action.spawn = [ "sh" "-c" "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar" ];
         };
         "XF86AudioLowerVolume" = {
           allow-when-locked = true;
-          action = spawn "sh" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar";
+          action.spawn = [ "sh" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar" ];
         };
         "XF86AudioMute" = {
           allow-when-locked = true;
-          action = spawn "sh" "-c" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar";
+          action.spawn = [ "sh" "-c" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar" ];
         };
         "XF86AudioMicMute" = {
           allow-when-locked = true;
-          action = spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle";
+          action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle" ];
         };
 
         # Brightness
-        "XF86MonBrightnessUp".action = spawn "brightnessctl" "set" "5%+";
-        "XF86MonBrightnessDown".action = spawn "brightnessctl" "set" "5%-";
+        "XF86MonBrightnessUp".action.spawn = [ "brightnessctl" "set" "5%+" ];
+        "XF86MonBrightnessDown".action.spawn = [ "brightnessctl" "set" "5%-" ];
 
         # Lock and sleep
-        "Mod+Escape".action = spawn "swaylock";
-        "Mod+Shift+Escape".action = spawn "systemctl" "suspend";
+        "Mod+Escape".action.spawn = [ "swaylock" ];
+        "Mod+Shift+Escape".action.spawn = [ "systemctl" "suspend" ];
 
         # Screenshots
-        "Print".action = spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy";
-        "Shift+Print".action = spawn "sh" "-c" "grim - | wl-copy";
+        "Print".action.spawn = [ "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy" ];
+        "Shift+Print".action.spawn = [ "sh" "-c" "grim - | wl-copy" ];
 
         # Clipboard history
-        "Mod+Shift+V".action = spawn "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v";
+        "Mod+Shift+V".action.spawn = [ "sh" "-c" "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v" ];
 
         # Wallpaper change
-        "Mod+W".action = spawn "sh" "-c" "swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1";
+        "Mod+W".action.spawn = [ "sh" "-c" "swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1" ];
 
         # Audio menu
-        "Mod+A".action = spawn "audio-menu";
+        "Mod+A".action.spawn = [ "audio-menu" ];
 
         # Notification center toggle
-        "Mod+N".action = spawn "swaync-client" "-t" "-sw";
+        "Mod+N".action.spawn = [ "swaync-client" "-t" "-sw" ];
 
         # Power menu
-        "XF86PowerOff".action = spawn "sh" "-c" "echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) swaylock ;; esac'";
+        "XF86PowerOff".action.spawn = [ "sh" "-c" "echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) swaylock ;; esac'" ];
       };
     };
   };
