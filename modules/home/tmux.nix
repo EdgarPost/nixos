@@ -26,18 +26,5 @@
     enable = true;
     enableFishIntegration = false;  # Don't auto-start zellij in every shell
 
-    settings = {
-      keybinds = {
-        shared = {
-          # Project picker - Alt+P opens floating pane, creates new tab for selected project
-          "bind \"Alt p\"" = {
-            "Run \"zellij-picker\"" = {
-              floating = true;
-              close_on_exit = true;
-            };
-          };
-        };
-      };
-    };
   };
 }
