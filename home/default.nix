@@ -115,6 +115,30 @@ in
       # `lib.optionals` returns the list only if condition is true, else []
       # List concatenation (++) merges the conditional packages into main list
       # This enables architecture-specific packages (some apps lack ARM builds)
+      # Zellij session picker script (for niri floating launcher)
+      (writeShellScriptBin "zellij-picker" ''
+        #!/usr/bin/env bash
+        # Get repo path via fzf (sorted by most recently modified)
+        dir=$(ghq list -p | while read -r repo; do
+          ts=$(find "$repo" -type f -not -path '*/.git/*' -printf '%T@\n' 2>/dev/null | sort -rn | head -1)
+          [ -z "$ts" ] && ts=0
+          echo "$ts $repo"
+        done | sort -rn | cut -d' ' -f2- | fzf --prompt="Select project: ")
+
+        # Exit if no selection
+        [ -z "$dir" ] && exit 0
+
+        # Session name from repo basename
+        session_name=$(basename "$dir")
+
+        # Check if session exists and attach, otherwise create new
+        if zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
+          zellij attach "$session_name"
+        else
+          cd "$dir" || exit 1
+          zellij --session "$session_name"
+        fi
+      '')
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
       slack # Only available for x86_64 (no aarch64 build)
@@ -224,33 +248,6 @@ in
       cc = "claude --continue";
     };
   };
-
-  # Zellij session picker script (for niri floating launcher)
-  home.packages = [
-    (pkgs.writeShellScriptBin "zellij-picker" ''
-      #!/usr/bin/env bash
-      # Get repo path via fzf (sorted by most recently modified)
-      dir=$(ghq list -p | while read -r repo; do
-        ts=$(find "$repo" -type f -not -path '*/.git/*' -printf '%T@\n' 2>/dev/null | sort -rn | head -1)
-        [ -z "$ts" ] && ts=0
-        echo "$ts $repo"
-      done | sort -rn | cut -d' ' -f2- | fzf --prompt="Select project: ")
-
-      # Exit if no selection
-      [ -z "$dir" ] && exit 0
-
-      # Session name from repo basename
-      session_name=$(basename "$dir")
-
-      # Check if session exists and attach, otherwise create new
-      if zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
-        zellij attach "$session_name"
-      else
-        cd "$dir" || exit 1
-        zellij --session "$session_name"
-      fi
-    '')
-  ];
 
   # ==========================================================================
   # STARSHIP PROMPT
