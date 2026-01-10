@@ -46,6 +46,7 @@ in
             natural-scroll
         }
         focus-follows-mouse
+        warp-mouse-to-focus
     }
 
     // =======================================================================
