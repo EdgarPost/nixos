@@ -92,7 +92,6 @@ in
         { command = [ "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" ]; }
         { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
         { command = [ "1password" "--silent" ]; }
-        { command = [ "pasystray" ]; }
         { command = [ "swaync" ]; }  # Notification center daemon
         { command = [ "swww-daemon" ]; }
         # Set wallpaper after swww-daemon starts

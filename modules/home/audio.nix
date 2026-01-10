@@ -129,7 +129,8 @@ in
     # Audio control tools
     pwvucontrol # Modern PipeWire volume control (better than pavucontrol)
     helvum      # Visual patchbay for complex audio routing
-    pasystray   # System tray applet for quick audio device switching
+    # Note: pasystray removed due to build failure in nixpkgs-unstable
+    # Use Mod+A for rofi audio menu, or click waybar volume for pwvucontrol
 
     # Device selection scripts
     audio-select
