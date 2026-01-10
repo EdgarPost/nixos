@@ -19,7 +19,7 @@
 #   - bluetooth: Bluetooth status with click-to-open blueman
 #   - network: WiFi/Ethernet status
 #   - tray: System tray for background apps
-#   - custom/notification: Unread notification count from mako
+#   - custom/notification: Notification indicator from SwayNC
 #
 # CLICK HANDLERS:
 # Many modules open GUI apps when clicked (requires packages below)
@@ -170,12 +170,14 @@ in
           none = "󰂜";
           dnd-notification = "󰂛";
           dnd-none = "󰪑";
+          inhibited-notification = "󰂛";
+          inhibited-none = "󰪑";
         };
         return-type = "json";
-        exec = "makoctl list | jq -r '{\"text\": (.data[0] | length | tostring), \"alt\": (if .data[0] | length > 0 then \"notification\" else \"none\" end), \"class\": \"notification\"}'";
-        on-click = "makoctl dismiss";
-        on-click-right = "makoctl dismiss -a";
-        interval = 1;
+        exec = "swaync-client -swb";
+        on-click = "swaync-client -t -sw";
+        on-click-right = "swaync-client -d -sw";
+        escape = true;
       };
     }];
 

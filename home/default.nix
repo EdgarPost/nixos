@@ -47,6 +47,7 @@ in
   imports = [
     ../modules/home/aliases.nix # Shared shell aliases (eza, git shortcuts)
     ../modules/home/niri.nix # Window manager + keybindings
+    ../modules/home/swaync.nix # Notification center
     ../modules/home/ghostty.nix # Terminal emulator
     ../modules/home/atuin.nix # Shell history
     ../modules/home/tmux.nix # Terminal multiplexer

@@ -93,6 +93,7 @@ in
         { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
         { command = [ "1password" "--silent" ]; }
         { command = [ "pasystray" ]; }
+        { command = [ "swaync" ]; }  # Notification center daemon
         { command = [ "swww-daemon" ]; }
         # Set wallpaper after swww-daemon starts
         { command = [ "sh" "-c" "sleep 1 && swww clear 11111b && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1" ]; }
@@ -198,6 +199,9 @@ in
         # Audio menu
         "Mod+A".action = spawn "audio-menu";
 
+        # Notification center toggle
+        "Mod+N".action = spawn "swaync-client" "-t" "-sw";
+
         # Power menu
         "XF86PowerOff".action = spawn "sh" "-c" "echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) swaylock ;; esac'";
       };
@@ -242,22 +246,6 @@ in
     };
   };
   catppuccin.rofi.enable = true;
-
-  # ==========================================================================
-  # MAKO - Notification Daemon (temporary, will be replaced by SwayNC)
-  # ==========================================================================
-  services.mako = {
-    enable = true;
-    settings = {
-      anchor = "top-center";
-      default-timeout = 5000;
-      width = 400;
-      margin = "10";
-      padding = "15";
-      border-radius = 8;
-      border-size = 2;
-    };
-  };
 
   # ==========================================================================
   # WALLPAPERS
