@@ -186,6 +186,30 @@ in
         end | sort -rn | cut -d' ' -f2- | fzf)
         and cd $dir
       end
+
+      # zellij session picker: select repo, attach to existing session or create new
+      function zj
+        # Get repo path via fzf (sorted by most recently modified)
+        set -l dir (ghq list -p | while read -l repo
+          set -l ts (find $repo -type f -not -path '*/.git/*' -printf '%T@\n' 2>/dev/null | sort -rn | head -1)
+          test -n "$ts"; or set ts 0
+          echo "$ts $repo"
+        end | sort -rn | cut -d' ' -f2- | fzf --prompt="Select project: ")
+
+        # Exit if no selection
+        test -n "$dir"; or return
+
+        # Session name from repo basename
+        set -l session_name (basename $dir)
+
+        # Check if session exists and attach, otherwise create new
+        if zellij list-sessions 2>/dev/null | grep -q "^$session_name\$"
+          zellij attach $session_name
+        else
+          cd $dir
+          zellij --session $session_name
+        end
+      end
     '';
 
     # Shell aliases - shortcuts for common commands
@@ -200,6 +224,33 @@ in
       cc = "claude --continue";
     };
   };
+
+  # Zellij session picker script (for niri floating launcher)
+  home.packages = [
+    (pkgs.writeShellScriptBin "zellij-picker" ''
+      #!/usr/bin/env bash
+      # Get repo path via fzf (sorted by most recently modified)
+      dir=$(ghq list -p | while read -r repo; do
+        ts=$(find "$repo" -type f -not -path '*/.git/*' -printf '%T@\n' 2>/dev/null | sort -rn | head -1)
+        [ -z "$ts" ] && ts=0
+        echo "$ts $repo"
+      done | sort -rn | cut -d' ' -f2- | fzf --prompt="Select project: ")
+
+      # Exit if no selection
+      [ -z "$dir" ] && exit 0
+
+      # Session name from repo basename
+      session_name=$(basename "$dir")
+
+      # Check if session exists and attach, otherwise create new
+      if zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
+        zellij attach "$session_name"
+      else
+        cd "$dir" || exit 1
+        zellij --session "$session_name"
+      fi
+    '')
+  ];
 
   # ==========================================================================
   # STARSHIP PROMPT

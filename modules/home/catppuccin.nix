@@ -54,7 +54,6 @@
   catppuccin.bat.enable = true;       # ~/.config/bat/config
   catppuccin.fish.enable = true;      # Fish shell colors
   catppuccin.starship.enable = true;  # Prompt colors
-  catppuccin.tmux.enable = true;      # Status bar colors
   catppuccin.zellij.enable = true;    # Zellij colors
   catppuccin.ghostty.enable = true;   # Terminal colors
   catppuccin.waybar.enable = true;    # Status bar CSS variables

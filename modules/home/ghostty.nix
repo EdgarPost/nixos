@@ -9,12 +9,6 @@
 #   - Cross-platform (Linux, macOS)
 #   - Modern defaults (true color, ligatures, etc.)
 #
-# TMUX INTEGRATION:
-# This config automatically starts tmux for the first window, but opens
-# a plain shell for additional windows. This gives you:
-#   - Always-running tmux session ("main")
-#   - Quick one-off terminals when needed
-#
 # ============================================================================
 
 { pkgs, font, ... }:
@@ -57,17 +51,6 @@
       cursor-style-blink = false;
       custom-shader = "~/.config/ghostty/shaders/cursor-smear.glsl";
       custom-shader-animation = true;  # Enable shader animations
-
-      # =======================================================================
-      # SMART TMUX INTEGRATION
-      # =======================================================================
-      # On first terminal: Create or attach to tmux session "main"
-      # On subsequent terminals: Open plain fish shell
-      #
-      # Logic: If "main" session exists AND has clients attached, open fish
-      #        Otherwise, create/attach to "main" session
-      # This way you always have tmux, but can open quick terminals too
-      command = "fish -c 'if tmux has-session -t main 2>/dev/null && test (tmux list-clients -t main | count) -gt 0; fish; else; tmux new-session -A -s main; end'";
     };
   };
 
