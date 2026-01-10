@@ -54,6 +54,22 @@ let
       echo "{\"text\":\" \",\"tooltip\":\"Volume: $vol%\",\"class\":\"level-$lvl\",\"percentage\":$vol}"
     fi
   '';
+
+  waybar-notification = pkgs.writers.writeBash "waybar-notification" ''
+    ${pkgs.swaynotificationcenter}/bin/swaync-client -swb | while read -r line; do
+      count=$(echo "$line" | ${pkgs.jq}/bin/jq -r '.text')
+      alt=$(echo "$line" | ${pkgs.jq}/bin/jq -r '.alt')
+      class=$(echo "$line" | ${pkgs.jq}/bin/jq -c '.class')
+      if [ "$count" = "0" ]; then
+        text="No notifications"
+      elif [ "$count" = "1" ]; then
+        text="You have 1 notification"
+      else
+        text="You have $count notifications"
+      fi
+      echo "{\"text\":\"$text\",\"alt\":\"$alt\",\"class\":$class}"
+    done
+  '';
 in
 {
   # GUI applications opened by clicking waybar modules
@@ -164,7 +180,7 @@ in
 
       "custom/notification" = {
         tooltip = false;
-        format = "{icon} {text}";
+        format = "{icon}   {text}";
         format-icons = {
           notification = "󰂚";
           none = "󰂜";
@@ -174,7 +190,7 @@ in
           inhibited-none = "󰪑";
         };
         return-type = "json";
-        exec = "swaync-client -swb";
+        exec = "${waybar-notification}";
         on-click = "swaync-client -t -sw";
         on-click-right = "swaync-client -d -sw";
         escape = true;
