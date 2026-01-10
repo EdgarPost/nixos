@@ -35,7 +35,7 @@
         # Nix interpolates the full store path, e.g.:
         # /nix/store/abc123-tuigreet-0.9.1/bin/tuigreet
         # This ensures the exact versioned binary is used
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
         user = "greeter";  # Run greeter as unprivileged user
       };
 
@@ -43,7 +43,7 @@
       # initial_session runs once on first boot, then default_session
       # Safe with full disk encryption since password is required at boot
       initial_session = {
-        command = "Hyprland";
+        command = "niri-session";
         user = user.name;
       };
     };

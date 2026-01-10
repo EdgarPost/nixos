@@ -58,8 +58,7 @@
   catppuccin.ghostty.enable = true;   # Terminal colors
   catppuccin.waybar.enable = true;    # Status bar CSS variables
   catppuccin.yazi.enable = true;      # File manager colors
-  catppuccin.hyprland.enable = true;  # Window border colors
-  catppuccin.mako.enable = true;      # Notification colors
+  catppuccin.mako.enable = true;      # Notification colors (until SwayNC migration)
 
   # ==========================================================================
   # QT THEMING (for KDE/Qt apps like KeePassXC, VLC)

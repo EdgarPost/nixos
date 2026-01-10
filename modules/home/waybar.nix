@@ -66,7 +66,7 @@ in
   programs.waybar = {
     enable = true;
     systemd.enable = true;  # Managed by systemd - restarts after rebuild/crash
-    systemd.target = "hyprland-session.target";  # Start with Hyprland
+    systemd.target = "niri.service";  # Start with Niri
 
     # ========================================================================
     # WAYBAR CONFIGURATION (JSON)
@@ -82,7 +82,7 @@ in
       margin-right = 15;
       margin-bottom = 0;
 
-      modules-left = [ "hyprland/workspaces" ];
+      modules-left = [ "niri/workspaces" ];
       modules-center = [ "custom/notification" "clock" ];
       modules-right = [ "group/status" "tray" ];
 
@@ -91,12 +91,10 @@ in
         modules = [ "custom/cpu" "custom/memory" "custom/volume" "bluetooth" "network" "battery" ];
       };
 
-      "hyprland/workspaces" = {
-        format = "{id}";
+      "niri/workspaces" = {
+        format = "{index}";
         on-click = "activate";
-        persistent-workspaces = {
-          "*" = 5;  # Show workspaces 1-5 on all monitors
-        };
+        all-outputs = false;  # Per-monitor workspaces (Niri default)
       };
 
       clock = {

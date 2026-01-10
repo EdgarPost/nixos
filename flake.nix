@@ -88,6 +88,12 @@
       url = "github:EdgarPost/claude-code";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Niri - scrollable tiling Wayland compositor with declarative config
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ==========================================================================
@@ -112,6 +118,7 @@
       roon-cli,
       opencode,
       claude-code,
+      niri,
       ...
     }@inputs:
 
@@ -173,6 +180,9 @@
             # String interpolation: ${hostname} embeds variable in path
             ./hosts/${hostname}
 
+            # Niri compositor - system-level module
+            niri.nixosModules.niri
+
             # Integrate Home Manager as a NixOS module
             # Alternative: standalone home-manager (separate `home-manager switch`)
             # As NixOS module: single `nixos-rebuild switch` updates everything
@@ -193,6 +203,8 @@
                   inputs.roon-cli.homeManagerModules.default
                   # Claude Code extensions - commands, agents, skills
                   inputs.claude-code.homeManagerModules.default
+                  # Niri compositor - home-level declarative config
+                  inputs.niri.homeModules.niri
                   # Main home configuration
                   ./home
                 ];

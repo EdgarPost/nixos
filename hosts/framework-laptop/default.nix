@@ -65,7 +65,7 @@
 
   # Enable fingerprint authentication for screen unlock and 1Password (not sudo/terminal)
   security.pam.services.sudo.fprintAuth = false;  # Explicitly disable for terminal
-  security.pam.services.hyprlock.fprintAuth = true;
+  security.pam.services.swaylock.fprintAuth = true;
   security.pam.services.polkit-1.fprintAuth = true;
 
   # Power management for better battery life
@@ -132,12 +132,12 @@
 
   # LOGIND - The systemd login manager
   # Controls what happens on lid close, power button, etc.
-  # On battery: suspend. On AC power: let Hyprland handle it (disables internal display)
+  # On battery: suspend. On AC power: let Niri handle it (auto-disables internal display)
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend";              # Suspend when lid closed (battery)
-    HandleLidSwitchExternalPower = "ignore";  # Let Hyprland handle (disables eDP-1)
+    HandleLidSwitchExternalPower = "ignore";  # Let Niri handle (disables eDP-1)
     HandleLidSwitchDocked = "ignore";         # Keep running if docked
-    HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
+    HandlePowerKey = "ignore";                # Let Niri show confirmation menu
   };
 
   # FIRMWARE UPDATES via fwupd

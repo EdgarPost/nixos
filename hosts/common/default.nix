@@ -30,7 +30,7 @@
   imports = [
     ./users.nix                        # User account definitions
     ../../modules/nixos/1password.nix  # Password manager
-    ../../modules/nixos/hyprland.nix   # Desktop compositor
+    ../../modules/nixos/niri.nix       # Desktop compositor
     ../../modules/nixos/greetd.nix     # Login manager
     ../../modules/nixos/podman.nix     # Container runtime
     ../../modules/nixos/k3s.nix        # Local Kubernetes cluster
