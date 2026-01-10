@@ -1,4 +1,7 @@
 return {
+  -- Disable neo-tree (using yazi instead)
+  { "nvim-neo-tree/neo-tree.nvim", enabled = false },
+
   -- Disable indent guides
   { "lukas-reineke/indent-blankline.nvim", enabled = false },
 

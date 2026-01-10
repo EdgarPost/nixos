@@ -50,7 +50,7 @@ in
     ../modules/home/swaync.nix # Notification center
     ../modules/home/ghostty.nix # Terminal emulator
     ../modules/home/atuin.nix # Shell history
-    ../modules/home/tmux.nix # Terminal multiplexer
+    ../modules/home/zellij.nix # Terminal multiplexer
     ../modules/home/catppuccin.nix # Unified theming
     ../modules/home/waybar.nix # Status bar
     ../modules/home/yazi.nix # File manager

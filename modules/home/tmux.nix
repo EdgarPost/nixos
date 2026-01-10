@@ -1,30 +1,28 @@
-# ============================================================================
-# ZELLIJ - Terminal Multiplexer
-# ============================================================================
-#
-# WHY ZELLIJ?
-#   - Modern alternative to tmux with better defaults
-#   - Built-in layout system and floating panes
-#   - Session management with named sessions
-#   - Discoverable keybindings (status bar hints)
-#
-# KEY CONCEPTS:
-#   Session → Tab → Pane
-#   - Session: Named workspace (e.g., per-project)
-#   - Tab: Like browser tabs within a session
-#   - Pane: Splits within a tab
-#
-# DEFAULT PREFIX: Ctrl+key (no prefix needed for most actions)
-# Ctrl+p: Pane mode | Ctrl+t: Tab mode | Ctrl+n: Resize mode
-#
-# ============================================================================
-
+# Tmux for servers (headless environments without zellij)
 { pkgs, ... }:
 
 {
-  programs.zellij = {
+  programs.tmux = {
     enable = true;
-    enableFishIntegration = false;  # Don't auto-start zellij in every shell
+    shell = "${pkgs.fish}/bin/fish";
+    terminal = "tmux-256color";
+    baseIndex = 1;
+    escapeTime = 0;
+    historyLimit = 50000;
+    mouse = true;
+    keyMode = "vi";
 
+    extraConfig = ''
+      set -g set-clipboard on
+      set -g status-style "bg=default"
+      set -g status-left ""
+      set -g status-right ""
+      bind | split-window -h -c "#{pane_current_path}"
+      bind - split-window -v -c "#{pane_current_path}"
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+    '';
   };
 }
