@@ -217,15 +217,7 @@ in
       daemonize = true;
       show-failed-attempts = true;
       indicator-caps-lock = true;
-      # Catppuccin Mocha colors
-      color = "1e1e2e";
-      inside-color = "1e1e2e";
-      ring-color = "89b4fa";
-      key-hl-color = "a6e3a1";
-      bs-hl-color = "f38ba8";
-      text-color = "cdd6f4";
-      ring-ver-color = "89b4fa";
-      inside-ver-color = "1e1e2e";
+      # Colors handled by catppuccin.swaylock.enable
     };
   };
   catppuccin.swaylock.enable = true;
