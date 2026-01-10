@@ -108,7 +108,7 @@ in
       };
 
       "niri/workspaces" = {
-        format = "{index}";
+        format = "{name}";
         on-click = "activate";
         all-outputs = false;  # Per-monitor workspaces (Niri default)
       };
