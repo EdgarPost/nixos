@@ -32,7 +32,8 @@
       font-size = font.size - 1;  # Slightly smaller than global default
       window-padding-x = 8;            # Pixels of padding inside window
       window-padding-y = 8;
-      background-opacity = 0.9;        # Subtle transparency (blurred by Hyprland)
+      background-opacity = 0.9;        # Subtle transparency
+      background = "#1e1e2e";          # Catppuccin mocha base (transparency applied on top)
 
       # =======================================================================
       # BEHAVIOR

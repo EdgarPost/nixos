@@ -90,6 +90,12 @@ in
         open-on-workspace "communication"
     }
 
+    // Make inactive windows slightly transparent
+    window-rule {
+        match is-active=false
+        opacity 0.9
+    }
+
     // =======================================================================
     // SPAWN AT STARTUP
     // =======================================================================
