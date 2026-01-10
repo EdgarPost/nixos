@@ -63,8 +63,8 @@
   # After enabling, enroll fingerprint with: fprintd-enroll
   services.fprintd.enable = true;
 
-  # Enable fingerprint authentication for sudo, screen unlock, and 1Password
-  security.pam.services.sudo.fprintAuth = true;
+  # Enable fingerprint authentication for screen unlock and 1Password (not sudo/terminal)
+  security.pam.services.sudo.fprintAuth = false;  # Explicitly disable for terminal
   security.pam.services.hyprlock.fprintAuth = true;
   security.pam.services.polkit-1.fprintAuth = true;
 
@@ -74,13 +74,69 @@
   services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
 
+  # ==========================================================================
+  # INTEL OPTIMIZATIONS
+  # ==========================================================================
+
+  # Thermald: Proactive thermal management for Intel CPUs
+  # Prevents overheating before hardware throttling kicks in
+  # Uses DPTF adaptive tables for intelligent fan control
+  services.thermald.enable = true;
+
+  # fw-fanctrl: Custom fan curves for quieter operation
+  # Default strategy keeps fans off until 65°C, then ramps gradually
+  # Revert to default: systemctl stop fw-fanctrl
+  hardware.fw-fanctrl = {
+    enable = true;
+    config = {
+      defaultStrategy = "lazy";
+      strategies = {
+        lazy = {
+          fanSpeedUpdateFrequency = 5;
+          movingAverageInterval = 30;
+          speedCurve = [
+            { temp = 0; speed = 0; }
+            { temp = 65; speed = 0; }
+            { temp = 70; speed = 25; }
+            { temp = 75; speed = 50; }
+            { temp = 80; speed = 75; }
+            { temp = 85; speed = 100; }
+          ];
+        };
+      };
+    };
+  };
+
+  # Intel graphics (VAAPI hardware video acceleration)
+  # Required for efficient video playback/encoding
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # VA-API driver for Broadwell+ (iHD)
+      vpl-gpu-rt         # Intel oneVPL GPU runtime for Quick Sync Video
+    ];
+  };
+
+  # Tell applications to use Intel's iHD driver for VA-API
+  environment.variables.LIBVA_DRIVER_NAME = "iHD";
+
+  # ==========================================================================
+  # WEBCAM (Logitech C920)
+  # ==========================================================================
+  # v4l2 utilities for webcam control and testing
+  # Test with: v4l2-ctl --list-devices
+  # View feed: mpv av://v4l2:/dev/video0
+  environment.systemPackages = with pkgs; [
+    v4l-utils # v4l2-ctl for webcam control
+  ];
+
   # LOGIND - The systemd login manager
   # Controls what happens on lid close, power button, etc.
-  # "Docked" means external display connected (lid close doesn't suspend)
+  # On battery: suspend. On AC power: let Hyprland handle it (disables internal display)
   services.logind.settings.Login = {
     HandleLidSwitch = "suspend";              # Suspend when lid closed (battery)
-    HandleLidSwitchExternalPower = "suspend"; # Also suspend on AC power
-    HandleLidSwitchDocked = "ignore";         # Keep running if external monitor
+    HandleLidSwitchExternalPower = "ignore";  # Let Hyprland handle (disables eDP-1)
+    HandleLidSwitchDocked = "ignore";         # Keep running if docked
     HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
   };
 
