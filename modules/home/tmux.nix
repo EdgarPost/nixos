@@ -25,5 +25,19 @@
   programs.zellij = {
     enable = true;
     enableFishIntegration = false;  # Don't auto-start zellij in every shell
+
+    settings = {
+      # Keybindings for session picker
+      keybinds = {
+        shared = {
+          "bind \"Ctrl p\"" = {
+            "Run \"zellij-picker\"" = {
+              floating = true;
+              close_on_exit = true;
+            };
+          };
+        };
+      };
+    };
   };
 }

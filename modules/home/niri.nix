@@ -90,12 +90,6 @@ in
         open-on-workspace "communication"
     }
 
-    // Floating session picker
-    window-rule {
-        match app-id="zellij-picker"
-        open-floating true
-    }
-
     // =======================================================================
     // SPAWN AT STARTUP
     // =======================================================================
@@ -113,7 +107,6 @@ in
         // ===== CUSTOM OVERRIDES =====
         Mod+T { spawn "ghostty"; }
         Mod+D { spawn "rofi" "-show" "drun"; }
-        Mod+P { spawn "ghostty" "--class=zellij-picker" "-e" "zellij-picker"; }
         Mod+Escape { spawn "swaylock"; }
         Mod+Shift+Escape { spawn "systemctl" "suspend"; }
         Mod+A { spawn "audio-menu"; }

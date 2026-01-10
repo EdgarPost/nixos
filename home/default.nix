@@ -115,7 +115,7 @@ in
       # `lib.optionals` returns the list only if condition is true, else []
       # List concatenation (++) merges the conditional packages into main list
       # This enables architecture-specific packages (some apps lack ARM builds)
-      # Zellij session picker script (for niri floating launcher)
+      # Zellij session picker script (runs inside zellij floating pane)
       (writeShellScriptBin "zellij-picker" ''
         #!/usr/bin/env bash
         # Get repo path via fzf (sorted by most recently modified)
@@ -131,13 +131,10 @@ in
         # Session name from repo basename
         session_name=$(basename "$dir")
 
-        # Check if session exists and attach, otherwise create new
-        if zellij list-sessions 2>/dev/null | grep -q "^$session_name$"; then
-          zellij attach "$session_name"
-        else
-          cd "$dir" || exit 1
-          zellij --session "$session_name"
-        fi
+        # Switch to session (creates if doesn't exist)
+        # Using zellij attach -c creates session if needed
+        # The -f (force) flag needed when running from within zellij
+        cd "$dir" && exec zellij attach -c "$session_name"
       '')
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
