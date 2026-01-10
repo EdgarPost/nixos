@@ -50,6 +50,43 @@ in
     }
 
     // =======================================================================
+    // LAYOUT
+    // =======================================================================
+    layout {
+        default-column-width { proportion 0.5; }
+    }
+
+    // =======================================================================
+    // NAMED WORKSPACES
+    // =======================================================================
+    workspace "browser"
+    workspace "terminal"
+    workspace "communication"
+
+    // =======================================================================
+    // WINDOW RULES - assign apps to workspaces
+    // =======================================================================
+    window-rule {
+        match app-id="zen"
+        open-on-workspace "browser"
+    }
+
+    window-rule {
+        match app-id="com.mitchellh.ghostty"
+        open-on-workspace "terminal"
+    }
+
+    window-rule {
+        match app-id="Slack"
+        open-on-workspace "communication"
+    }
+
+    window-rule {
+        match app-id="signal"
+        open-on-workspace "communication"
+    }
+
+    // =======================================================================
     // SPAWN AT STARTUP
     // =======================================================================
     spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP"
@@ -135,18 +172,20 @@ in
         Mod+Shift+Page_Up { move-workspace-up; }
         Mod+Shift+U { move-workspace-down; }
         Mod+Shift+I { move-workspace-up; }
-        Mod+1 { focus-workspace 1; }
-        Mod+2 { focus-workspace 2; }
-        Mod+3 { focus-workspace 3; }
+        // Named workspaces
+        Mod+1 { focus-workspace "browser"; }
+        Mod+2 { focus-workspace "terminal"; }
+        Mod+3 { focus-workspace "communication"; }
+        Mod+Ctrl+1 { move-column-to-workspace "browser"; }
+        Mod+Ctrl+2 { move-column-to-workspace "terminal"; }
+        Mod+Ctrl+3 { move-column-to-workspace "communication"; }
+        // Dynamic workspaces
         Mod+4 { focus-workspace 4; }
         Mod+5 { focus-workspace 5; }
         Mod+6 { focus-workspace 6; }
         Mod+7 { focus-workspace 7; }
         Mod+8 { focus-workspace 8; }
         Mod+9 { focus-workspace 9; }
-        Mod+Ctrl+1 { move-column-to-workspace 1; }
-        Mod+Ctrl+2 { move-column-to-workspace 2; }
-        Mod+Ctrl+3 { move-column-to-workspace 3; }
         Mod+Ctrl+4 { move-column-to-workspace 4; }
         Mod+Ctrl+5 { move-column-to-workspace 5; }
         Mod+Ctrl+6 { move-column-to-workspace 6; }
