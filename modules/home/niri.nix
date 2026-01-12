@@ -41,6 +41,9 @@ in
     // INPUT - Only non-default settings
     // =======================================================================
     input {
+        mouse {
+            accel-speed -0.5
+        }
         touchpad {
             tap
             natural-scroll
