@@ -101,6 +101,7 @@ in
         "$mod, V, togglefloating"
         "$mod, F, fullscreen"
         "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+        "$mod, N, exec, swaync-client -t" # Toggle notification center
 
         # Move focus
         "$mod, H, movefocus, l"
