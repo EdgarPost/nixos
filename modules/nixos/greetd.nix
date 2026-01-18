@@ -18,7 +18,8 @@
 
 {
   # Suppress boot messages on the greeter TTY
-  boot.kernelParams = [ "quiet" "loglevel=3" "rd.udev.log_level=3" "rd.systemd.show_status=false" ];
+  # pcie_aspm=off: Disable PCIe Active State Power Management (fixes Thunderbolt disconnects)
+  boot.kernelParams = [ "quiet" "loglevel=3" "rd.udev.log_level=3" "rd.systemd.show_status=false" "pcie_aspm=off" ];
   boot.consoleLogLevel = 0;
 
   services.greetd = {
@@ -35,7 +36,7 @@
         # Nix interpolates the full store path, e.g.:
         # /nix/store/abc123-tuigreet-0.9.1/bin/tuigreet
         # This ensures the exact versioned binary is used
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd start-hyprland";
         user = "greeter";  # Run greeter as unprivileged user
       };
 
@@ -43,7 +44,7 @@
       # initial_session runs once on first boot, then default_session
       # Safe with full disk encryption since password is required at boot
       initial_session = {
-        command = "niri-session";
+        command = "start-hyprland";
         user = user.name;
       };
     };

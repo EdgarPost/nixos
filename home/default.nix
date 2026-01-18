@@ -46,7 +46,7 @@ in
   # Each module handles one aspect (terminal, editor, WM, etc.)
   imports = [
     ../modules/home/aliases.nix # Shared shell aliases (eza, git shortcuts)
-    ../modules/home/niri.nix # Window manager + keybindings
+    ../modules/home/hyprland.nix # Window manager + keybindings
     ../modules/home/swaync.nix # Notification center
     ../modules/home/ghostty.nix # Terminal emulator
     ../modules/home/atuin.nix # Shell history

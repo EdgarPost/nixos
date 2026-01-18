@@ -48,7 +48,7 @@ in
       # Use `hyprctl monitors` to see detected monitors
       monitor = [
         "desc:Dell Inc. DELL U4025QW,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
-        "eDP-1,preferred,auto,1" # Built-in (auto-positioned next to external)
+        "eDP-1,preferred,auto,1" # Built-in laptop screen
         ",preferred,auto,1" # Fallback for any other monitors
       ];
 
@@ -84,6 +84,7 @@ in
         # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
         # First set Catppuccin Mocha crust color, then transition to wallpaper
         "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+        "swaync" # Notification center (replacing mako)
       ];
 
       # =======================================================================
@@ -113,7 +114,7 @@ in
         "$mod SHIFT, K, movewindow, u"
         "$mod SHIFT, J, movewindow, d"
 
-        # Workspaces (1-5 on laptop, 6-10 on external monitor)
+        # Workspaces
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
         "$mod, 3, workspace, 3"
@@ -125,7 +126,7 @@ in
         "$mod, 9, workspace, 9"
         "$mod, 0, workspace, 10"
 
-        # Move to workspace
+        # Move window to workspace
         "$mod SHIFT, 1, movetoworkspace, 1"
         "$mod SHIFT, 2, movetoworkspace, 2"
         "$mod SHIFT, 3, movetoworkspace, 3"
@@ -265,30 +266,13 @@ in
       };
 
       # =======================================================================
-      # WORKSPACE RULES
-      # =======================================================================
-      # Bind workspaces to specific monitors
-      # 1-5 on laptop (eDP-1), 6-10 on external (Dell ultrawide)
-      workspace = [
-        "1, monitor:eDP-1, default:true"
-        "2, monitor:eDP-1"
-        "3, monitor:eDP-1"
-        "4, monitor:eDP-1"
-        "5, monitor:eDP-1"
-        "6, monitor:desc:Dell Inc. DELL U4025QW, default:true"
-        "7, monitor:desc:Dell Inc. DELL U4025QW"
-        "8, monitor:desc:Dell Inc. DELL U4025QW"
-        "9, monitor:desc:Dell Inc. DELL U4025QW"
-        "10, monitor:desc:Dell Inc. DELL U4025QW"
-      ];
-
-      # =======================================================================
       # MISC SETTINGS
       # =======================================================================
       misc = {
         focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
         disable_hyprland_logo = true;
         disable_splash_rendering = true;
+        vfr = true; # Variable Frame Rate - only render when needed (saves CPU)
       };
 
       # =======================================================================
@@ -381,24 +365,6 @@ in
   catppuccin.rofi.enable = true;
 
   # ==========================================================================
-  # MAKO - Notification Daemon
-  # ==========================================================================
-  # Lightweight notification daemon for Wayland
-  # Test with: notify-send "Title" "Body text"
-  services.mako = {
-    enable = true;
-    settings = {
-      anchor = "top-center";
-      default-timeout = 5000;
-      width = 400;
-      margin = "10";
-      padding = "15";
-      border-radius = 8;
-      border-size = 2;
-    };
-  };
-
-  # ==========================================================================
   # WALLPAPERS
   # ==========================================================================
   # Symlink Catppuccin landscape wallpapers to ~/.wallpapers
@@ -410,6 +376,7 @@ in
   # ==========================================================================
   # Essential tools for a functional Wayland desktop
   home.packages = with pkgs; [
+    jq # JSON query tool
     wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
     cliphist # Clipboard history manager (stores history, pairs with rofi)
     wtype # Wayland keyboard input simulator (for auto-paste after clipboard selection)

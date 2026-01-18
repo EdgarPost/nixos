@@ -74,6 +74,11 @@
   services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
 
+  # Disable Thunderbolt power management to prevent USB-C dock/monitor disconnections
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{power/control}="on"
+  '';
+
   # ==========================================================================
   # INTEL OPTIMIZATIONS
   # ==========================================================================
@@ -84,22 +89,24 @@
   services.thermald.enable = true;
 
   # fw-fanctrl: Custom fan curves for quieter operation
-  # Default strategy keeps fans off until 65°C, then ramps gradually
+  # "smooth" strategy: constant low fan noise, gradual ramp (no sudden spikes)
   # Revert to default: systemctl stop fw-fanctrl
   hardware.fw-fanctrl = {
     enable = true;
     config = {
-      defaultStrategy = "lazy";
+      defaultStrategy = "smooth";
       strategies = {
-        lazy = {
+        smooth = {
           fanSpeedUpdateFrequency = 5;
-          movingAverageInterval = 30;
+          movingAverageInterval = 30; # Longer averaging = smoother response
           speedCurve = [
-            { temp = 0; speed = 0; }
-            { temp = 65; speed = 0; }
-            { temp = 70; speed = 25; }
+            { temp = 0; speed = 15; }   # Always run at minimum 15%
+            { temp = 50; speed = 15; }
+            { temp = 60; speed = 20; }
+            { temp = 65; speed = 25; }
+            { temp = 70; speed = 35; }
             { temp = 75; speed = 50; }
-            { temp = 80; speed = 75; }
+            { temp = 80; speed = 70; }
             { temp = 85; speed = 100; }
           ];
         };
@@ -132,10 +139,10 @@
 
   # LOGIND - The systemd login manager
   # Controls what happens on lid close, power button, etc.
-  # On battery: suspend. On AC power: let Niri handle it (auto-disables internal display)
+  # Always ignore lid close - Hyprland handles display switching, suspend manually
   services.logind.settings.Login = {
-    HandleLidSwitch = "suspend";              # Suspend when lid closed (battery)
-    HandleLidSwitchExternalPower = "ignore";  # Let Niri handle (disables eDP-1)
+    HandleLidSwitch = "ignore";               # Never suspend on lid close
+    HandleLidSwitchExternalPower = "ignore";  # Let Hyprland handle (disables eDP-1)
     HandleLidSwitchDocked = "ignore";         # Keep running if docked
     HandlePowerKey = "ignore";                # Let Niri show confirmation menu
   };
