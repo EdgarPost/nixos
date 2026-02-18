@@ -214,8 +214,8 @@ in
       # Visual settings for windows and gaps
       # Border colors are set by the catppuccin module automatically
       general = {
-        gaps_in = 15;
-        gaps_out = 30;
+        gaps_in = 8;
+        gaps_out = 16;
         border_size = 2;
         "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
       };

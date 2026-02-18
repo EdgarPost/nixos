@@ -46,7 +46,7 @@
       # FORMATTERS - Code formatting on save
       # =====================================================================
       stylua           # Lua formatter
-      nixfmt-rfc-style # Nix formatter (follows RFC style guide)
+      nixfmt           # Nix formatter (follows RFC style guide)
       prettierd        # JS/TS/HTML/CSS formatter (daemon mode = fast)
 
       # =====================================================================

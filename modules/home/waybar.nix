@@ -94,128 +94,154 @@ in
 {
   # GUI applications opened by clicking waybar modules
   home.packages = with pkgs; [
-    pavucontrol          # Volume control (pulseaudio module click)
-    blueman              # Bluetooth manager (bluetooth module click)
+    pavucontrol # Volume control (pulseaudio module click)
+    blueman # Bluetooth manager (bluetooth module click)
     networkmanagerapplet # Network settings (network module click)
   ];
 
   programs.waybar = {
     enable = true;
-    systemd.enable = true;  # Managed by systemd - restarts after rebuild/crash
-    systemd.target = "hyprland-session.target";  # Start with Hyprland
+    systemd.enable = true; # Managed by systemd - restarts after rebuild/crash
+    systemd.target = "hyprland-session.target"; # Start with Hyprland
 
     # ========================================================================
     # WAYBAR CONFIGURATION (JSON)
     # ========================================================================
     # settings is a list because waybar can have multiple bars
     # We only use one bar here
-    settings = [{
-      layer = "top";
-      position = "top";
-      height = 30;
-      margin-top = 15;
-      margin-left = 15;
-      margin-right = 15;
-      margin-bottom = 0;
+    settings = [
+      {
+        layer = "top";
+        position = "top";
+        height = 32;
+        margin-top = 16;
+        margin-left = 16;
+        margin-right = 16;
+        margin-bottom = 0;
 
-      modules-left = [ "hyprland/workspaces" ];
-      modules-center = [ "custom/notification" "clock" ];
-      modules-right = [ "group/status" "tray" ];
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [
+          "custom/notification"
+          "clock"
+        ];
+        modules-right = [
+          "group/status"
+          "tray"
+        ];
 
-      "group/status" = {
-        orientation = "horizontal";
-        modules = [ "custom/cpu" "custom/memory" "custom/volume" "bluetooth" "network" "battery" ];
-      };
-
-      "hyprland/workspaces" = {
-        format = "{id}";
-        on-click = "activate";
-        all-outputs = false;
-      };
-
-      clock = {
-        format = "{:%a %d %b  %H:%M}";
-        tooltip-format = "{:%A, %B %d, %Y}";
-      };
-
-      battery = {
-        states = {
-          warning = 30;
-          critical = 15;
+        "group/status" = {
+          orientation = "horizontal";
+          modules = [
+            "custom/cpu"
+            "custom/memory"
+            "custom/volume"
+            "bluetooth"
+            "network"
+            "battery"
+          ];
         };
-        format = "{icon}";
-        format-charging = "󰂄";
-        format-plugged = "󰚥";
-        tooltip-format = "{capacity}%";
-        format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
-      };
 
-      "custom/cpu" = {
-        exec = "${waybar-cpu}";
-        return-type = "json";
-        format = "{}";
-        interval = 3;
-      };
-
-      "custom/memory" = {
-        exec = "${waybar-mem}";
-        return-type = "json";
-        format = "{}";
-        interval = 3;
-      };
-
-      "custom/volume" = {
-        exec = "${waybar-volume}";
-        return-type = "json";
-        format = "{}";
-        interval = 5;
-        signal = 10;
-        on-click = "pavucontrol";
-        on-scroll-up = "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar";
-        on-scroll-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar";
-      };
-
-      network = {
-        interface = "wl*";
-        format-wifi = "󰖩";
-        format-ethernet = "󰈀";
-        format-disconnected = "󰖪";
-        tooltip-format-wifi = "{essid} ({signalStrength}%)";
-        tooltip-format-ethernet = "{ifname}: {ipaddr}";
-        tooltip-format-disconnected = "Disconnected";
-        on-click = "nm-connection-editor";
-      };
-
-      bluetooth = {
-        format = "󰂯";
-        format-connected = "󰂱 {device_alias}";
-        format-disabled = "󰂲";
-        tooltip-format = "{status}";
-        on-click = "blueman-manager";
-      };
-
-      tray = {
-        spacing = 10;
-      };
-
-      "custom/notification" = {
-        tooltip = false;
-        format = "{icon}   {text}";
-        format-icons = {
-          notification = "󰂚";
-          none = "󰂜";
-          dnd-notification = "󰂛";
-          dnd-none = "󰪑";
-          inhibited-notification = "󰂛";
-          inhibited-none = "󰪑";
+        "hyprland/workspaces" = {
+          format = "{id}";
+          on-click = "activate";
+          all-outputs = false;
         };
-        return-type = "json";
-        exec = "${waybar-notification}";
-        on-click = "swaync-client -t -sw";
-        on-click-right = "swaync-client -d -sw";
-        escape = true;
-      };
-    }];
+
+        clock = {
+          format = "{:%a %d %b  %H:%M}";
+          tooltip-format = "{:%A, %B %d, %Y}";
+        };
+
+        battery = {
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          format = "{icon}";
+          format-charging = "󰂄";
+          format-plugged = "󰚥";
+          tooltip-format = "{capacity}%";
+          format-icons = [
+            "󰁺"
+            "󰁻"
+            "󰁼"
+            "󰁽"
+            "󰁾"
+            "󰁿"
+            "󰂀"
+            "󰂁"
+            "󰂂"
+            "󰁹"
+          ];
+        };
+
+        "custom/cpu" = {
+          exec = "${waybar-cpu}";
+          return-type = "json";
+          format = "{}";
+          interval = 3;
+        };
+
+        "custom/memory" = {
+          exec = "${waybar-mem}";
+          return-type = "json";
+          format = "{}";
+          interval = 3;
+        };
+
+        "custom/volume" = {
+          exec = "${waybar-volume}";
+          return-type = "json";
+          format = "{}";
+          interval = 5;
+          signal = 10;
+          on-click = "pavucontrol";
+          on-scroll-up = "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar";
+          on-scroll-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar";
+        };
+
+        network = {
+          interface = "wl*";
+          format-wifi = "󰖩";
+          format-ethernet = "󰈀";
+          format-disconnected = "󰖪";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)";
+          tooltip-format-ethernet = "{ifname}: {ipaddr}";
+          tooltip-format-disconnected = "Disconnected";
+          on-click = "nm-connection-editor";
+        };
+
+        bluetooth = {
+          format = "󰂯";
+          format-connected = "󰂱 {device_alias}";
+          format-disabled = "󰂲";
+          tooltip-format = "{status}";
+          on-click = "blueman-manager";
+        };
+
+        tray = {
+          spacing = 10;
+        };
+
+        "custom/notification" = {
+          tooltip = false;
+          format = "{icon}   {text}";
+          format-icons = {
+            notification = "󰂚";
+            none = "󰂜";
+            dnd-notification = "󰂛";
+            dnd-none = "󰪑";
+            inhibited-notification = "󰂛";
+            inhibited-none = "󰪑";
+          };
+          return-type = "json";
+          exec = "${waybar-notification}";
+          on-click = "swaync-client -t -sw";
+          on-click-right = "swaync-client -d -sw";
+          escape = true;
+        };
+      }
+    ];
 
     # ========================================================================
     # WAYBAR STYLING (CSS)

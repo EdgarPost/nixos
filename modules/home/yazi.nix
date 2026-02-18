@@ -31,6 +31,7 @@
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;  # `y` shell function to cd on exit
+    shellWrapperName = "y";        # New default (was "yy" before 26.05)
 
     settings = {
       manager = {
