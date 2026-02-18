@@ -39,6 +39,9 @@
   # Add user to podman-related groups for rootless operation
   users.users.${user.name}.extraGroups = [ "podman" ];
 
+  # Suppress "podman-compose as external compose provider" warning
+  environment.sessionVariables.PODMAN_COMPOSE_WARNING_LOGS = "false";
+
   # Container tools
   environment.systemPackages = with pkgs; [
     podman-compose  # Docker Compose alternative for podman
