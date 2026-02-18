@@ -65,7 +65,7 @@
 
   # Enable fingerprint authentication for screen unlock and 1Password (not sudo/terminal)
   security.pam.services.sudo.fprintAuth = false;  # Explicitly disable for terminal
-  security.pam.services.swaylock.fprintAuth = true;
+  security.pam.services.hyprlock.fprintAuth = true;
   security.pam.services.polkit-1.fprintAuth = true;
 
   # Power management for better battery life
@@ -144,7 +144,7 @@
     HandleLidSwitch = "ignore";               # Never suspend on lid close
     HandleLidSwitchExternalPower = "ignore";  # Let Hyprland handle (disables eDP-1)
     HandleLidSwitchDocked = "ignore";         # Keep running if docked
-    HandlePowerKey = "ignore";                # Let Niri show confirmation menu
+    HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
   };
 
   # FIRMWARE UPDATES via fwupd

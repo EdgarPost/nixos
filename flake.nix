@@ -194,7 +194,6 @@
                   inputs.roon-cli.homeManagerModules.default
                   # Claude Code extensions - commands, agents, skills
                   inputs.claude-code.homeManagerModules.default
-                  # Note: niri home module is included via niri.nixosModules.niri
                   # Main home configuration
                   ./home
                 ];

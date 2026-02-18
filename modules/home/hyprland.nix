@@ -163,6 +163,15 @@ in
 
         # Audio profile switcher (headset, meeting, mobile, analog)
         "$mod, A, exec, audio-menu"
+
+        # Focus browser (or launch if not running)
+        "$mod, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
+
+        # Focus Slack (or launch if not running)
+        "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
+
+        # Focus Yazi (or launch if not running)
+        "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
       ];
 
       # =======================================================================
@@ -340,8 +349,18 @@ in
         }
       ];
 
-      # No input-field or label = completely clean look
-      label = [ ]; # Remove default keyboard layout indicator
+      input-field = [
+        {
+          monitor = "";
+          size = "300, 50";
+          outline_thickness = 2;
+          fade_on_empty = true;
+          placeholder_text = "";
+          hide_input = false;
+        }
+      ];
+
+      label = [ ];
     };
   };
 
