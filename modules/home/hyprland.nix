@@ -200,9 +200,9 @@ in
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        # Lid close: move focus to external monitor, then disable laptop screen
+        # Lid close: lock screen, move focus to external monitor, then disable laptop screen
         # The sleep prevents a race condition that can cause monitor signal loss
-        ", switch:on:Lid Switch, exec, hyprctl dispatch focusmonitor 'desc:Dell Inc. DELL U4025QW' && sleep 0.5 && hyprctl keyword monitor eDP-1,disable"
+        ", switch:on:Lid Switch, exec, hyprlock & hyprctl dispatch focusmonitor 'desc:Dell Inc. DELL U4025QW' && sleep 0.5 && hyprctl keyword monitor eDP-1,disable"
         # Lid open: re-enable laptop screen
         ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
       ];
