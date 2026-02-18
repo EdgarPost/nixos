@@ -148,6 +148,11 @@
 
   # Require password for sudo (wheel group can sudo, but must authenticate)
   security.sudo.wheelNeedsPassword = true;
+  # Share sudo credential across all terminal sessions for the same user
+  # (default is per-TTY, requiring re-auth in each new terminal)
+  security.sudo.extraConfig = ''
+    Defaults timestamp_type=global
+  '';
 
   # ==========================================================================
   # COMPATIBILITY
