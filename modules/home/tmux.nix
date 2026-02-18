@@ -1,4 +1,4 @@
-# Tmux for servers (headless environments without zellij)
+# Tmux for servers (headless environments)
 { pkgs, ... }:
 
 {
