@@ -223,11 +223,6 @@ in
         # Color-code contexts for safety (prod = red, local = green)
         contexts = [
           {
-            context_pattern = "k3s-local";
-            style = "green";
-            context_alias = "k3s";
-          }
-          {
             context_pattern = ".*prod.*";
             style = "bold red";
           }

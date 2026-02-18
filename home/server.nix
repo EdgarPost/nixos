@@ -116,7 +116,6 @@
         style = "cyan";
 
         contexts = [
-          { context_pattern = "k3s-local"; style = "green"; context_alias = "k3s"; }
           { context_pattern = ".*prod.*"; style = "bold red"; }
           { context_pattern = ".*acc.*"; style = "bold yellow"; }
         ];

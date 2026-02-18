@@ -33,7 +33,6 @@
     ../../modules/nixos/hyprland.nix   # Desktop compositor
     ../../modules/nixos/greetd.nix     # Login manager
     ../../modules/nixos/podman.nix     # Container runtime
-    ../../modules/nixos/k3s.nix        # Local Kubernetes cluster
     ../../modules/nixos/tailscale.nix  # Mesh VPN
     ../../modules/nixos/syncthing.nix  # File sync (Code folder on all hosts)
   ];

@@ -50,7 +50,6 @@ in
     configs = {
       # Kubeconfig files to search for contexts
       include = [
-        "~/.kube/k3s.yaml"        # Local k3s cluster
         "~/.kube/gardener-*.yaml" # Gardener clusters (when added)
         "~/.kube/config"          # Default location (if any)
       ];
