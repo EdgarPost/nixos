@@ -88,6 +88,14 @@
   # Provides nmcli, nmtui, and integrates with desktop applets
   networking.networkmanager.enable = true;
 
+  # Use systemd-resolved for DNS so Tailscale MagicDNS and
+  # NetworkManager can coexist via split DNS
+  services.resolved = {
+    enable = true;
+    fallbackDns = [ "1.1.1.1" "8.8.8.8" ];
+  };
+  networking.networkmanager.dns = "systemd-resolved";
+
   # Explicit firewall enable (NixOS default, but explicit is better)
   networking.firewall.enable = true;
 
