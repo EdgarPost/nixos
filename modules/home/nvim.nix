@@ -39,7 +39,7 @@
       # =====================================================================
       lua-language-server                     # Lua (for neovim config)
       nil                                      # Nix (NixOS-native, better than rnix)
-      nodePackages.typescript-language-server  # TypeScript/JavaScript
+      vtsls                                    # TypeScript/JavaScript (workspace diagnostics)
       nodePackages.vscode-langservers-extracted # HTML, CSS, JSON, ESLint (from VS Code)
 
       # =====================================================================

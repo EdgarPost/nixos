@@ -9,7 +9,7 @@ return {
         -- Servers installed via Nix (in nvim.nix)
         lua_ls = {},
         nil_ls = {},  -- Nix LSP
-        ts_ls = {},
+        vtsls = {},
         html = {},
         cssls = {},
         jsonls = {},
