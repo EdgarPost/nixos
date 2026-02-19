@@ -5,11 +5,11 @@ return {
     -- Load on VimEnter too so LSP starts without opening a file
     event = { "LazyFile", "VimEnter" },
     opts = {
+      inlay_hints = { enabled = false },
       servers = {
         -- Servers installed via Nix (in nvim.nix)
         lua_ls = {},
         nil_ls = {},  -- Nix LSP
-        vtsls = {},
         html = {},
         cssls = {},
         jsonls = {},
