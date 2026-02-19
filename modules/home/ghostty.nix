@@ -28,6 +28,7 @@
       window-padding-y = 8;
       background-opacity = 0.9;        # Subtle transparency
       background = "#1e1e2e";          # Catppuccin mocha base (transparency applied on top)
+      adjust-cell-height = "20%";        # Extra line spacing
 
       # =======================================================================
       # BEHAVIOR
