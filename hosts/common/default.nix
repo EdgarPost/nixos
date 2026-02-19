@@ -91,7 +91,7 @@
   # NetworkManager can coexist via split DNS
   services.resolved = {
     enable = true;
-    fallbackDns = [ "1.1.1.1" "8.8.8.8" ];
+    settings.Resolve.FallbackDNS = [ "1.1.1.1" "8.8.8.8" ];
   };
   networking.networkmanager.dns = "systemd-resolved";
 
