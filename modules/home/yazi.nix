@@ -39,6 +39,9 @@
         sort_by = "natural";     # Natural sort (file1, file2, file10)
         sort_dir_first = true;   # Directories before files
       };
+      opener.edit = [
+        { run = ''nvim "$@"''; block = true; desc = "Edit in nvim"; }
+      ];
     };
 
     # CUSTOM KEYBINDINGS
