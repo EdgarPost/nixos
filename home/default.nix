@@ -34,7 +34,7 @@
 let
   # Shared font configuration - used by terminal, waybar, etc.
   font = {
-    family = "JetBrains Mono";
+    family = "MonoLisa";
     size = 14;
   };
 in
@@ -244,6 +244,17 @@ in
   # CURSOR THEME
   # ==========================================================================
   # Consistent cursor across all applications (X11, Wayland, GTK, Qt)
+
+  # MonoLisa: proprietary font, synced via Syncthing to ~/Resources
+  home.activation.installMonoLisa = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    FONT_SRC="$HOME/Resources/Fonts/MonoLisa-Plus-stable/ttf"
+    FONT_DST="$HOME/.local/share/fonts/MonoLisa"
+    if [ -d "$FONT_SRC" ]; then
+      mkdir -p "$FONT_DST"
+      cp -u "$FONT_SRC"/*.ttf "$FONT_DST/"
+      ${pkgs.fontconfig}/bin/fc-cache -f "$FONT_DST"
+    fi
+  '';
 
   home.pointerCursor = {
     name = "macOS";
