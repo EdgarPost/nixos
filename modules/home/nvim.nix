@@ -41,6 +41,7 @@
       nil                                      # Nix (NixOS-native, better than rnix)
       vtsls                                    # TypeScript/JavaScript (workspace diagnostics)
       nodePackages.vscode-langservers-extracted # HTML, CSS, JSON, ESLint (from VS Code)
+      yaml-language-server                      # YAML (Kubernetes schema validation)
 
       # =====================================================================
       # FORMATTERS - Code formatting on save
