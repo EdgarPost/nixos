@@ -83,11 +83,6 @@
   # INTEL OPTIMIZATIONS
   # ==========================================================================
 
-  # Thermald: Proactive thermal management for Intel CPUs
-  # Prevents overheating before hardware throttling kicks in
-  # Uses DPTF adaptive tables for intelligent fan control
-  services.thermald.enable = true;
-
   # fw-fanctrl: Custom fan curves for quieter operation
   # "smooth" strategy: constant low fan noise, gradual ramp (no sudden spikes)
   # Revert to default: systemctl stop fw-fanctrl
@@ -98,16 +93,19 @@
       strategies = {
         smooth = {
           fanSpeedUpdateFrequency = 5;
-          movingAverageInterval = 30; # Longer averaging = smoother response
+          movingAverageInterval = 45; # Longer averaging = smoother response
           speedCurve = [
-            { temp = 0; speed = 15; }   # Always run at minimum 15%
+            { temp = 0;  speed = 15; }
             { temp = 50; speed = 15; }
             { temp = 60; speed = 20; }
             { temp = 65; speed = 25; }
-            { temp = 70; speed = 35; }
-            { temp = 75; speed = 50; }
-            { temp = 80; speed = 70; }
-            { temp = 85; speed = 100; }
+            { temp = 70; speed = 30; }
+            { temp = 75; speed = 40; }
+            { temp = 78; speed = 50; }
+            { temp = 80; speed = 60; }
+            { temp = 83; speed = 75; }
+            { temp = 85; speed = 90; }
+            { temp = 90; speed = 100; }
           ];
         };
       };
