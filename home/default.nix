@@ -208,6 +208,11 @@ in
   # Cross-shell prompt that shows: directory, git status, language versions
   # Configurable via ~/.config/starship.toml (or starship.settings here)
 
+  programs.zoxide = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
   programs.starship = {
     enable = true;
     enableFishIntegration = true; # Add init to fish config automatically
