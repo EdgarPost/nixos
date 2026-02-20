@@ -75,8 +75,10 @@
   powerManagement.enable = true;
 
   # Disable Thunderbolt power management to prevent USB-C dock/monitor disconnections
+  # Set built-in webcam defaults (reduce saturation/sharpness, disable backlight comp)
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{power/control}="on"
+    ACTION=="add", SUBSYSTEM=="video4linux", ATTR{name}=="Laptop Webcam Module (2nd Gen):", RUN+="${pkgs.v4l-utils}/bin/v4l2-ctl -d $devnode --set-ctrl=saturation=51,sharpness=2,backlight_compensation=0,power_line_frequency=2"
   '';
 
   # ==========================================================================
@@ -126,11 +128,8 @@
   environment.variables.LIBVA_DRIVER_NAME = "iHD";
 
   # ==========================================================================
-  # WEBCAM (Logitech C920)
+  # WEBCAM
   # ==========================================================================
-  # v4l2 utilities for webcam control and testing
-  # Test with: v4l2-ctl --list-devices
-  # View feed: mpv av://v4l2:/dev/video0
   environment.systemPackages = with pkgs; [
     v4l-utils # v4l2-ctl for webcam control
   ];
