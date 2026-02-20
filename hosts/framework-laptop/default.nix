@@ -87,6 +87,7 @@
 
   # fw-fanctrl: Custom fan curves for quieter operation
   # "smooth" strategy: constant low fan noise, gradual ramp (no sudden spikes)
+  # Benchmarked after repaste: full stress peaks at 84°C, steady state 82°C
   # Revert to default: systemctl stop fw-fanctrl
   hardware.fw-fanctrl = {
     enable = true;
@@ -97,17 +98,18 @@
           fanSpeedUpdateFrequency = 5;
           movingAverageInterval = 45; # Longer averaging = smoother response
           speedCurve = [
-            { temp = 0;  speed = 15; }
-            { temp = 50; speed = 15; }
-            { temp = 60; speed = 20; }
-            { temp = 65; speed = 25; }
-            { temp = 70; speed = 30; }
-            { temp = 75; speed = 40; }
-            { temp = 78; speed = 50; }
-            { temp = 80; speed = 60; }
-            { temp = 83; speed = 75; }
-            { temp = 85; speed = 90; }
-            { temp = 90; speed = 100; }
+            { temp = 0;  speed = 15; }   # Silent baseline
+            { temp = 55; speed = 15; }   # Stay silent up to 55°C
+            { temp = 65; speed = 20; }   # Light use
+            { temp = 70; speed = 25; }   # Moderate use
+            { temp = 75; speed = 35; }   # Ramping up
+            { temp = 78; speed = 40; }   # Approaching load zone
+            { temp = 80; speed = 50; }   # Full load zone
+            { temp = 82; speed = 55; }   # Steady state under stress
+            { temp = 84; speed = 60; }   # Observed peak under stress
+            { temp = 87; speed = 75; }   # Above normal, ramp up
+            { temp = 90; speed = 90; }   # Safety ramp
+            { temp = 95; speed = 100; }  # Full blast
           ];
         };
       };
