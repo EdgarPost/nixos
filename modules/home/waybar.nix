@@ -37,15 +37,13 @@ let
     usage=$(echo "$cpu_info" | cut -d' ' -f1)
     lvl=$(echo "$cpu_info" | cut -d' ' -f2)
 
-    # Get CPU temperature (try common thermal zones)
+    # Get CPU package temperature
     temp=""
-    for zone in /sys/class/thermal/thermal_zone*/temp; do
-      if [ -f "$zone" ]; then
-        t=$(cat "$zone" 2>/dev/null)
-        if [ -n "$t" ] && [ "$t" -gt 0 ]; then
-          temp=$((t / 1000))
-          break
-        fi
+    for zone in /sys/class/thermal/thermal_zone*/; do
+      if [ "$(cat "$zone/type" 2>/dev/null)" = "x86_pkg_temp" ]; then
+        t=$(cat "$zone/temp" 2>/dev/null)
+        [ -n "$t" ] && temp=$((t / 1000))
+        break
       fi
     done
 
