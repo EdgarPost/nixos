@@ -6,10 +6,13 @@ My personal NixOS configuration using flakes and Home Manager.
 
 ```bash
 # Apply configuration
-sudo nixos-rebuild switch --flake .#framework
+sudo nixos-rebuild switch --flake .#framework-laptop
 
 # Test without making default boot entry
-sudo nixos-rebuild test --flake .#framework
+sudo nixos-rebuild test --flake .#framework-laptop
+
+# Apply standalone Home Manager config on a server
+home-manager switch --flake .#edgar@server
 
 # Update all dependencies
 nix flake update
@@ -28,27 +31,45 @@ nix flake lock --update-input nixpkgs
 │   ├── common/               # Shared system configuration
 │   │   ├── default.nix       # Nix settings, packages, services
 │   │   └── users.nix         # User accounts and groups
-│   ├── framework/            # Framework laptop
+│   ├── framework-laptop/     # Framework laptop
 │   │   ├── default.nix       # Host-specific: bootloader, hardware features
 │   │   └── hardware-configuration.nix  # Auto-generated hardware config
 │   └── utm-vm/               # UTM VM (aarch64 testing)
+│       ├── default.nix
+│       └── hardware-configuration.nix
 ├── home/
-│   └── default.nix           # Home Manager entry point
+│   ├── default.nix           # Home Manager entry point (desktop)
+│   └── server.nix            # Standalone Home Manager for headless servers
 └── modules/
     ├── nixos/                # System-level modules (require sudo)
+    │   ├── 1password.nix     # Password manager + SSH agent
+    │   ├── bluetooth.nix     # Bluetooth audio (SBC-XQ, mSBC codecs)
+    │   ├── greetd.nix        # Login manager (tuigreet)
     │   ├── hyprland.nix      # Compositor, portals, fonts
-    │   ├── greetd.nix        # Login manager
-    │   └── 1password.nix     # Password manager + SSH agent
+    │   ├── podman.nix        # Rootless containers (Docker compat)
+    │   ├── roon-bridge.nix   # Roon audio bridge
+    │   ├── syncthing.nix     # File sync with PARA folder support
+    │   └── tailscale.nix     # Mesh VPN
     └── home/                 # User-level modules (no sudo)
-        ├── hyprland.nix      # Keybindings, appearance, Rofi, Mako
-        ├── ghostty.nix       # Terminal emulator
-        ├── tmux.nix          # Terminal multiplexer
-        ├── nvim.nix          # Neovim + LSPs (Nix-managed)
-        ├── catppuccin.nix    # Unified theming
-        ├── waybar.nix        # Status bar
+        ├── aliases.nix       # Fish shell aliases
         ├── atuin.nix         # Shell history sync
-        ├── yazi.nix          # File manager
-        └── claude-code.nix   # AI assistant config
+        ├── audio.nix         # Audio device selection (rofi menus)
+        ├── catppuccin.nix    # Unified theming (Mocha)
+        ├── claude-code.nix   # AI assistant config
+        ├── gardener.nix      # SAP Gardener CLI tools
+        ├── ghostty.nix       # Terminal emulator + cursor smear shader
+        ├── github.nix        # GitHub CLI with 1Password
+        ├── hyprland.nix      # Keybindings, appearance, wallpapers
+        ├── kubernetes.nix    # Kubie + kubectx
+        ├── mistral.nix       # Mistral API + Vibe CLI
+        ├── nvim.nix          # Neovim + LSPs (Nix-managed)
+        ├── openstack.nix     # OpenStack CLI with 1Password
+        ├── roon-cli.nix      # Roon CLI service
+        ├── swaync.nix        # Notification center
+        ├── tmux.nix          # Terminal multiplexer
+        ├── waybar.nix        # Status bar
+        ├── workspaces.nix    # Project workspace management
+        └── yazi.nix          # File manager
 ```
 
 ## Key Concepts
@@ -70,6 +91,8 @@ Flakes provide reproducible builds by pinning exact dependency versions:
 | `environment.systemPackages` | `home.packages` |
 
 Both are managed together via `nixos-rebuild switch` (Home Manager as NixOS module).
+
+Standalone Home Manager configs (`home/server.nix`) can also be used on non-NixOS servers.
 
 ### Module System
 
@@ -106,24 +129,32 @@ Then available in any module:
 
 | Host | Architecture | Description |
 |------|--------------|-------------|
-| `framework` | x86_64-linux | Framework Laptop 12" (12th gen Intel) |
+| `framework-laptop` | x86_64-linux | Framework Laptop 12" (12th gen Intel) |
 | `utm-vm` | aarch64-linux | UTM VM on Apple Silicon for testing |
+| `edgar@server` | x86_64-linux | Standalone Home Manager for servers |
+| `edgar@server-arm` | aarch64-linux | Standalone Home Manager for ARM servers |
 
 ## Features
 
-- **Hyprland** - Wayland compositor with animations
-- **Catppuccin Mocha** - Consistent theming across 10+ apps
+- **Hyprland** - Wayland compositor with ultrawide + laptop multi-monitor
+- **Catppuccin Mocha** - Consistent theming across 15+ apps
 - **Neovim** - LSPs and formatters managed by Nix (not Mason)
 - **Ghostty** - GPU-accelerated terminal with cursor smear shader
-- **Tmux** - Vim-tmux-navigator integration (Ctrl+hjkl)
-- **1Password** - SSH agent integration (no key files)
+- **Tmux** - Vim-style pane navigation, Fish shell
+- **1Password** - SSH agent + CLI secret injection (GitHub, OpenStack, Gardener, Mistral)
 - **Atuin** - Shell history with cloud sync
+- **Waybar** - Status bar with CPU temp, battery, Bluetooth, notifications
+- **Podman** - Rootless containers with Docker compatibility
+- **Tailscale** - Mesh VPN with MagicDNS
+- **Syncthing** - File sync with PARA folder support
+- **Zoxide** - Smart directory jumping
+- **Project workspaces** - Hyprland workspace management with ghq repos
 
 ## Common Tasks
 
 ```bash
 # Rebuild and switch
-sudo nixos-rebuild switch --flake .#framework
+sudo nixos-rebuild switch --flake .#framework-laptop
 
 # Garbage collect old generations
 sudo nix-collect-garbage -d
