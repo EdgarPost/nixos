@@ -37,6 +37,7 @@
       shell-integration = "fish";      # Enable Fish-specific features
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
       copy-on-select = "clipboard";    # Auto-copy selections to clipboard
+      desktop-notifications = false;   # Disable OSC desktop notifications (e.g. from Claude Code)
 
       # =======================================================================
       # KEYBINDINGS
