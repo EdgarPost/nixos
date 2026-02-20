@@ -93,7 +93,7 @@ in
       # Format: "MODIFIERS, key, action, args"
       # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
       bind = [
-        "$mod, Return, exec, $terminal"
+        "$mod, Return, exec, project-terminal"
         "$mod, D, exec, $menu"
         "$mod, C, exec, $terminal -e khal interactive"
         "$mod, Q, killactive"
@@ -157,12 +157,16 @@ in
         # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
         "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
 
-        # Power menu (triggered by power button or SUPER+P)
+        # Power menu (triggered by power button)
         # Shows rofi menu with power options instead of immediate shutdown
         ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
 
         # Audio profile switcher (headset, meeting, mobile, analog)
         "$mod, A, exec, audio-menu"
+
+        # Project workspaces: cycle active (P) / pick from list (Shift+P)
+        "$mod, P, exec, project-cycle"
+        "$mod SHIFT, P, exec, project-picker"
 
         # Focus browser (or launch if not running)
         "$mod, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"

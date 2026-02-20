@@ -175,6 +175,23 @@ in
     }
   '';
 
+  # WirePlumber: Set built-in mic to unmuted at 75% volume by default
+  xdg.configFile."wireplumber/wireplumber.conf.d/54-default-mic-volume.conf".text = ''
+    monitor.alsa.rules = [
+      {
+        matches = [
+          { node.name = "~alsa_input.pci-*" }
+        ]
+        actions = {
+          update-props = {
+            node.softvolume.mute = false
+            node.softvolume.volume = 0.75
+          }
+        }
+      }
+    ]
+  '';
+
   # WirePlumber: Prioritize Logitech C920 webcam over built-in camera
   # Higher priority = preferred default when multiple cameras available
   xdg.configFile."wireplumber/wireplumber.conf.d/53-prefer-c920-webcam.conf".text = ''

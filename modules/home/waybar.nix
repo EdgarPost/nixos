@@ -142,9 +142,10 @@ in
         };
 
         "hyprland/workspaces" = {
-          format = "{id}";
+          format = "{name}";
           on-click = "activate";
           all-outputs = false;
+          sort-by-name = true;
         };
 
         clock = {
