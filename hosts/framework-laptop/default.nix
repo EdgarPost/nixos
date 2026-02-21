@@ -63,10 +63,10 @@
   # After enabling, enroll fingerprint with: fprintd-enroll
   services.fprintd.enable = true;
 
-  # Enable fingerprint authentication for screen unlock and 1Password (not sudo/terminal)
-  security.pam.services.sudo.fprintAuth = false;  # Explicitly disable for terminal
-  security.pam.services.hyprlock.fprintAuth = true;
-  security.pam.services.polkit-1.fprintAuth = true;
+  # Disable fingerprint authentication everywhere (password-only)
+  security.pam.services.sudo.fprintAuth = false;
+  security.pam.services.hyprlock.fprintAuth = false;
+  security.pam.services.polkit-1.fprintAuth = false;
 
   # Power management for better battery life
   # power-profiles-daemon: GUI-controllable profiles (power-saver, balanced, performance)
