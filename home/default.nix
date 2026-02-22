@@ -62,6 +62,7 @@ in
     ../modules/home/github.nix # GitHub CLI with 1Password
     ../modules/home/audio.nix # Audio profile switching (headset, meeting, mobile, analog)
     ../modules/home/workspaces.nix # Project workspace picker (Super+P)
+    ../modules/home/direnv.nix # Per-directory environments with nix-direnv
     ../modules/home/roon-cli.nix # Roon CLI for terminal music control
     # ../modules/home/calendar.nix # Calendar & contacts (vdirsyncer + khal + khard)
   ];
@@ -99,7 +100,6 @@ in
       ghq # Git repository manager (ghq get, ghq list)
 
       # Development
-      nodejs_22 # JavaScript runtime
       claude-code # AI coding assistant
       inputs.opencode.packages.${stdenv.hostPlatform.system}.default # AI coding agent (latest from GitHub)
 
