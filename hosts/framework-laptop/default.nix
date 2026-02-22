@@ -74,6 +74,9 @@
   services.power-profiles-daemon.enable = true;
   powerManagement.enable = true;
 
+  # Thunderbolt device authorization (required for USB-C dock/monitor hotplug)
+  services.hardware.bolt.enable = true;
+
   # Disable Thunderbolt power management to prevent USB-C dock/monitor disconnections
   # Set built-in webcam defaults (reduce saturation/sharpness, disable backlight comp)
   services.udev.extraRules = ''
