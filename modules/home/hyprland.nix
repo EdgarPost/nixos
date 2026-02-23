@@ -18,9 +18,11 @@
 #
 # ============================================================================
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
+  cfg = config.hyprland;
+
   # Catppuccin wallpapers - fetched at build time
   catppuccin-wallpapers = pkgs.fetchFromGitHub {
     owner = "zhichaoh";
@@ -30,6 +32,13 @@ let
   };
 in
 {
+  options.hyprland.enableFancyEffects = lib.mkOption {
+    type = lib.types.bool;
+    default = false;
+    description = "Enable expensive visual effects (blur, animations). Disable on iGPU/high-res setups.";
+  };
+
+  config = {
   wayland.windowManager.hyprland = {
     enable = true;
     # Use the Hyprland package from NixOS module (avoid duplicate installations)
@@ -232,7 +241,7 @@ in
           enabled = false;
         };
         blur = {
-          enabled = true;
+          enabled = cfg.enableFancyEffects;
           size = 8;
           passes = 3;
           new_optimizations = true;
@@ -275,6 +284,10 @@ in
       # =======================================================================
       # MISC SETTINGS
       # =======================================================================
+      cursor = {
+        no_hardware_cursors = true; # Prevents cursor disappearing on monitor hotunplug
+      };
+
       misc = {
         focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
         disable_hyprland_logo = true;
@@ -385,4 +398,5 @@ in
     playerctl # Media control: playerctl play-pause, next, previous
     swww # Wallpaper daemon: swww img ~/wallpaper.png
   ];
+  }; # End of config
 }

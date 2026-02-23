@@ -73,10 +73,23 @@
   security.pam.services.hyprlock.fprintAuth = false;
   security.pam.services.polkit-1.fprintAuth = false;
 
-  # Power management for better battery life
-  # power-profiles-daemon: GUI-controllable profiles (power-saver, balanced, performance)
-  # powerManagement: kernel-level power saving features
-  services.power-profiles-daemon.enable = true;
+  # Load i915 early for faster GPU init and better power management
+  boot.initrd.kernelModules = [ "i915" ];
+
+  # Power management
+  # auto-cpufreq: automatically switches to performance on AC, powersave on battery
+  # fw-fanctrl (below) handles thermal management via custom fan curves
+  services.auto-cpufreq.enable = true;
+  services.auto-cpufreq.settings = {
+    charger = {
+      governor = "performance";
+      turbo = "auto";
+    };
+    battery = {
+      governor = "powersave";
+      turbo = "never";
+    };
+  };
   powerManagement.enable = true;
 
   # Thunderbolt device authorization (required for USB-C dock/monitor hotplug)
