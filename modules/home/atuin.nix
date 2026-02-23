@@ -38,6 +38,8 @@
       sync_frequency = "5m";      # Sync every 5 minutes
       search_mode = "fuzzy";      # Fuzzy matching (typo-tolerant)
       style = "compact";          # Compact UI (more history visible)
+      enter_accept = true;        # Execute selected command immediately
+      filter_mode = "host";       # Default to this machine's history
     };
   };
 }
