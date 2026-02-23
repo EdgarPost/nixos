@@ -35,9 +35,10 @@
       }
     ];
 
-    # Lid switch: lock screen and disable/enable laptop display
+    # Lid switch: disable/enable laptop display
+    # Only lock when no external monitor is connected
     bindl = [
-      ", switch:on:Lid Switch, exec, hyprlock & hyprctl dispatch focusmonitor 'desc:Dell Inc. DELL U4025QW' && sleep 0.5 && hyprctl keyword monitor eDP-1,disable"
+      ", switch:on:Lid Switch, exec, if [ $(hyprctl monitors -j | jq '[.[] | select(.name != \"eDP-1\")] | length') -gt 0 ]; then sleep 0.5 && hyprctl keyword monitor eDP-1,disable; else hyprlock && systemctl suspend; fi"
       ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
     ];
   };
