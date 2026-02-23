@@ -47,8 +47,6 @@ in
       # "auto" = let Hyprland position the monitor
       # Use `hyprctl monitors` to see detected monitors
       monitor = [
-        "desc:Dell Inc. DELL U4025QW,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
-        "eDP-1,preferred,auto,1" # Built-in laptop screen
         ",preferred,auto,1" # Fallback for any other monitors
       ];
 
@@ -204,11 +202,6 @@ in
       bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        # Lid close: lock screen, move focus to external monitor, then disable laptop screen
-        # The sleep prevents a race condition that can cause monitor signal loss
-        ", switch:on:Lid Switch, exec, hyprlock & hyprctl dispatch focusmonitor 'desc:Dell Inc. DELL U4025QW' && sleep 0.5 && hyprctl keyword monitor eDP-1,disable"
-        # Lid open: re-enable laptop screen
-        ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
       ];
 
       # =======================================================================
@@ -301,24 +294,6 @@ in
           natural_scroll = true; # Two-finger scroll direction (like macOS)
         };
       };
-
-      # Per-device input settings
-      # Find device names with: hyprctl devices
-      # The name must match exactly (case-sensitive, including colons)
-      device = [
-        {
-          name = "pixa3854:00-093a:0274-touchpad"; # Framework 12th gen Pixart touchpad
-          sensitivity = 0.3; # Higher sensitivity for trackpad
-          accel_profile = "adaptive"; # Enable acceleration for trackpad
-        }
-        {
-          # Logitech G502 - lower sensitivity and scroll speed
-          name = "logitech-g502-1";
-          sensitivity = -0.5; # Lower sensitivity (-1.0 to 1.0, negative = slower)
-          scroll_factor = 0.3; # Lower scroll speed (default 1.0)
-          accel_profile = "flat"; # No acceleration for mouse
-        }
-      ];
 
     }; # End of settings
 

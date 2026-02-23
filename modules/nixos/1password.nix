@@ -18,20 +18,12 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, user, ... }:
+{ ... }:
 
 {
   # 1Password CLI: Command-line access to vault
   # Usage: op item get "SSH Key" --fields private_key
   programs._1password.enable = true;
-
-  # 1Password GUI application
-  programs._1password-gui = {
-    enable = true;
-    # polkitPolicyOwners: Users allowed to unlock 1Password via fingerprint/password
-    # Required for browser integration and system auth dialogs
-    polkitPolicyOwners = [ user.name ];
-  };
 
   # ==========================================================================
   # SSH AGENT INTEGRATION

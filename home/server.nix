@@ -6,6 +6,10 @@
 # This configuration runs on any Linux with Nix installed (Ubuntu, Debian, etc.)
 # It provides a consistent development environment across cloud servers.
 #
+# Composes from mixin profiles:
+#   base.nix - fish, starship, aliases, catppuccin, basic CLI tools
+#   dev.nix  - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, claude-code, k8s, etc.
+#
 # USAGE:
 #   # Install Nix on server, then:
 #   nix run home-manager/master -- switch --flake .#edgar@server
@@ -18,57 +22,24 @@
 #
 # ============================================================================
 
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  user,
-  ...
-}:
+{ pkgs, user, ... }:
 
 {
-  # Import CLI-only modules (no desktop/GUI modules)
   imports = [
-    ../modules/home/aliases.nix # Shared shell aliases (eza, git shortcuts)
-    ../modules/home/atuin.nix # Shell history sync
-    ../modules/home/catppuccin.nix # Theming for tmux/fish/bat/yazi
-    ../modules/home/claude-code.nix # AI coding assistant config
-    ../modules/home/gardener.nix # Gardener cluster management (uses op://Pilosa)
-    ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
-    ../modules/home/nvim.nix # Text editor
-    ../modules/home/openstack.nix # OpenStack CLI (uses op://Pilosa)
-    ../modules/home/tmux.nix # Terminal multiplexer
-    ../modules/home/yazi.nix # File manager (TUI)
+    ../profiles/base.nix
+    ../profiles/dev.nix
   ];
-
-  # ==========================================================================
-  # HOME MANAGER IDENTITY
-  # ==========================================================================
-  home.username = user.name;
-  home.homeDirectory = "/home/${user.name}";
 
   # ==========================================================================
   # SERVER PACKAGES
   # ==========================================================================
-  # Essential CLI tools for development servers
+  # Essential CLI tools not available on non-NixOS servers
+  # (On NixOS hosts these are in environment.systemPackages)
   home.packages = with pkgs; [
-    # 1Password CLI (authenticate via OP_SERVICE_ACCOUNT_TOKEN env var)
-    _1password-cli
-
-    # Core CLI tools
-    eza # Modern ls with colors
-    fzf # Fuzzy finder
-    jq # JSON query/manipulation
-    yq # YAML query
-    lazygit # TUI for git
-    htop # Process monitor
-    ripgrep # Fast grep
-    fd # Fast find
-
-    # Development
-    nodejs_22 # JavaScript runtime
-    claude-code # AI coding assistant
+    _1password-cli   # Authenticate via OP_SERVICE_ACCOUNT_TOKEN env var
+    htop             # Process monitor
+    ripgrep          # Fast grep
+    fd               # Fast find
   ];
 
   # ==========================================================================
@@ -88,52 +59,4 @@
       commit.gpgSign = false;
     };
   };
-
-  # ==========================================================================
-  # FISH SHELL
-  # ==========================================================================
-  programs.fish = {
-    enable = true;
-    interactiveShellInit = ''
-      set fish_greeting  # Disable welcome message
-    '';
-
-    # Common aliases (ll, git shortcuts) are in modules/home/aliases.nix
-  };
-
-  # ==========================================================================
-  # STARSHIP PROMPT
-  # ==========================================================================
-  programs.starship = {
-    enable = true;
-    enableFishIntegration = true;
-
-    settings = {
-      kubernetes = {
-        disabled = false;
-        format = "[$symbol$context( \\($namespace\\))]($style) ";
-        symbol = "󱃾 ";
-        style = "cyan";
-
-        contexts = [
-          { context_pattern = ".*prod.*"; style = "bold red"; }
-          { context_pattern = ".*acc.*"; style = "bold yellow"; }
-        ];
-
-        detect_files = [ ];
-        detect_folders = [ ];
-        detect_env_vars = [ "KUBECONFIG" ];
-      };
-    };
-  };
-
-  # ==========================================================================
-  # HOME MANAGER SELF-MANAGEMENT
-  # ==========================================================================
-  programs.home-manager.enable = true;
-
-  # ==========================================================================
-  # STATE VERSION
-  # ==========================================================================
-  home.stateVersion = "24.11";
 }

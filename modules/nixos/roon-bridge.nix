@@ -26,15 +26,6 @@
     iptables -D INPUT -p udp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT || true
   '';
 
-  # PipeWire for desktop audio
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
   # Add roon-bridge user to audio group
   users.users.roon-bridge.extraGroups = [ "audio" ];
 

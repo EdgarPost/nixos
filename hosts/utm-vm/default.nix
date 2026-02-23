@@ -3,6 +3,7 @@
 {
   imports = [
     ../common
+    ../common/desktop.nix              # Desktop: hyprland, greetd, PipeWire, etc.
     ./hardware-configuration.nix
   ];
 

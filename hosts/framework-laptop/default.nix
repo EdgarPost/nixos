@@ -19,6 +19,8 @@
   imports = [
     # Shared configuration across all hosts
     ../common
+    # Desktop: 1password GUI, hyprland, greetd, podman, PipeWire, desktop groups
+    ../common/desktop.nix
 
     # AUTO-GENERATED FILE - Do not edit manually!
     # Created by `nixos-generate-config` during installation
@@ -37,6 +39,9 @@
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
     ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
   ];
+
+  # Disable PCIe Active State Power Management (fixes Thunderbolt disconnects)
+  boot.kernelParams = [ "pcie_aspm=off" ];
 
   # Syncthing - full PARA sync on this machine
   services.syncthing.paraFolders = true;
@@ -137,6 +142,8 @@
   # ==========================================================================
   environment.systemPackages = with pkgs; [
     v4l-utils # v4l2-ctl for webcam control
+    intel-gpu-tools # intel_gpu_top for GPU monitoring
+    libva-utils # vainfo to verify VA-API acceleration
   ];
 
   # LOGIND - The systemd login manager

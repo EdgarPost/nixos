@@ -150,6 +150,8 @@
           hostname,
           system ? "x86_64-linux",
           extraModules ? [ ],
+          homeModule ? ./home,            # Which home config to use (default: desktop)
+          extraHomeModules ? [ ],         # Host-specific home modules (e.g. monitor config)
         }:
         nixpkgs.lib.nixosSystem {
           # `inherit system` is shorthand for `system = system;`
@@ -194,9 +196,9 @@
                   inputs.roon-cli.homeManagerModules.default
                   # Claude Code extensions - commands, agents, skills
                   inputs.claude-code.homeManagerModules.default
-                  # Main home configuration
-                  ./home
-                ];
+                  # Home configuration (desktop or server)
+                  homeModule
+                ] ++ extraHomeModules;
               };
 
               # Pass same custom args to Home Manager modules
@@ -228,6 +230,7 @@
         framework-laptop = mkSystem {
           hostname = "framework-laptop";
           system = "x86_64-linux";
+          extraHomeModules = [ ./hosts/framework-laptop/home.nix ];  # Monitors, devices, lid switch
         };
       };
 
@@ -243,19 +246,6 @@
         "edgar@server" = home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          extraSpecialArgs = { inherit inputs user hosts; };
-          modules = [
-            inputs.catppuccin.homeModules.catppuccin
-            ./home/server.nix
-          ];
-        };
-
-        # ARM servers (AWS Graviton, Oracle Cloud free tier, etc.)
-        "edgar@server-arm" = home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs {
-            system = "aarch64-linux";
             config.allowUnfree = true;
           };
           extraSpecialArgs = { inherit inputs user hosts; };
