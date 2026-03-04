@@ -53,6 +53,7 @@ in
     [
       impala          # WiFi management TUI
       signal-desktop  # Encrypted messaging
+      libreoffice     # Office suite (Word/Excel/PowerPoint)
 
       # Browser from flake input
       # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
