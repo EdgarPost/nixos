@@ -146,6 +146,17 @@ let
     fi
   '';
 
+  # Switch to the Nth project workspace (sorted alphabetically, excludes "main" and "chat")
+  project-switch = pkgs.writeShellScriptBin "project-switch" ''
+    n="$1"
+    target=$(hyprctl workspaces -j | jq -r '
+      [.[] | select(.name | test("^[0-9]+$") | not) | select(.name != "chat") | .name]
+      | sort
+      | .['$((n - 1))'] // empty
+    ')
+    [ -n "$target" ] && hyprctl dispatch workspace "name:$target"
+  '';
+
   # Daemon: auto-remove named workspaces when last window closes
   workspace-cleanup = pkgs.writeShellScriptBin "workspace-cleanup" ''
     ${pkgs.socat}/bin/socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do
@@ -167,7 +178,7 @@ let
 
 in
 {
-  home.packages = [ project-cycle project-terminal project-picker workspace-cleanup ];
+  home.packages = [ project-cycle project-terminal project-picker project-switch workspace-cleanup ];
 
   # Start cleanup daemon with Hyprland
   wayland.windowManager.hyprland.settings.exec-once = [
