@@ -13,6 +13,7 @@
 { ... }:
 
 {
+
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     monitor = [

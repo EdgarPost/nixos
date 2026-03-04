@@ -18,7 +18,12 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   cfg = config.hyprland;
@@ -39,364 +44,384 @@ in
   };
 
   config = {
-  wayland.windowManager.hyprland = {
-    enable = true;
-    # Use the Hyprland package from NixOS module (avoid duplicate installations)
-    package = null;
-    portalPackage = null;
-    # Let systemd manage the session (creates hyprland-session.target for waybar)
-    systemd.enable = true;
+    wayland.windowManager.hyprland = {
+      enable = true;
+      # Use the Hyprland package from NixOS module (avoid duplicate installations)
+      package = null;
+      portalPackage = null;
+      # Let systemd manage the session (creates hyprland-session.target for waybar)
+      systemd.enable = true;
 
-    settings = {
-      # =======================================================================
-      # MONITOR CONFIGURATION
-      # =======================================================================
-      # Format: name,resolution,position,scale
-      # "highrr" = prefer highest refresh rate available
-      # "auto" = let Hyprland position the monitor
-      # Use `hyprctl monitors` to see detected monitors
-      monitor = [
-        ",preferred,auto,1" # Fallback for any other monitors
-      ];
-
-      # Define variables for use throughout config
-      # Similar to shell variables, but Hyprland-specific
-      "$mod" = "SUPER"; # Windows/Super key as modifier
-      "$terminal" = "ghostty"; # Default terminal emulator
-      "$menu" = "rofi -show drun"; # Application launcher
-
-      # =======================================================================
-      # ENVIRONMENT VARIABLES
-      # =======================================================================
-      # Required for XDG portals and Wayland apps to work correctly
-      env = [
-        "XDG_CURRENT_DESKTOP,Hyprland"
-        "XDG_SESSION_TYPE,wayland"
-        "XDG_SESSION_DESKTOP,Hyprland"
-      ];
-
-      # =======================================================================
-      # STARTUP APPLICATIONS
-      # =======================================================================
-      # exec-once: Run once when Hyprland starts (not on config reload)
-      # exec: Run on every config reload
-      exec-once = [
-        # CRITICAL: Update DBus environment so portals and apps can access Wayland
-        # This MUST run first, before any apps that depend on DBus/portals
-        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "wl-paste --watch cliphist store" # Clipboard history daemon
-        "1password --silent" # Start 1Password daemon for SSH agent
-        # waybar is now managed by systemd (see waybar.nix)
-        "swww-daemon" # Wallpaper daemon (supports animated transitions)
-        # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
-        # First set Catppuccin Mocha crust color, then transition to wallpaper
-        "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
-        "swaync" # Notification center (replacing mako)
-      ];
-
-      # =======================================================================
-      # KEYBINDINGS - bind (normal, single press)
-      # =======================================================================
-      # Format: "MODIFIERS, key, action, args"
-      # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
-      bind = [
-        "$mod, Return, exec, project-terminal"
-        "$mod, D, exec, $menu"
-        "$mod, C, exec, $terminal -e khal interactive"
-        "$mod, Q, killactive"
-        "$mod, M, exit"
-        "$mod, V, togglefloating"
-        "$mod, F, fullscreen"
-        "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
-        "$mod, N, exec, swaync-client -t" # Toggle notification center
-
-        # Move focus
-        "$mod, H, movefocus, l"
-        "$mod, L, movefocus, r"
-        "$mod, K, movefocus, u"
-        "$mod, J, movefocus, d"
-
-        # Move window
-        "$mod SHIFT, H, movewindow, l"
-        "$mod SHIFT, L, movewindow, r"
-        "$mod SHIFT, K, movewindow, u"
-        "$mod SHIFT, J, movewindow, d"
-
-        # Workspaces
-        "$mod, 1, workspace, 1"
-        "$mod, 2, workspace, 2"
-        "$mod, 3, workspace, 3"
-        "$mod, 4, workspace, 4"
-        "$mod, 5, workspace, 5"
-        "$mod, 6, workspace, 6"
-        "$mod, 7, workspace, 7"
-        "$mod, 8, workspace, 8"
-        "$mod, 9, workspace, 9"
-        "$mod, 0, workspace, 10"
-
-        # Move window to workspace
-        "$mod SHIFT, 1, movetoworkspace, 1"
-        "$mod SHIFT, 2, movetoworkspace, 2"
-        "$mod SHIFT, 3, movetoworkspace, 3"
-        "$mod SHIFT, 4, movetoworkspace, 4"
-        "$mod SHIFT, 5, movetoworkspace, 5"
-        "$mod SHIFT, 6, movetoworkspace, 6"
-        "$mod SHIFT, 7, movetoworkspace, 7"
-        "$mod SHIFT, 8, movetoworkspace, 8"
-        "$mod SHIFT, 9, movetoworkspace, 9"
-        "$mod SHIFT, 0, movetoworkspace, 10"
-
-        # Media controls
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioPrev, exec, playerctl previous"
-        ", XF86AudioStop, exec, playerctl stop"
-
-        # Lock and sleep
-        "$mod, Escape, exec, hyprlock" # Lock screen
-        "$mod SHIFT, Escape, exec, systemctl suspend" # Sleep/suspend
-
-        # Screenshots (to clipboard)
-        ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
-        "SHIFT, Print, exec, grim - | wl-copy" # Full screen
-
-        # Clipboard history picker (SUPER+SHIFT+V)
-        # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
-        "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
-
-        # Power menu (triggered by power button)
-        # Shows rofi menu with power options instead of immediate shutdown
-        ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
-
-        # Audio profile switcher (headset, meeting, mobile, analog)
-        "$mod, A, exec, audio-menu"
-
-        # Project workspaces: cycle active (P) / pick from list (Shift+P)
-        "$mod, P, exec, project-cycle"
-        "$mod SHIFT, P, exec, project-picker"
-
-        # Focus browser (or launch if not running)
-        "$mod, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
-
-        # Focus Slack (or launch if not running)
-        "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
-
-        # Focus Yazi (or launch if not running)
-        "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
-      ];
-
-      # =======================================================================
-      # KEYBINDINGS - binde (repeating, held keys)
-      # =======================================================================
-      # These trigger repeatedly while the key is held down
-      # Perfect for volume, brightness, and window resizing
-      binde = [
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar"
-        ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
-        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
-
-        # Resize window
-        "$mod CTRL, H, resizeactive, -20 0"
-        "$mod CTRL, L, resizeactive, 20 0"
-        "$mod CTRL, K, resizeactive, 0 -20"
-        "$mod CTRL, J, resizeactive, 0 20"
-      ];
-
-      # =======================================================================
-      # KEYBINDINGS - bindl (locked, work on lockscreen)
-      # =======================================================================
-      # These work even when the screen is locked
-      # Useful for mute and hardware switches
-      bindl = [
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
-        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-      ];
-
-      # =======================================================================
-      # KEYBINDINGS - bindm (mouse bindings)
-      # =======================================================================
-      # Mod + click/drag to move or resize windows
-      # mouse:272 = left click, mouse:273 = right click
-      bindm = [
-        "$mod, mouse:272, movewindow"
-        "$mod, mouse:273, resizewindow"
-      ];
-
-      # =======================================================================
-      # APPEARANCE
-      # =======================================================================
-      # Visual settings for windows and gaps
-      # Border colors are set by the catppuccin module automatically
-      general = {
-        gaps_in = 8;
-        gaps_out = 16;
-        border_size = 2;
-        "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
-      };
-
-      decoration = {
-        rounding = 8;
-        shadow = {
-          enabled = false;
-        };
-        blur = {
-          enabled = cfg.enableFancyEffects;
-          size = 8;
-          passes = 3;
-          new_optimizations = true;
-          xray = false; # Blur desktop behind floating windows, not window below
-          noise = 0.01;
-          contrast = 1.0;
-          brightness = 1.0;
-          vibrancy = 0.2;
-        };
-      };
-
-      animations = {
-        enabled = true;
-        bezier = [
-          "wind, 0.05, 0.85, 0.03, 0.97"
-          "winIn, 0.07, 0.88, 0.04, 0.99"
-          "winOut, 0.20, -0.15, 0, 1"
-          "liner, 1, 1, 1, 1"
-          "md3_decel, 0.05, 0.80, 0.10, 0.97"
-          "menu_decel, 0.05, 0.82, 0, 1"
-          "menu_accel, 0.20, 0, 0.82, 0.10"
-          "easeOutCirc, 0, 0.48, 0.38, 1"
+      settings = {
+        # =======================================================================
+        # WORKSPACE RULES
+        # =======================================================================
+        # Default layout is scrolling (for project workspaces).
+        # Numeric workspaces 1-10 use dwindle.
+        workspace = [
+          "1, defaultName:main, layout:scrolling"
         ];
-        animation = [
-          "border, 1, 1.6, liner"
-          "borderangle, 1, 82, liner, loop"
-          "windowsIn, 1, 3.2, winIn, slide"
-          "windowsOut, 1, 2.8, easeOutCirc"
-          "windowsMove, 1, 3.0, wind, slide"
-          "fade, 1, 1.8, md3_decel"
-          "layersIn, 1, 1.8, menu_decel, slide"
-          "layersOut, 1, 1.5, menu_accel"
-          "fadeLayersIn, 1, 1.6, menu_decel"
-          "fadeLayersOut, 1, 1.8, menu_accel"
-          "workspaces, 1, 4.0, menu_decel, slide"
-          "specialWorkspace, 1, 2.3, md3_decel, slidefadevert 15%"
+
+        # =======================================================================
+        # WINDOW RULES
+        # =======================================================================
+        # Auto-move communication apps to "chat" workspace
+        windowrule = [
+          "workspace name:chat silent, match:class = Slack"
+          "workspace name:chat silent, match:class = teams-for-linux"
+          "workspace name:chat silent, match:class = signal"
         ];
-      };
 
-      # =======================================================================
-      # MISC SETTINGS
-      # =======================================================================
-      cursor = {
-        no_hardware_cursors = true; # Prevents cursor disappearing on monitor hotunplug
-      };
+        # =======================================================================
+        # MONITOR CONFIGURATION
+        # =======================================================================
+        # Format: name,resolution,position,scale
+        # "highrr" = prefer highest refresh rate available
+        # "auto" = let Hyprland position the monitor
+        # Use `hyprctl monitors` to see detected monitors
+        monitor = [
+          ",preferred,auto,1" # Fallback for any other monitors
+        ];
 
-      misc = {
-        focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
-        disable_hyprland_logo = true;
-        disable_splash_rendering = true;
-        vfr = true; # Variable Frame Rate - only render when needed (saves CPU)
-      };
+        # Define variables for use throughout config
+        # Similar to shell variables, but Hyprland-specific
+        "$mod" = "SUPER"; # Windows/Super key as modifier
+        "$terminal" = "ghostty"; # Default terminal emulator
+        "$menu" = "rofi -show drun"; # Application launcher
 
-      # =======================================================================
-      # INPUT CONFIGURATION
-      # =======================================================================
-      input = {
-        kb_layout = "us";
-        follow_mouse = 1; # Focus follows mouse
-        sensitivity = 0; # 0 = no modification to input speed
-        accel_profile = "flat"; # No acceleration (1:1 mouse movement)
-        touchpad = {
-          natural_scroll = true; # Two-finger scroll direction (like macOS)
+        # =======================================================================
+        # ENVIRONMENT VARIABLES
+        # =======================================================================
+        # Required for XDG portals and Wayland apps to work correctly
+        env = [
+          "XDG_CURRENT_DESKTOP,Hyprland"
+          "XDG_SESSION_TYPE,wayland"
+          "XDG_SESSION_DESKTOP,Hyprland"
+        ];
+
+        # =======================================================================
+        # STARTUP APPLICATIONS
+        # =======================================================================
+        # exec-once: Run once when Hyprland starts (not on config reload)
+        # exec: Run on every config reload
+        exec-once = [
+          # CRITICAL: Update DBus environment so portals and apps can access Wayland
+          # This MUST run first, before any apps that depend on DBus/portals
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "wl-paste --watch cliphist store" # Clipboard history daemon
+          "1password --silent" # Start 1Password daemon for SSH agent
+          # waybar is now managed by systemd (see waybar.nix)
+          "swww-daemon" # Wallpaper daemon (supports animated transitions)
+          # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
+          # First set Catppuccin Mocha crust color, then transition to wallpaper
+          "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+          "swaync" # Notification center (replacing mako)
+        ];
+
+        # =======================================================================
+        # KEYBINDINGS - bind (normal, single press)
+        # =======================================================================
+        # Format: "MODIFIERS, key, action, args"
+        # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
+        bind = [
+          "$mod, Return, exec, project-terminal"
+          "$mod, D, exec, $menu"
+          "$mod, C, exec, $terminal -e khal interactive"
+          "$mod, Q, killactive"
+          "$mod, M, exit"
+          "$mod, V, togglefloating"
+          "$mod, F, fullscreen"
+          "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+          "$mod, N, exec, swaync-client -t" # Toggle notification center
+
+          # Move focus
+          "$mod, H, movefocus, l"
+          "$mod, L, movefocus, r"
+          "$mod, K, movefocus, u"
+          "$mod, J, movefocus, d"
+
+          # Move window
+          "$mod SHIFT, H, movewindow, l"
+          "$mod SHIFT, L, movewindow, r"
+          "$mod SHIFT, K, movewindow, u"
+          "$mod SHIFT, J, movewindow, d"
+
+          # Workspaces: 1=main, 2=chat, 3-9=project workspaces (alphabetical)
+          "$mod, 1, workspace, 1"
+          "$mod SHIFT, 1, movetoworkspace, 1"
+          "$mod, 2, workspace, name:chat"
+          "$mod SHIFT, 2, movetoworkspace, name:chat"
+          "$mod, 3, exec, project-switch 1"
+          "$mod, 4, exec, project-switch 2"
+          "$mod, 5, exec, project-switch 3"
+          "$mod, 6, exec, project-switch 4"
+          "$mod, 7, exec, project-switch 5"
+          "$mod, 8, exec, project-switch 6"
+          "$mod, 9, exec, project-switch 7"
+
+          # Media controls
+          ", XF86AudioPlay, exec, playerctl play-pause"
+          ", XF86AudioNext, exec, playerctl next"
+          ", XF86AudioPrev, exec, playerctl previous"
+          ", XF86AudioStop, exec, playerctl stop"
+
+          # Lock and sleep
+          "$mod, Escape, exec, hyprlock" # Lock screen
+          "$mod SHIFT, Escape, exec, systemctl suspend" # Sleep/suspend
+
+          # Screenshots (to clipboard)
+          ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
+          "SHIFT, Print, exec, grim - | wl-copy" # Full screen
+
+          # Clipboard history picker (SUPER+SHIFT+V)
+          # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
+          "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
+
+          # Power menu (triggered by power button)
+          # Shows rofi menu with power options instead of immediate shutdown
+          ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
+
+          # Audio profile switcher (headset, meeting, mobile, analog)
+          "$mod, A, exec, audio-menu"
+
+          # Next/previous workspace
+          "$mod, Tab, workspace, e+1"
+          "$mod SHIFT, Tab, workspace, e-1"
+
+          # Project workspaces: cycle active (P) / pick from list (Shift+P)
+          "$mod, P, exec, project-cycle"
+          "$mod SHIFT, P, exec, project-picker"
+
+          # Open browser
+          "$mod, B, exec, zen"
+
+          # Focus Slack (opens on chat workspace via window rule)
+          "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || (hyprctl dispatch workspace name:chat && slack)"
+
+          # Focus Yazi (or launch if not running)
+          "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
+        ];
+
+        # =======================================================================
+        # KEYBINDINGS - binde (repeating, held keys)
+        # =======================================================================
+        # These trigger repeatedly while the key is held down
+        # Perfect for volume, brightness, and window resizing
+        binde = [
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar"
+          ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
+          ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+
+          # Resize window
+          "$mod CTRL, H, resizeactive, -20 0"
+          "$mod CTRL, L, resizeactive, 20 0"
+          "$mod CTRL, K, resizeactive, 0 -20"
+          "$mod CTRL, J, resizeactive, 0 20"
+        ];
+
+        # =======================================================================
+        # KEYBINDINGS - bindl (locked, work on lockscreen)
+        # =======================================================================
+        # These work even when the screen is locked
+        # Useful for mute and hardware switches
+        bindl = [
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
+          ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ];
+
+        # =======================================================================
+        # KEYBINDINGS - bindm (mouse bindings)
+        # =======================================================================
+        # Mod + click/drag to move or resize windows
+        # mouse:272 = left click, mouse:273 = right click
+        bindm = [
+          "$mod, mouse:272, movewindow"
+          "$mod, mouse:273, resizewindow"
+        ];
+
+        # =======================================================================
+        # APPEARANCE
+        # =======================================================================
+        # Visual settings for windows and gaps
+        # Border colors are set by the catppuccin module automatically
+        general = {
+          layout = "scrolling";
+          gaps_in = 8;
+          gaps_out = 16;
+          border_size = 2;
+          "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
         };
-      };
 
-    }; # End of settings
+        plugin = {
+          scrolling = {
+            column_width = 0.667;
+          };
+        };
 
-    # =======================================================================
-    # EXTRA CONFIGURATION
-    # =======================================================================
-    # Raw Hyprland config for features not yet in Home Manager module
-    extraConfig = ''
-      # Touchpad gestures: 3-finger horizontal swipe switches workspace
-      gesture = 3, horizontal, workspace
-    '';
-  };
+        decoration = {
+          rounding = 8;
+          shadow = {
+            enabled = false;
+          };
+          blur = {
+            enabled = cfg.enableFancyEffects;
+            size = 8;
+            passes = 3;
+            new_optimizations = true;
+            xray = false; # Blur desktop behind floating windows, not window below
+            noise = 0.01;
+            contrast = 1.0;
+            brightness = 1.0;
+            vibrancy = 0.2;
+          };
+        };
 
-  # ==========================================================================
-  # HYPRLOCK - Screen Locker
-  # ==========================================================================
-  # Hyprland-native lock screen with blur and customization
-  # Lock: Super+Escape | Sleep: Super+Shift+Escape
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        hide_cursor = true;
-      };
+        animations = {
+          enabled = true;
+          bezier = [
+            "wind, 0.05, 0.85, 0.03, 0.97"
+            "winIn, 0.07, 0.88, 0.04, 0.99"
+            "winOut, 0.20, -0.15, 0, 1"
+            "liner, 1, 1, 1, 1"
+            "md3_decel, 0.05, 0.80, 0.10, 0.97"
+            "menu_decel, 0.05, 0.82, 0, 1"
+            "menu_accel, 0.20, 0, 0.82, 0.10"
+            "easeOutCirc, 0, 0.48, 0.38, 1"
+          ];
+          animation = [
+            "border, 1, 1.6, liner"
+            "borderangle, 1, 82, liner, loop"
+            "windowsIn, 1, 3.2, winIn, slide"
+            "windowsOut, 1, 2.8, easeOutCirc"
+            "windowsMove, 1, 3.0, wind, slide"
+            "fade, 1, 1.8, md3_decel"
+            "layersIn, 1, 1.8, menu_decel, slide"
+            "layersOut, 1, 1.5, menu_accel"
+            "fadeLayersIn, 1, 1.6, menu_decel"
+            "fadeLayersOut, 1, 1.8, menu_accel"
+            "workspaces, 1, 4.0, menu_decel, slide"
+            "specialWorkspace, 1, 2.3, md3_decel, slidefadevert 15%"
+          ];
+        };
 
-      background = [
-        {
-          monitor = "";
-          path = "screenshot"; # Use screenshot of current screen
-          blur_passes = 3;
-          blur_size = 8;
-        }
-      ];
+        # =======================================================================
+        # MISC SETTINGS
+        # =======================================================================
+        cursor = {
+          no_hardware_cursors = true; # Use software cursors (avoids GPU cursor plane issues)
+          use_cpu_buffer = true; # CPU-side cursor buffer (fixes cursor vanishing on Intel iGPU hotplug)
+        };
 
-      input-field = [
-        {
-          monitor = "";
-          size = "300, 50";
-          outline_thickness = 2;
-          fade_on_empty = true;
-          placeholder_text = "";
-          hide_input = false;
-        }
-      ];
+        misc = {
+          focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
+          disable_hyprland_logo = true;
+          disable_splash_rendering = true;
+          vfr = true; # Variable Frame Rate - only render when needed (saves CPU)
+        };
 
-      label = [ ];
+        # =======================================================================
+        # INPUT CONFIGURATION
+        # =======================================================================
+        input = {
+          kb_layout = "us";
+          follow_mouse = 1; # Focus follows mouse
+          sensitivity = 0; # 0 = no modification to input speed
+          accel_profile = "flat"; # No acceleration (1:1 mouse movement)
+          touchpad = {
+            natural_scroll = true; # Two-finger scroll direction (like macOS)
+          };
+        };
+
+      }; # End of settings
+
+      # =======================================================================
+      # EXTRA CONFIGURATION
+      # =======================================================================
+      # Raw Hyprland config for features not yet in Home Manager module
+      extraConfig = ''
+        # Touchpad gestures: 3-finger horizontal swipe switches workspace
+        gesture = 3, horizontal, workspace
+      '';
     };
-  };
 
-  # ==========================================================================
-  # ROFI - Application Launcher
-  # ==========================================================================
-  # Rofi: dmenu replacement with nice UI for launching apps
-  # Triggered by: Super+D (defined in keybindings above)
-  programs.rofi = {
-    enable = true;
-    package = pkgs.rofi;
-    extraConfig = {
-      modi = "drun,run,window";
-      show-icons = true;
-      display-drun = " Apps";
-      display-run = " Run";
-      display-window = " Windows";
-      drun-display-format = "{name}";
+    # ==========================================================================
+    # HYPRLOCK - Screen Locker
+    # ==========================================================================
+    # Hyprland-native lock screen with blur and customization
+    # Lock: Super+Escape | Sleep: Super+Shift+Escape
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          hide_cursor = true;
+        };
+
+        background = [
+          {
+            monitor = "";
+            path = "screenshot"; # Use screenshot of current screen
+            blur_passes = 3;
+            blur_size = 8;
+          }
+        ];
+
+        input-field = [
+          {
+            monitor = "";
+            size = "300, 50";
+            outline_thickness = 2;
+            fade_on_empty = true;
+            placeholder_text = "";
+            hide_input = false;
+          }
+        ];
+
+        label = [ ];
+      };
     };
-  };
-  # Enable Catppuccin theme for Rofi (from catppuccin flake)
-  catppuccin.rofi.enable = true;
 
-  # ==========================================================================
-  # WALLPAPERS
-  # ==========================================================================
-  # Symlink Catppuccin landscape wallpapers to ~/.wallpapers
-  # These are fetched from GitHub at build time
-  home.file.".wallpapers".source = "${catppuccin-wallpapers}/landscapes";
+    # ==========================================================================
+    # ROFI - Application Launcher
+    # ==========================================================================
+    # Rofi: dmenu replacement with nice UI for launching apps
+    # Triggered by: Super+D (defined in keybindings above)
+    programs.rofi = {
+      enable = true;
+      package = pkgs.rofi;
+      extraConfig = {
+        modi = "drun,run,window";
+        show-icons = true;
+        display-drun = " Apps";
+        display-run = " Run";
+        display-window = " Windows";
+        drun-display-format = "{name}";
+      };
+    };
+    # Enable Catppuccin theme for Rofi (from catppuccin flake)
+    catppuccin.rofi.enable = true;
 
-  # ==========================================================================
-  # WAYLAND UTILITIES
-  # ==========================================================================
-  # Essential tools for a functional Wayland desktop
-  home.packages = with pkgs; [
-    jq # JSON query tool
-    wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
-    cliphist # Clipboard history manager (stores history, pairs with rofi)
-    wtype # Wayland keyboard input simulator (for auto-paste after clipboard selection)
-    grim # Screenshots: grim -g "$(slurp)" screenshot.png
-    slurp # Region selector (used with grim for area screenshots)
-    brightnessctl # Brightness: brightnessctl set 50%
-    playerctl # Media control: playerctl play-pause, next, previous
-    swww # Wallpaper daemon: swww img ~/wallpaper.png
-  ];
+    # ==========================================================================
+    # WALLPAPERS
+    # ==========================================================================
+    # Symlink Catppuccin landscape wallpapers to ~/.wallpapers
+    # These are fetched from GitHub at build time
+    home.file.".wallpapers".source = "${catppuccin-wallpapers}/landscapes";
+
+    # ==========================================================================
+    # WAYLAND UTILITIES
+    # ==========================================================================
+    # Essential tools for a functional Wayland desktop
+    home.packages = with pkgs; [
+      jq # JSON query tool
+      wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
+      cliphist # Clipboard history manager (stores history, pairs with rofi)
+      wtype # Wayland keyboard input simulator (for auto-paste after clipboard selection)
+      grim # Screenshots: grim -g "$(slurp)" screenshot.png
+      slurp # Region selector (used with grim for area screenshots)
+      brightnessctl # Brightness: brightnessctl set 50%
+      playerctl # Media control: playerctl play-pause, next, previous
+      swww # Wallpaper daemon: swww img ~/wallpaper.png
+    ];
   }; # End of config
 }
