@@ -14,7 +14,7 @@
 #
 # ============================================================================
 
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -39,7 +39,7 @@
     ghq         # Git repository manager (ghq get, ghq list)
     nodejs_22   # JavaScript runtime
     claude-code # AI coding assistant
-    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default  # AI coding agent (latest from GitHub)
+    opencode    # AI coding agent
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)
