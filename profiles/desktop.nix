@@ -34,6 +34,7 @@ in
     ../modules/home/ghostty.nix    # Terminal emulator
     ../modules/home/waybar.nix     # Status bar
     ../modules/home/swaync.nix     # Notification center
+    ../modules/home/zathura.nix    # PDF viewer
     ../modules/home/audio.nix      # Audio profile switching
     ../modules/home/workspaces.nix # Project workspace picker (Super+P)
   ];
