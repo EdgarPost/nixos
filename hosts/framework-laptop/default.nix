@@ -41,7 +41,9 @@
   ];
 
   # Disable PCIe Active State Power Management (fixes Thunderbolt disconnects)
-  boot.kernelParams = [ "pcie_aspm=off" ];
+  # Disable Intel Panel Self Refresh (fixes i915 "Selective fetch" errors causing Hyprland EGL crashes)
+  # Disable Thunderbolt CLx link power states (prevents retimer wake failures with Dell U4025QW)
+  boot.kernelParams = [ "pcie_aspm=off" "i915.enable_psr=0" "thunderbolt.clx=0" ];
 
   # Syncthing - full PARA sync on this machine
   services.syncthing.paraFolders = true;
