@@ -26,6 +26,13 @@
     iptables -D INPUT -p udp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT || true
   '';
 
+  # Avahi (mDNS/DNS-SD) for Roon Core to auto-discover this bridge on the network
+  services.avahi = {
+    enable = true;
+    publish.enable = true;
+    publish.userServices = true;
+  };
+
   # Add roon-bridge user to audio group
   users.users.roon-bridge.extraGroups = [ "audio" ];
 
