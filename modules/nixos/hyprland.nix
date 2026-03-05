@@ -40,8 +40,11 @@
       pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];
-    # Use Hyprland portal for screen sharing, GTK for file dialogs
-    config.common.default = [ "hyprland" "gtk" ];
+    config = {
+      common.default = [ "hyprland" "gtk" ];
+      # Explicitly route screen sharing to Hyprland portal
+      hyprland.default = [ "hyprland" "gtk" ];
+    };
   };
 
   # POLKIT - Privilege escalation UI

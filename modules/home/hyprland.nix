@@ -107,7 +107,7 @@ in
         exec-once = [
           # CRITICAL: Update DBus environment so portals and apps can access Wayland
           # This MUST run first, before any apps that depend on DBus/portals
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
           "wl-paste --watch cliphist store" # Clipboard history daemon
           "1password --silent" # Start 1Password daemon for SSH agent
           # waybar is now managed by systemd (see waybar.nix)
@@ -325,6 +325,7 @@ in
         # =======================================================================
         input = {
           kb_layout = "us";
+          kb_options = "compose:ralt"; # Right Alt as Compose key for accented chars
           follow_mouse = 1; # Focus follows mouse
           sensitivity = 0; # 0 = no modification to input speed
           accel_profile = "flat"; # No acceleration (1:1 mouse movement)
