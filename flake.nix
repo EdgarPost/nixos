@@ -225,12 +225,18 @@
           system = "aarch64-linux";
         };
 
-        # Primary machine: Framework laptop
-        # x86_64-linux = Intel/AMD 64-bit
+        # Framework laptop (thin client)
         framework-laptop = mkSystem {
           hostname = "framework-laptop";
           system = "x86_64-linux";
           extraHomeModules = [ ./hosts/framework-laptop/home.nix ];  # Monitors, devices, lid switch
+        };
+
+        # Primary machine: Framework Desktop (AMD Ryzen AI Max+ 395 / Radeon 8060S)
+        framework-desktop = mkSystem {
+          hostname = "framework-desktop";
+          system = "x86_64-linux";
+          extraHomeModules = [ ./hosts/framework-desktop/home.nix ];  # Monitor, mouse config
         };
       };
 
