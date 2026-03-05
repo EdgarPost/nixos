@@ -80,6 +80,7 @@ in
 
         # Common ignore patterns for all folders
         defaults.folder.ignorePatterns = [
+          ".git"
           "@eaDir"
           "#recycle"
           ".DS_Store"
