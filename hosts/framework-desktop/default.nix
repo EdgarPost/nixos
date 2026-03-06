@@ -57,7 +57,11 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    libva-utils # vainfo to verify VA-API acceleration
+    libva-utils  # vainfo to verify VA-API acceleration
+    mangohud     # FPS/CPU/GPU monitoring overlay (launch with mangohud %command%)
+    protonup-qt  # Install/manage custom Proton versions (GE-Proton for better compat)
+    protontricks # Manage Proton prefixes and install Windows dependencies
+    vulkan-tools # vulkaninfo to verify Vulkan support
   ];
 
   # ==========================================================================
@@ -66,7 +70,28 @@
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true; # Allow Steam Remote Play (Steam Deck streaming)
+    gamescopeSession.enable = true; # Gamescope micro-compositor (Steam Deck-like session)
+    # Extra libs injected into Steam's FHS sandbox (needed by EAC and some games)
+    extraPackages = with pkgs; [
+      pango
+      libthai
+      harfbuzz
+      gnutls
+      SDL2
+    ];
   };
+
+  # Steam renders at 1x by default, causing pixelation with fractional scaling.
+  # Force Steam UI to render at the monitor's scale factor (1.25).
+  environment.sessionVariables.STEAM_FORCE_DESKTOPUI_SCALING = "1.25";
+
+  # Limit Wine/Proton CPU topology to 16 cores.
+  # EAC crashes on high-core-count CPUs (Ryzen AI Max+ 395 has 32 threads).
+  environment.sessionVariables.WINE_CPU_TOPOLOGY = "16:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15";
+
+  # GameMode: applies CPU/GPU performance optimizations while gaming
+  # Games can request this automatically, or launch manually with gamemoderun
+  programs.gamemode.enable = true;
 
   # ==========================================================================
   # FIRMWARE UPDATES
