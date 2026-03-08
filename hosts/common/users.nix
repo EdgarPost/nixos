@@ -32,15 +32,10 @@
       "networkmanager"  # Can configure WiFi, VPN without sudo
     ];
 
-    # PASSWORD MANAGEMENT:
-    # Three approaches in NixOS:
-    #   1. initialPassword - Set once, user changes with passwd (shown below)
-    #   2. hashedPassword - Store hashed password in config (visible in store!)
-    #   3. hashedPasswordFile - Point to a file (use with sops-nix for secrets)
-    #
-    # Best practice: Use initialPassword for first boot, then passwd
-    # The passwd-set password survives rebuilds (stored in /etc/shadow)
-    # initialPassword = "changeme";
+    # SSH public key for remote access between machines (from 1Password "Nixos SSH Key")
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuHwyv8T62zhlWarSHBMeIf8/kwAAAKhMfYAnbSyIQVXEXqs2QANCygBkVhm5QgoViDi1HIZCuYWv0Drhgo/J/SaEKn19xuo1YYq6Z/BmJkNUKMvjVTSrA3UhDd0/lJoIR3jXkbfzY4eiuA9jnBInYWPKxBiaxNS9H953Rz++GDkG4DVPBnOzMN5e5kjAudxBqjmcCmR/P+QYvmRuAbd5+dLQlim/NeC9Xu4lUR1M6FdO3E9/gMoxjVjhr7F9jvYGIcScx5vYeEBkFgXpH4QIMU6iHQL79q0zV4kMWS85ledv3CHxuNkBR1fvzctiWm9Gu3xBNXv141j9JUD1TSeNf"
+    ];
   };
 
   # Enable Fish shell system-wide (required for it to be a valid login shell)
