@@ -14,6 +14,7 @@
 
     extraConfig = ''
       set -g set-clipboard on
+      set -ga terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
       set -g status-style "bg=default"
       set -g status-left ""
       set -g status-right ""

@@ -85,6 +85,18 @@ in
         workspace = [ ];
 
         # =======================================================================
+        # WINDOW RULES
+        # =======================================================================
+        windowrule = [
+          "float on, match:title ^(Picture-in-Picture)$"
+          "pin on, match:title ^(Picture-in-Picture)$"
+          "size 640 360, match:title ^(Picture-in-Picture)$"
+          "move 3437 68, match:title ^(Picture-in-Picture)$"
+          "keep_aspect_ratio on, match:title ^(Picture-in-Picture)$"
+          "no_initial_focus on, match:title ^(Picture-in-Picture)$"
+        ];
+
+        # =======================================================================
         # MONITOR CONFIGURATION
         # =======================================================================
         # Format: name,resolution,position,scale
@@ -275,6 +287,7 @@ in
         plugin = {
           scrolling = {
             column_width = 0.667;
+            focus_fit_method = 0; # Center focused column (shows parts of neighbors on both sides)
           };
         };
 
