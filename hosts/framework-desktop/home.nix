@@ -20,6 +20,12 @@
       "desc:Dell Inc. DELL U4025QW,5120x2160@120,0x0,1.25"
     ];
 
+    # Pin gaming workspace to headless output for streaming.
+    # Inert when no headless exists, auto-activates when sunshine-stream-on creates one.
+    workspace = [
+      "name:gaming, monitor:HEADLESS-1, default:true"
+    ];
+
     # XWayland renders at 1x by default, causing pixelation with fractional scaling.
     # force_zero_scaling disables compositor upscaling so XWayland apps see the real
     # resolution and handle scaling themselves (Steam via STEAM_FORCE_DESKTOPUI_SCALING).
