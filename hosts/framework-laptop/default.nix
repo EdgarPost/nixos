@@ -163,11 +163,10 @@
 
   # LOGIND - The systemd login manager
   # Controls what happens on lid close, power button, etc.
-  # Always ignore lid close - Hyprland handles display switching, suspend manually
   services.logind.settings.Login = {
-    HandleLidSwitch = "ignore";               # Never suspend on lid close
-    HandleLidSwitchExternalPower = "ignore";  # Let Hyprland handle (disables eDP-1)
-    HandleLidSwitchDocked = "ignore";         # Keep running if docked
+    HandleLidSwitch = "suspend";              # Always suspend on lid close
+    HandleLidSwitchExternalPower = "suspend";  # Suspend even when on AC power
+    HandleLidSwitchDocked = "ignore";         # Keep running if docked (external KB/mouse)
     HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
   };
 

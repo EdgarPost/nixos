@@ -36,10 +36,9 @@
       }
     ];
 
-    # Lid switch: disable/enable laptop display
-    # Only lock when no external monitor is connected
+    # Lid switch: manage laptop display (suspend is handled by logind)
     bindl = [
-      ", switch:on:Lid Switch, exec, if [ $(hyprctl monitors -j | jq '[.[] | select(.name != \"eDP-1\")] | length') -gt 0 ]; then sleep 0.5 && hyprctl keyword monitor eDP-1,disable; else hyprlock && systemctl suspend; fi"
+      ", switch:on:Lid Switch, exec, hyprctl keyword monitor eDP-1,disable"
       ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
     ];
   };
