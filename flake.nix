@@ -89,6 +89,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Handy - offline speech-to-text (Whisper/Parakeet, Tauri app)
+    # Pinned to v0.7.8 — later versions have tauri-runtime build issues with Nix
+    handy = {
+      url = "github:cjpais/Handy/v0.7.8";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # ==========================================================================
@@ -113,6 +120,7 @@
       roon-cli,
       opencode,
       claude-code,
+      handy,
       ...
     }@inputs:
 

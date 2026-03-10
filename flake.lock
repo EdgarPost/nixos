@@ -56,6 +56,27 @@
         "type": "github"
       }
     },
+    "handy": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771947111,
+        "narHash": "sha256-vTufwk13gTvyYZbCABZROznpqTP90VGRLteNfqUIuX8=",
+        "owner": "cjpais",
+        "repo": "Handy",
+        "rev": "f705a4948d01a29a815e284c44dae5fec890639c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cjpais",
+        "ref": "v0.7.8",
+        "repo": "Handy",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -169,6 +190,7 @@
       "inputs": {
         "catppuccin": "catppuccin",
         "claude-code": "claude-code",
+        "handy": "handy",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",

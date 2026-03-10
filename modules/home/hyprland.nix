@@ -140,6 +140,7 @@ in
           # First set Catppuccin Mocha crust color, then transition to wallpaper
           "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
           "swaync" # Notification center (replacing mako)
+          "handy --start-hidden" # Offline speech-to-text (toggle with Super+V)
         ];
 
         # =======================================================================
@@ -152,7 +153,7 @@ in
           "$mod, C, exec, $terminal -e khal interactive"
           "$mod, Q, killactive"
           "$mod, M, exit"
-          "$mod, V, togglefloating"
+          "$mod, V, exec, handy --toggle-transcription"
           "$mod, F, fullscreen"
           "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
           "$mod, N, exec, swaync-client -t" # Toggle notification center
@@ -235,6 +236,7 @@ in
 
           # Focus Yazi (or launch if not running)
           "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
+
         ];
 
         # =======================================================================

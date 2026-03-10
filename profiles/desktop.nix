@@ -36,6 +36,7 @@ in
     ../modules/home/swaync.nix     # Notification center
     ../modules/home/zathura.nix    # PDF viewer
     ../modules/home/audio.nix      # Audio profile switching
+    ../modules/home/handy.nix      # Offline speech-to-text
   ];
 
   # ==========================================================================
