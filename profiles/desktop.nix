@@ -8,7 +8,7 @@
 #   - Waybar status bar
 #   - SwayNC notification center
 #   - Audio profile switching (headset, meeting, mobile, analog)
-#   - Project workspace picker (Super+P)
+#   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
 #   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman
 #
@@ -36,7 +36,6 @@ in
     ../modules/home/swaync.nix     # Notification center
     ../modules/home/zathura.nix    # PDF viewer
     ../modules/home/audio.nix      # Audio profile switching
-    ../modules/home/workspaces.nix # Project workspace picker (Super+P)
   ];
 
   # ==========================================================================
@@ -71,6 +70,13 @@ in
   # Spoof user agent to get full functionality (Microsoft limits Linux clients)
   xdg.configFile."teams-for-linux/config.json".text = builtins.toJSON {
     chromeUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "x-scheme-handler/msteams" = "teams-for-linux.desktop";
+    };
   };
 
   # ==========================================================================

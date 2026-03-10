@@ -28,6 +28,32 @@
 let
   cfg = config.hyprland;
 
+  # Rofi project picker → tmux session per ghq project
+  tmux-project = pkgs.writeShellScriptBin "tmux-project" ''
+    root=$(${pkgs.ghq}/bin/ghq root)
+
+    # Show rofi picker with ghq projects
+    selected=$(${pkgs.ghq}/bin/ghq list | rofi -dmenu -p "Project" -i)
+    [ -z "$selected" ] && exit 0
+
+    name="''${selected##*/}"
+    path="$root/$selected"
+
+    # Ensure tmux session exists for this project
+    tmux has-session -t "=$name" 2>/dev/null || \
+      tmux new-session -d -s "$name" -c "$path"
+
+    # Focus existing ghostty or launch new one
+    if hyprctl clients -j | ${pkgs.jq}/bin/jq -e '.[] | select(.class == "com.mitchellh.ghostty")' > /dev/null 2>&1; then
+      hyprctl dispatch focuswindow class:com.mitchellh.ghostty
+      # Switch tmux client to the project session
+      tmux switch-client -t "=$name"
+    else
+      # Launch ghostty with this project's tmux session
+      ghostty -e tmux new-session -A -s "$name" -c "$path" &
+    fi
+  '';
+
   # Catppuccin wallpapers - fetched at build time
   catppuccin-wallpapers = pkgs.fetchFromGitHub {
     owner = "zhichaoh";
@@ -56,21 +82,7 @@ in
         # =======================================================================
         # WORKSPACE RULES
         # =======================================================================
-        # Default layout is scrolling (for project workspaces).
-        # Numeric workspaces 1-10 use dwindle.
-        workspace = [
-          "1, defaultName:main, layout:scrolling"
-        ];
-
-        # =======================================================================
-        # WINDOW RULES
-        # =======================================================================
-        # Auto-move communication apps to "chat" workspace
-        windowrule = [
-          "workspace name:chat silent, match:class = Slack"
-          "workspace name:chat silent, match:class = teams-for-linux"
-          "workspace name:chat silent, match:class = signal"
-        ];
+        workspace = [ ];
 
         # =======================================================================
         # MONITOR CONFIGURATION
@@ -124,7 +136,6 @@ in
         # Format: "MODIFIERS, key, action, args"
         # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
         bind = [
-          "$mod, Return, exec, project-terminal"
           "$mod, D, exec, $menu"
           "$mod, C, exec, $terminal -e khal interactive"
           "$mod, Q, killactive"
@@ -140,24 +151,31 @@ in
           "$mod, K, movefocus, u"
           "$mod, J, movefocus, d"
 
-          # Move window
-          "$mod SHIFT, H, movewindow, l"
-          "$mod SHIFT, L, movewindow, r"
+          # Move window (swapcol keeps windows as standalone columns)
+          "$mod SHIFT, H, layoutmsg, swapcol l"
+          "$mod SHIFT, L, layoutmsg, swapcol r"
           "$mod SHIFT, K, movewindow, u"
           "$mod SHIFT, J, movewindow, d"
 
-          # Workspaces: 1=main, 2=chat, 3-9=project workspaces (alphabetical)
+          # Workspaces 1-9
           "$mod, 1, workspace, 1"
+          "$mod, 2, workspace, 2"
+          "$mod, 3, workspace, 3"
+          "$mod, 4, workspace, 4"
+          "$mod, 5, workspace, 5"
+          "$mod, 6, workspace, 6"
+          "$mod, 7, workspace, 7"
+          "$mod, 8, workspace, 8"
+          "$mod, 9, workspace, 9"
           "$mod SHIFT, 1, movetoworkspace, 1"
-          "$mod, 2, workspace, name:chat"
-          "$mod SHIFT, 2, movetoworkspace, name:chat"
-          "$mod, 3, exec, project-switch 1"
-          "$mod, 4, exec, project-switch 2"
-          "$mod, 5, exec, project-switch 3"
-          "$mod, 6, exec, project-switch 4"
-          "$mod, 7, exec, project-switch 5"
-          "$mod, 8, exec, project-switch 6"
-          "$mod, 9, exec, project-switch 7"
+          "$mod SHIFT, 2, movetoworkspace, 2"
+          "$mod SHIFT, 3, movetoworkspace, 3"
+          "$mod SHIFT, 4, movetoworkspace, 4"
+          "$mod SHIFT, 5, movetoworkspace, 5"
+          "$mod SHIFT, 6, movetoworkspace, 6"
+          "$mod SHIFT, 7, movetoworkspace, 7"
+          "$mod SHIFT, 8, movetoworkspace, 8"
+          "$mod SHIFT, 9, movetoworkspace, 9"
 
           # Media controls
           ", XF86AudioPlay, exec, playerctl play-pause"
@@ -165,9 +183,8 @@ in
           ", XF86AudioPrev, exec, playerctl previous"
           ", XF86AudioStop, exec, playerctl stop"
 
-          # Lock and sleep
-          "$mod, Escape, exec, hyprlock" # Lock screen
-          "$mod SHIFT, Escape, exec, systemctl suspend" # Sleep/suspend
+          # Lock screen
+          "$mod, Escape, exec, hyprlock"
 
           # Screenshots (to clipboard)
           ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
@@ -188,15 +205,17 @@ in
           "$mod, Tab, workspace, e+1"
           "$mod SHIFT, Tab, workspace, e-1"
 
-          # Project workspaces: cycle active (P) / pick from list (Shift+P)
-          "$mod, P, exec, project-cycle"
-          "$mod SHIFT, P, exec, project-picker"
+          # Project picker: select ghq project → tmux session
+          "$mod, P, exec, tmux-project"
 
-          # Open browser
-          "$mod, B, exec, zen"
+          # Move current window to next workspace
+          "$mod SHIFT, N, movetoworkspace, e+1"
 
-          # Focus Slack (opens on chat workspace via window rule)
-          "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || (hyprctl dispatch workspace name:chat && slack)"
+          # Focus browser (or launch if not running)
+          "$mod, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
+
+          # Focus Slack (or launch if not running)
+          "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
 
           # Focus Yazi (or launch if not running)
           "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
@@ -413,7 +432,9 @@ in
     # WAYLAND UTILITIES
     # ==========================================================================
     # Essential tools for a functional Wayland desktop
-    home.packages = with pkgs; [
+    home.packages = [
+      tmux-project
+    ] ++ (with pkgs; [
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
       cliphist # Clipboard history manager (stores history, pairs with rofi)
@@ -423,6 +444,6 @@ in
       brightnessctl # Brightness: brightnessctl set 50%
       playerctl # Media control: playerctl play-pause, next, previous
       swww # Wallpaper daemon: swww img ~/wallpaper.png
-    ];
+    ]);
   }; # End of config
 }

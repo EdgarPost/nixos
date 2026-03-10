@@ -38,6 +38,7 @@
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
       copy-on-select = "clipboard";    # Auto-copy selections to clipboard
       desktop-notifications = false;   # Disable OSC desktop notifications (e.g. from Claude Code)
+      command = "tmux new-session -A -s main";  # Always start in tmux (ghostty -e overrides this)
 
       # =======================================================================
       # KEYBINDINGS

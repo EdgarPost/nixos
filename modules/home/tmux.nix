@@ -1,4 +1,4 @@
-# Tmux for servers (headless environments)
+# Tmux - terminal multiplexer (desktop session manager + remote servers)
 { pkgs, ... }:
 
 {
@@ -23,6 +23,10 @@
       bind j select-pane -D
       bind k select-pane -U
       bind l select-pane -R
+      bind -n C-h select-pane -L
+      bind -n C-j select-pane -D
+      bind -n C-k select-pane -U
+      bind -n C-l select-pane -R
     '';
   };
 }
