@@ -157,6 +157,10 @@ in
           "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
           "$mod, N, exec, swaync-client -t" # Toggle notification center
 
+          # Cycle column width (0.333 → 0.5 → 0.75 → 1.0)
+          "$mod CTRL, Right, layoutmsg, colresize +conf"
+          "$mod CTRL, Left, layoutmsg, colresize -conf"
+
           # Move focus
           "$mod, H, movefocus, l"
           "$mod, L, movefocus, r"
@@ -284,11 +288,10 @@ in
           "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
         };
 
-        plugin = {
-          scrolling = {
-            column_width = 0.667;
-            focus_fit_method = 0; # Center focused column (shows parts of neighbors on both sides)
-          };
+        scrolling = {
+          column_width = 0.5;
+          focus_fit_method = 1; # Fit: minimal scroll to show focused column (two 0.5 columns sit side by side)
+          explicit_column_widths = "0.333, 0.5, 0.75, 1.0";
         };
 
         decoration = {
