@@ -8,9 +8,8 @@
 # - Includes anthropic-login/logout shell functions for cloud API access
 #
 # MODELS:
-#   Default:  qwen3.5-27b      (dense 27B, best for coding)
-#   Small:    qwen3.5-35b-a3b  (MoE 3B active, fast operations)
-#   Cloud:    claude-sonnet, claude-haiku, codestral (need API keys)
+#   Local:    qwen3.5-27b, qwen3.5-35b-a3b (thinking + no-think variants)
+#   Cloud:    devstral, claude-opus, claude-sonnet, claude-haiku (need API keys)
 #
 # SETUP:
 #   anthropic-login   # Load Anthropic key from 1Password → shell + LiteLLM
@@ -29,16 +28,18 @@
           baseURL = "http://localhost:4000/v1";
         };
         models = {
-          "qwen3.5-35b-a3b-no-think" = {};
-          "qwen3.5-27b-no-think" = {};
-          codestral = {};
+          "qwen3.5-27b" = {};
+          "qwen3.5-35b-a3b" = {};
+          devstral-medium = {};
+          devstral-small = {};
+          claude-opus = {};
           claude-sonnet = {};
           claude-haiku = {};
         };
       };
     };
-    model = "local/qwen3.5-27b-no-think";
-    small_model = "local/qwen3.5-35b-a3b-no-think";
+    model = "local/devstral-medium";
+    small_model = "local/devstral-small";
   };
 
   programs.fish.interactiveShellInit = ''

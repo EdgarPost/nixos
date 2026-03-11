@@ -30,13 +30,16 @@
     environmentFile = "/var/lib/litellm/env";
     settings = {
       model_list = [
-        # Local models (always available)
+        # Local models (always available, thinking disabled by default)
         {
           model_name = "qwen3.5-35b-a3b";
           litellm_params = {
             model = "openai/qwen3.5-35b-a3b";
             api_base = "http://127.0.0.1:8001/v1";
             api_key = "none";
+            extra_body = {
+              chat_template_kwargs = { enable_thinking = false; };
+            };
           };
         }
         {
@@ -45,32 +48,36 @@
             model = "openai/qwen3.5-27b";
             api_base = "http://127.0.0.1:8002/v1";
             api_key = "none";
+            extra_body = {
+              chat_template_kwargs = { enable_thinking = false; };
+            };
           };
         }
-        # No-thinking variants (for OpenCode — skips reasoning overhead)
+        # Reasoning variants (thinking enabled, for Open WebUI)
         {
-          model_name = "qwen3.5-35b-a3b-no-think";
+          model_name = "qwen3.5-35b-a3b-reasoning";
           litellm_params = {
-            model = "openai/qwen3.5-35b-a3b-no-think";
+            model = "openai/qwen3.5-35b-a3b-reasoning";
             api_base = "http://127.0.0.1:8001/v1";
             api_key = "none";
-            extra_body = {
-              chat_template_kwargs = { enable_thinking = false; };
-            };
           };
         }
         {
-          model_name = "qwen3.5-27b-no-think";
+          model_name = "qwen3.5-27b-reasoning";
           litellm_params = {
-            model = "openai/qwen3.5-27b-no-think";
+            model = "openai/qwen3.5-27b-reasoning";
             api_base = "http://127.0.0.1:8002/v1";
             api_key = "none";
-            extra_body = {
-              chat_template_kwargs = { enable_thinking = false; };
-            };
           };
         }
         # Cloud models (activated when API keys are in env file)
+        {
+          model_name = "claude-opus";
+          litellm_params = {
+            model = "anthropic/claude-opus-4-6";
+            api_key = "os.environ/ANTHROPIC_API_KEY";
+          };
+        }
         {
           model_name = "claude-sonnet";
           litellm_params = {
@@ -86,9 +93,16 @@
           };
         }
         {
-          model_name = "codestral";
+          model_name = "devstral-medium";
           litellm_params = {
-            model = "mistral/codestral-latest";
+            model = "mistral/devstral-medium-latest";
+            api_key = "os.environ/MISTRAL_API_KEY";
+          };
+        }
+        {
+          model_name = "devstral-small";
+          litellm_params = {
+            model = "mistral/devstral-small-latest";
             api_key = "os.environ/MISTRAL_API_KEY";
           };
         }
