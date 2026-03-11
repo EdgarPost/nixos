@@ -3,7 +3,7 @@
   services.keyd = {
     enable = true;
     keyboards.default = {
-      ids = [ "*" ];
+      ids = [ "*" "-mouse" ];
       settings = {
         main = {
           capslock = "overload(hyper, capslock)";

@@ -364,8 +364,8 @@ in
           kb_layout = "us";
           kb_options = "compose:ralt"; # Right Alt as Compose key for accented chars
           follow_mouse = 1; # Focus follows mouse
-          sensitivity = 0; # 0 = no modification to input speed
-          accel_profile = "flat"; # No acceleration (1:1 mouse movement)
+          sensitivity = -0.9; # 0 = no modification to input speed
+          accel_profile = "adaptive"; # No acceleration (1:1 mouse movement)
           touchpad = {
             natural_scroll = true; # Two-finger scroll direction (like macOS)
           };
@@ -452,7 +452,8 @@ in
     # Essential tools for a functional Wayland desktop
     home.packages = [
       tmux-project
-    ] ++ (with pkgs; [
+    ]
+    ++ (with pkgs; [
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
       cliphist # Clipboard history manager (stores history, pairs with rofi)
