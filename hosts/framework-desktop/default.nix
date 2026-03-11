@@ -33,6 +33,9 @@
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
     ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
     ../../modules/nixos/sunshine.nix    # Game streaming server (Moonlight)
+    ../../modules/nixos/llama.nix       # Local LLM inference (llama.cpp + Vulkan)
+    ../../modules/nixos/open-webui.nix  # Web UI for LLMs (port 8090)
+    ../../modules/nixos/litellm.nix     # AI gateway proxy (port 4000)
   ];
 
   # Syncthing - full PARA sync on this machine

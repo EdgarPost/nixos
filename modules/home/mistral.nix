@@ -41,11 +41,18 @@
           set -gx MISTRAL_API_KEY (op read "$op_item")
           or begin; echo "Failed to read API key from 1Password"; return 1; end
 
-          echo "Mistral API key loaded"
+          # Add to LiteLLM env file (preserve other keys)
+          sudo sed -i '/^MISTRAL_API_KEY=/d' /var/lib/litellm/env
+          echo "MISTRAL_API_KEY=$MISTRAL_API_KEY" | sudo tee -a /var/lib/litellm/env > /dev/null
+          sudo systemctl restart litellm
+
+          echo "Mistral API key loaded (shell + LiteLLM)"
       end
 
       function mistral-logout --description "Clear Mistral API key from environment"
           set -e MISTRAL_API_KEY
+          sudo sed -i '/^MISTRAL_API_KEY=/d' /var/lib/litellm/env
+          sudo systemctl restart litellm
           echo "Mistral API key cleared"
       end
     '';

@@ -29,6 +29,7 @@
     ../modules/home/gardener.nix    # Gardener cluster management
     ../modules/home/github.nix      # GitHub CLI with 1Password
     ../modules/home/mistral.nix     # Mistral API key + Vibe CLI with 1Password
+    ../modules/home/opencode.nix    # OpenCode config (LiteLLM provider)
   ];
 
   # ==========================================================================
