@@ -22,6 +22,7 @@
     ../../modules/nixos/1password-gui.nix   # GUI + polkit
     ../../modules/nixos/hyprland.nix        # Desktop compositor
     ../../modules/nixos/greetd.nix          # Login manager
+    ../../modules/nixos/keyd.nix            # Caps Lock → Hyper key
     ../../modules/nixos/podman.nix          # Container runtime
   ];
 
@@ -39,5 +40,5 @@
   # video: screen brightness control (backlight device access)
   # audio: direct audio device access
   # pipewire: system-wide PipeWire audio access
-  users.users.${user.name}.extraGroups = [ "video" "audio" "pipewire" ];
+  users.users.${user.name}.extraGroups = [ "video" "audio" "pipewire" "keyd" ];
 }

@@ -110,6 +110,7 @@ in
         # Define variables for use throughout config
         # Similar to shell variables, but Hyprland-specific
         "$mod" = "SUPER"; # Windows/Super key as modifier
+        "$hyper" = "SUPER SHIFT CTRL ALT"; # Caps Lock via keyd
         "$terminal" = "ghostty"; # Default terminal emulator
         "$menu" = "rofi -show drun"; # Application launcher
 
@@ -150,14 +151,31 @@ in
         # Format: "MODIFIERS, key, action, args"
         # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
         bind = [
-          "$mod, D, exec, $menu"
-          "$mod, C, exec, $terminal -e khal interactive"
+          # =============================================================
+          # HYPER KEY BINDINGS (Caps Lock via keyd)
+          # High-level OS actions: app focus, launchers, session control
+          # =============================================================
+          "$hyper, D, exec, $menu"
+          "$hyper, C, exec, $terminal -e khal interactive"
+          "$hyper, M, exit"
+          "$hyper, H, exec, handy --toggle-transcription"
+          "$hyper, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+          "$hyper, A, exec, audio-menu"
+          "$hyper, P, exec, tmux-project"
+          "$hyper, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
+          "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
+          "$hyper, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
+          "$hyper, T, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"com.mitchellh.ghostty\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || $terminal"
+          "$hyper, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
+
+          # =============================================================
+          # MOD KEY BINDINGS (SUPER)
+          # Window management, navigation, workspaces
+          # =============================================================
           "$mod, Q, killactive"
-          "$mod, M, exit"
-          "$mod, V, exec, handy --toggle-transcription"
           "$mod, F, fullscreen"
-          "$mod, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
-          "$mod, N, exec, swaync-client -t" # Toggle notification center
+          "$mod, G, togglefloating"
+          "$hyper, N, exec, swaync-client -t" # Toggle notification center
 
           # Cycle column width (0.333 → 0.5 → 0.75 → 1.0)
           "$mod CTRL, Right, layoutmsg, colresize +conf"
@@ -208,35 +226,16 @@ in
           ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
           "SHIFT, Print, exec, grim - | wl-copy" # Full screen
 
-          # Clipboard history picker (SUPER+SHIFT+V)
-          # After selection, simulates CTRL+V to paste (Ghostty configured to accept CTRL+V)
-          "$mod SHIFT, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
-
           # Power menu (triggered by power button)
           # Shows rofi menu with power options instead of immediate shutdown
           ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
-
-          # Audio profile switcher (headset, meeting, mobile, analog)
-          "$mod, A, exec, audio-menu"
 
           # Next/previous workspace
           "$mod, Tab, workspace, e+1"
           "$mod SHIFT, Tab, workspace, e-1"
 
-          # Project picker: select ghq project → tmux session
-          "$mod, P, exec, tmux-project"
-
           # Move current window to next workspace
           "$mod SHIFT, N, movetoworkspace, e+1"
-
-          # Focus browser (or launch if not running)
-          "$mod, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
-
-          # Focus Slack (or launch if not running)
-          "$mod, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
-
-          # Focus Yazi (or launch if not running)
-          "$mod, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
 
         ];
 
