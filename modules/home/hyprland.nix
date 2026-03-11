@@ -223,8 +223,8 @@ in
           "$mod, Escape, exec, hyprlock"
 
           # Screenshots (to clipboard)
-          ", Print, exec, grim -g \"$(slurp)\" - | wl-copy" # Select region
-          "SHIFT, Print, exec, grim - | wl-copy" # Full screen
+          "$mod CTRL, S, exec, grim - | wl-copy" # Full screen
+          "$mod CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy" # Region select
 
           # Power menu (triggered by power button)
           # Shows rofi menu with power options instead of immediate shutdown
