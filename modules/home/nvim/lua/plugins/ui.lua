@@ -22,8 +22,8 @@ return {
 			opts.scroll = { enabled = false }
 			opts.picker = {
 				sources = {
-					files = { hidden = true },
-					grep = { hidden = true },
+					files = { hidden = true, cwd = vim.uv.cwd() },
+					grep = { hidden = true, cwd = vim.uv.cwd() },
 				},
 			}
 			opts.dashboard = {

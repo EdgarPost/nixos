@@ -8,6 +8,10 @@
         main = {
           capslock = "overload(hyper, capslock)";
         };
+        meta = {
+          left = "home";
+          right = "end";
+        };
         "hyper:C-M-A-S" = { };
       };
     };
