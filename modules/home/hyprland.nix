@@ -178,8 +178,8 @@ in
           "$hyper, N, exec, swaync-client -t" # Toggle notification center
 
           # Cycle column width (0.333 → 0.5 → 0.75 → 1.0)
-          "$mod CTRL, Right, layoutmsg, colresize +conf"
-          "$mod CTRL, Left, layoutmsg, colresize -conf"
+          "$mod CTRL, L, layoutmsg, colresize +conf"
+          "$mod CTRL, H, layoutmsg, colresize -conf"
 
           # Move focus
           "$mod, H, movefocus, l"
@@ -250,9 +250,7 @@ in
           ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
 
-          # Resize window
-          "$mod CTRL, H, resizeactive, -20 0"
-          "$mod CTRL, L, resizeactive, 20 0"
+          # Resize column
           "$mod CTRL, K, resizeactive, 0 -20"
           "$mod CTRL, J, resizeactive, 0 20"
         ];
