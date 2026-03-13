@@ -25,11 +25,12 @@
       local = {
         npm = "@ai-sdk/openai-compatible";
         options = {
-          baseURL = "http://localhost:4000/v1";
+          baseURL = "http://edgar-framework-desktop:4000/v1";
         };
         models = {
           "qwen3.5-27b" = {};
           "qwen3.5-35b-a3b" = {};
+          "omnicoder-9b" = {};
           devstral-medium = {};
           devstral-small = {};
           claude-opus = {};
@@ -38,8 +39,8 @@
         };
       };
     };
-    model = "local/devstral-medium";
-    small_model = "local/devstral-small";
+    model = "local/qwen3.5-35b-a3b";
+    small_model = "local/omnicoder-9b";
   };
 
   programs.fish.interactiveShellInit = ''

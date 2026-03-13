@@ -10,6 +10,8 @@
 # ARCHITECTURE:
 #                       ┌── llama.cpp :8001  (Qwen3.5-35B-A3B)
 #   LiteLLM (:4000) ───┼── llama.cpp :8002  (Qwen3.5-27B)
+#                       ├── llama.cpp :8003  (Qwen3.5-4B)
+#                       ├── llama.cpp :8004  (OmniCoder-9B)
 #                       ├── Anthropic API    (Claude, optional)
 #                       └── Mistral API      (Codestral, optional)
 #
@@ -53,6 +55,28 @@
             };
           };
         }
+        {
+          model_name = "qwen3.5-4b";
+          litellm_params = {
+            model = "openai/qwen3.5-4b";
+            api_base = "http://127.0.0.1:8003/v1";
+            api_key = "none";
+            extra_body = {
+              chat_template_kwargs = { enable_thinking = false; };
+            };
+          };
+        }
+        {
+          model_name = "omnicoder-9b";
+          litellm_params = {
+            model = "openai/omnicoder-9b";
+            api_base = "http://127.0.0.1:8004/v1";
+            api_key = "none";
+            extra_body = {
+              chat_template_kwargs = { enable_thinking = false; };
+            };
+          };
+        }
         # Reasoning variants (thinking enabled, for Open WebUI)
         {
           model_name = "qwen3.5-35b-a3b-reasoning";
@@ -67,6 +91,14 @@
           litellm_params = {
             model = "openai/qwen3.5-27b-reasoning";
             api_base = "http://127.0.0.1:8002/v1";
+            api_key = "none";
+          };
+        }
+        {
+          model_name = "omnicoder-9b-reasoning";
+          litellm_params = {
+            model = "openai/omnicoder-9b-reasoning";
+            api_base = "http://127.0.0.1:8004/v1";
             api_key = "none";
           };
         }

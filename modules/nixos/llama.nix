@@ -4,10 +4,10 @@ let
   modelDir = "/var/lib/llama-models";
   llama-cpp = pkgs.llama-cpp.override { vulkanSupport = true; };
 
-  mkLlamaService = { model, port, ctxSize, description }: {
+  mkLlamaService = { model, port, ctxSize, description, autostart ? true }: {
     inherit description;
     after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = if autostart then [ "multi-user.target" ] else [];
     serviceConfig = {
       Type = "exec";
       User = "llama";
@@ -48,8 +48,18 @@ let
       Qwen3.5-27B-UD-Q4_K_XL.gguf \
       --local-dir ${modelDir}
 
+    echo "Downloading Qwen3.5-4B (fast small model, ~3GB)..."
+    run $HF download unsloth/Qwen3.5-4B-GGUF \
+      Qwen3.5-4B-Q4_K_M.gguf \
+      --local-dir ${modelDir}
+
+    echo "Downloading OmniCoder-9B (coding agent, ~6GB)..."
+    run $HF download Tesslate/OmniCoder-9B-GGUF \
+      omnicoder-9b-q4_k_m.gguf \
+      --local-dir ${modelDir}
+
     echo "Done! Start services:"
-    echo "  sudo systemctl start llama-qwen3_5-35b-a3b llama-qwen3_5-27b"
+    echo "  sudo systemctl start llama-qwen3_5-35b-a3b llama-qwen3_5-27b llama-qwen3_5-4b llama-omnicoder-9b"
   '';
 in
 {
@@ -65,6 +75,21 @@ in
     port = 8002;
     ctxSize = 131072;
     description = "llama.cpp - Qwen3.5-27B (dense)";
+    autostart = false;
+  };
+
+  systemd.services.llama-qwen3_5-4b = mkLlamaService {
+    model = "Qwen3.5-4B-Q4_K_M.gguf";
+    port = 8003;
+    ctxSize = 32768;
+    description = "llama.cpp - Qwen3.5-4B (fast, Dutch stories)";
+  };
+
+  systemd.services.llama-omnicoder-9b = mkLlamaService {
+    model = "omnicoder-9b-q4_k_m.gguf";
+    port = 8004;
+    ctxSize = 131072;
+    description = "llama.cpp - OmniCoder-9B (coding agent)";
   };
 
   users.users.llama = { isSystemUser = true; group = "llama"; home = modelDir; };
