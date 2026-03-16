@@ -1,6 +1,8 @@
 { ... }:
 
 {
+  networking.firewall.allowedTCPPorts = [ 8090 ];
+
   services.open-webui = {
     enable = true;
     host = "0.0.0.0";
@@ -12,7 +14,8 @@
       ANONYMIZED_TELEMETRY = "False";
       DO_NOT_TRACK = "True";
       SCARF_NO_ANALYTICS = "True";
-      WEBUI_AUTH = "False";
+      WEBUI_AUTH = "True";
+      DEFAULT_USER_ROLE = "user";
     };
   };
 }
