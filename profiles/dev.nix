@@ -14,7 +14,7 @@
 #
 # ============================================================================
 
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -41,11 +41,18 @@
     nodejs_22   # JavaScript runtime
     claude-code # AI coding assistant
     opencode    # AI coding agent
-    inputs.worktrunk.packages.${pkgs.stdenv.hostPlatform.system}.default  # Git worktree manager
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)
   programs.git.settings.ghq.root = "~/Code";
+
+  # ==========================================================================
+  # WORKTRUNK - Git worktree manager for parallel AI agent workflows
+  # ==========================================================================
+  programs.worktrunk = {
+    enable = true;
+    enableFishIntegration = true;
+  };
 
   # ==========================================================================
   # ZOXIDE - Smart cd

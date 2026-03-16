@@ -211,6 +211,8 @@
                   inputs.roon-cli.homeManagerModules.default
                   # Claude Code extensions - commands, agents, skills
                   inputs.claude-code.homeManagerModules.default
+                  # Worktrunk - git worktree manager with shell integration
+                  inputs.worktrunk.homeModules.default
                   # Home configuration (desktop or server)
                   homeModule
                 ] ++ extraHomeModules;
