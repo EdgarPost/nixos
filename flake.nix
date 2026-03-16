@@ -96,6 +96,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Worktrunk - Git worktree manager for parallel AI agent workflows
+    worktrunk = {
+      url = "github:max-sixty/worktrunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # ==========================================================================
@@ -121,6 +127,7 @@
       opencode,
       claude-code,
       handy,
+      worktrunk,
       ...
     }@inputs:
 

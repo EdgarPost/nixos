@@ -94,6 +94,8 @@ in
           "move 3437 68, match:title ^(Picture-in-Picture)$"
           "keep_aspect_ratio on, match:title ^(Picture-in-Picture)$"
           "no_initial_focus on, match:title ^(Picture-in-Picture)$"
+          "no_follow_mouse on, match:title ^(Picture-in-Picture)$"
+          "focus_on_activate false, match:title ^(Picture-in-Picture)$"
         ];
 
         # =======================================================================

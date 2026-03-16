@@ -16,6 +16,7 @@
       SCARF_NO_ANALYTICS = "True";
       WEBUI_AUTH = "True";
       DEFAULT_USER_ROLE = "user";
+
     };
   };
 }
