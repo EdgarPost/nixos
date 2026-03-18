@@ -54,6 +54,17 @@ let
     fi
   '';
 
+  # Rofi power menu
+  power-menu = pkgs.writeShellScriptBin "power-menu" ''
+    choice=$(echo -e "Lock\nSuspend\nReboot\nShutdown" | rofi -dmenu -p "Power")
+    case "$choice" in
+      Lock) hyprlock ;;
+      Suspend) systemctl suspend ;;
+      Reboot) systemctl reboot ;;
+      Shutdown) systemctl poweroff ;;
+    esac
+  '';
+
   # Catppuccin wallpapers - fetched at build time
   catppuccin-wallpapers = pkgs.fetchFromGitHub {
     owner = "zhichaoh";
@@ -221,16 +232,15 @@ in
           ", XF86AudioPrev, exec, playerctl previous"
           ", XF86AudioStop, exec, playerctl stop"
 
-          # Lock screen
-          "$mod, Escape, exec, hyprlock"
+          # Power menu (lock, suspend, reboot, shutdown)
+          "$mod, Escape, exec, power-menu"
 
           # Screenshots (to clipboard)
           "$mod CTRL, S, exec, grim - | wl-copy" # Full screen
           "$mod CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy" # Region select
 
           # Power menu (triggered by power button)
-          # Shows rofi menu with power options instead of immediate shutdown
-          ", XF86PowerOff, exec, echo -e 'Shutdown\\nReboot\\nSuspend\\nLock\\nCancel' | rofi -dmenu -p 'Power' | xargs -I {} sh -c 'case {} in Shutdown) systemctl poweroff ;; Reboot) systemctl reboot ;; Suspend) systemctl suspend ;; Lock) hyprlock ;; esac'"
+          ", XF86PowerOff, exec, power-menu"
 
           # Next/previous workspace
           "$mod, Tab, workspace, e+1"
@@ -416,6 +426,33 @@ in
         ];
 
         label = [ ];
+      };
+    };
+
+    # ==========================================================================
+    # HYPRIDLE - Idle Daemon
+    # ==========================================================================
+    # Reports idle status to D-Bus (Slack etc. show "away") and manages
+    # screen lock + DPMS after inactivity. Services and SSH stay running.
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+        };
+        listener = [
+          {
+            timeout = 300; # 5 min → lock
+            on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout = 330; # 5.5 min → screen off
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
       };
     };
 
