@@ -233,7 +233,7 @@ in
           ", XF86AudioStop, exec, playerctl stop"
 
           # Power menu (lock, suspend, reboot, shutdown)
-          "$mod, Escape, exec, power-menu"
+          "$hyper, Escape, exec, power-menu"
 
           # Screenshots (to clipboard)
           "$mod CTRL, S, exec, grim - | wl-copy" # Full screen
@@ -489,6 +489,7 @@ in
     # Essential tools for a functional Wayland desktop
     home.packages = [
       tmux-project
+      power-menu
     ]
     ++ (with pkgs; [
       jq # JSON query tool

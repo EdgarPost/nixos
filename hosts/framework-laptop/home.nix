@@ -10,7 +10,7 @@
 #
 # ============================================================================
 
-{ ... }:
+{ lib, ... }:
 
 {
 
@@ -20,6 +20,11 @@
       "desc:Dell Inc. DELL U4025QW,5120x2160@60,0x0,1.25" # Dell U4025QW ultrawide
       "eDP-1,preferred,auto,1" # Built-in laptop screen
     ];
+
+    # Full-width columns on laptop screen
+    scrolling = {
+      column_width = lib.mkForce 1.0;
+    };
 
     # Per-device input settings (Framework hardware)
     device = [
