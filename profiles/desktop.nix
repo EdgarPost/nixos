@@ -37,6 +37,7 @@ in
     ../modules/home/zathura.nix    # PDF viewer
     ../modules/home/audio.nix      # Audio profile switching
     ../modules/home/handy.nix      # Offline speech-to-text
+    ../modules/home/calendar.nix   # Calendar & contacts (Fastmail)
   ];
 
   # ==========================================================================

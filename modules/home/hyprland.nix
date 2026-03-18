@@ -54,6 +54,21 @@ let
     fi
   '';
 
+  # Open khal in tmux session, reusing existing ghostty if available
+  open-calendar = pkgs.writeShellScriptBin "open-calendar" ''
+    # Ensure tmux session "khal" exists
+    tmux has-session -t =khal 2>/dev/null || \
+      tmux new-session -d -s khal 'khal interactive'
+
+    # Focus existing ghostty or launch new one
+    if hyprctl clients -j | ${pkgs.jq}/bin/jq -e '.[] | select(.class == "com.mitchellh.ghostty")' > /dev/null 2>&1; then
+      hyprctl dispatch focuswindow class:com.mitchellh.ghostty
+      tmux switch-client -t =khal
+    else
+      ghostty -e tmux new-session -A -s khal 'khal interactive' &
+    fi
+  '';
+
   # Rofi power menu
   power-menu = pkgs.writeShellScriptBin "power-menu" ''
     choice=$(echo -e "Lock\nAway\nSuspend\nReboot\nShutdown" | rofi -dmenu -p "Power")
@@ -170,7 +185,7 @@ in
           # High-level OS actions: app focus, launchers, session control
           # =============================================================
           "$hyper, D, exec, $menu"
-          "$hyper, C, exec, $terminal -e khal interactive"
+          "$hyper, C, exec, open-calendar"
           "$hyper, M, exit"
           "$hyper, H, exec, handy --toggle-transcription"
           "$hyper, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
@@ -492,6 +507,7 @@ in
     # Essential tools for a functional Wayland desktop
     home.packages = [
       tmux-project
+      open-calendar
       power-menu
     ]
     ++ (with pkgs; [
