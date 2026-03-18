@@ -28,12 +28,31 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Wrapper scripts needed because vdirsyncer mangles op:// URLs in command args
+  cacheDir = "\${XDG_RUNTIME_DIR}/vdirsyncer";
+
+  # Cache credentials at login so 1Password is only prompted once per session.
+  # Wrapper scripts read from cache, falling back to op if cache is missing.
+  cacheCredentials = pkgs.writeShellScript "cache-vdirsyncer-creds" ''
+    mkdir -p "${cacheDir}"
+    chmod 700 "${cacheDir}"
+    op read "op://Private/FastMail/username" > "${cacheDir}/username"
+    op read "op://Private/FastMail/vdirsyncer" > "${cacheDir}/password"
+    chmod 600 "${cacheDir}/username" "${cacheDir}/password"
+  '';
+
   getUser = pkgs.writeShellScript "get-fastmail-user" ''
-    op read "op://Private/FastMail/username"
+    if [ -f "${cacheDir}/username" ]; then
+      cat "${cacheDir}/username"
+    else
+      op read "op://Private/FastMail/username"
+    fi
   '';
   getPass = pkgs.writeShellScript "get-fastmail-pass" ''
-    op read "op://Private/FastMail/vdirsyncer"
+    if [ -f "${cacheDir}/password" ]; then
+      cat "${cacheDir}/password"
+    else
+      op read "op://Private/FastMail/vdirsyncer"
+    fi
   '';
 
   notifyScript = pkgs.writeShellScript "calendar-notify" ''
@@ -143,6 +162,16 @@ in
   # ===========================================================================
   # SERVICES
   # ===========================================================================
+
+  # Cache 1Password credentials at login (stored in XDG_RUNTIME_DIR, cleared on logout)
+  systemd.user.services.vdirsyncer-cache-creds = {
+    Unit.Description = "Cache Fastmail credentials from 1Password";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${cacheCredentials}";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 
   services.vdirsyncer = {
     enable = true;
