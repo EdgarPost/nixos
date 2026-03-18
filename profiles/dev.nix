@@ -18,29 +18,28 @@
 
 {
   imports = [
-    ../modules/home/nvim.nix        # Text editor
-    ../modules/home/tmux.nix        # Terminal multiplexer
-    ../modules/home/atuin.nix       # Shell history sync
-    ../modules/home/direnv.nix      # Per-directory environments with nix-direnv
-    ../modules/home/yazi.nix        # File manager (TUI)
+    ../modules/home/nvim.nix # Text editor
+    ../modules/home/tmux.nix # Terminal multiplexer
+    ../modules/home/atuin.nix # Shell history sync
+    ../modules/home/direnv.nix # Per-directory environments with nix-direnv
+    ../modules/home/yazi.nix # File manager (TUI)
     ../modules/home/claude-code.nix # AI coding assistant config
-    ../modules/home/kubernetes.nix  # k8s tools (kubie, kubectx)
-    ../modules/home/openstack.nix   # OpenStack CLI
-    ../modules/home/gardener.nix    # Gardener cluster management
-    ../modules/home/github.nix      # GitHub CLI with 1Password
-    ../modules/home/mistral.nix     # Mistral API key + Vibe CLI with 1Password
-    ../modules/home/opencode.nix    # OpenCode config (LiteLLM provider)
+    ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
+    ../modules/home/openstack.nix # OpenStack CLI
+    ../modules/home/gardener.nix # Gardener cluster management
+    ../modules/home/github.nix # GitHub CLI with 1Password
+    ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
+    ../modules/home/opencode.nix # OpenCode config (LiteLLM provider)
   ];
 
   # ==========================================================================
   # DEV PACKAGES
   # ==========================================================================
   home.packages = with pkgs; [
-    lazygit     # TUI for git operations
-    ghq         # Git repository manager (ghq get, ghq list)
-    nodejs_22   # JavaScript runtime
+    lazygit # TUI for git operations
+    ghq # Git repository manager (ghq get, ghq list)
     claude-code # AI coding assistant
-    opencode    # AI coding agent
+    opencode # AI coding agent
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)
