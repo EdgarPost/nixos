@@ -29,6 +29,9 @@ let
   sunshine-stream-on = pkgs.writeShellScriptBin "sunshine-stream-on" ''
     set -euo pipefail
 
+    # Save Dell DPMS state so stream-off can restore it
+    hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[] | select(.name == "DP-4") | .dpmsStatus' > /tmp/sunshine-dell-dpms
+
     # Remove stale output if it exists from a previous session
     hyprctl output remove "${headlessName}" 2>/dev/null || true
 
@@ -72,8 +75,19 @@ let
       && echo "sunshine-stream-off: Dell re-enabled" >> /tmp/sunshine-stream.log \
       || echo "sunshine-stream-off: FAILED to re-enable Dell" >> /tmp/sunshine-stream.log
 
-    # Wait for Dell to come up
     sleep 1
+
+    # Restore Dell DPMS state from before streaming
+    DPMS_WAS=$(cat /tmp/sunshine-dell-dpms 2>/dev/null || echo "true")
+    if [ "$DPMS_WAS" = "false" ]; then
+      sleep 1
+      hyprctl dispatch dpms off DP-4 2>/dev/null || true
+      echo "sunshine-stream-off: Dell restored to DPMS off (Away)" >> /tmp/sunshine-stream.log
+    else
+      hyprctl dispatch dpms on DP-4 2>/dev/null || true
+      echo "sunshine-stream-off: Dell restored to DPMS on" >> /tmp/sunshine-stream.log
+    fi
+    rm -f /tmp/sunshine-dell-dpms
 
     # Destroy the headless output
     hyprctl output remove "${headlessName}" 2>/dev/null \
