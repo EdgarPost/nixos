@@ -73,8 +73,8 @@ let
   power-menu = pkgs.writeShellScriptBin "power-menu" ''
     choice=$(echo -e "Lock\nAway\nSuspend\nReboot\nShutdown" | rofi -dmenu -p "Power")
     case "$choice" in
-      Lock) loginctl lock-session; sleep 1; hyprctl dispatch dpms off ;;
-      Away) hyprctl dispatch dpms off ;;
+      Lock) loginctl lock-session; sleep 1; hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name' | xargs -I{} hyprctl dispatch dpms off {} ;;
+      Away) hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name' | xargs -I{} hyprctl dispatch dpms off {} ;;
       Suspend) systemctl suspend ;;
       Reboot) systemctl reboot ;;
       Shutdown) systemctl poweroff ;;

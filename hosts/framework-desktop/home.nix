@@ -17,8 +17,8 @@
   services.hypridle.settings.listener = lib.mkForce [
     {
       timeout = 300; # 5 min → screen off
-      on-timeout = "hyprctl dispatch dpms off";
-      on-resume = "hyprctl dispatch dpms on";
+      on-timeout = "hyprctl dispatch dpms off DP-4";
+      on-resume = "hyprctl dispatch dpms on DP-4";
     }
   ];
 
