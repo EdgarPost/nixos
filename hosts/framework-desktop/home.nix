@@ -13,6 +13,15 @@
 { lib, ... }:
 
 {
+  # Desktop: no auto-lock on idle (breaks Sunshine), only DPMS timeout
+  services.hypridle.settings.listener = lib.mkForce [
+    {
+      timeout = 300; # 5 min → screen off
+      on-timeout = "hyprctl dispatch dpms off";
+      on-resume = "hyprctl dispatch dpms on";
+    }
+  ];
+
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
