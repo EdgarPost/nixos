@@ -36,7 +36,7 @@ let
     selected=$(${pkgs.ghq}/bin/ghq list | rofi -dmenu -p "Project" -i)
     [ -z "$selected" ] && exit 0
 
-    name="''${selected##*/}"
+    name=$(echo "''${selected##*/}" | tr '.:' '--')
     path="$root/$selected"
 
     # Ensure tmux session exists for this project
