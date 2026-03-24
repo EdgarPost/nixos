@@ -36,6 +36,7 @@
     ../../modules/nixos/llama.nix       # Local LLM inference (llama.cpp + Vulkan)
     ../../modules/nixos/open-webui.nix  # Web UI for LLMs (port 8090)
     ../../modules/nixos/litellm.nix     # AI gateway proxy (port 4000)
+    ../../modules/nixos/bazecor.nix     # Dygma Defy keyboard configurator
   ];
 
   # Syncthing - full PARA sync on this machine
