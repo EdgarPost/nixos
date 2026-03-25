@@ -10,7 +10,7 @@
 #   - Hyprland compositor (system-level: portals, fonts, packages)
 #   - greetd login manager with tuigreet
 #   - Podman container runtime
-#   - PipeWire audio stack (ALSA, PulseAudio compatibility)
+#   - PipeWire audio stack (ALSA, PulseAudio compatibility, AirPlay/RAOP)
 #   - Desktop user groups (video, audio, pipewire)
 #
 # ============================================================================
@@ -34,6 +34,16 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;  # PulseAudio compatibility layer
+    raopOpenFirewall = true;  # Open ports for AirPlay streaming
+    extraConfig.pipewire = {
+      "30-raop-discover" = {
+        "context.modules" = [
+          {
+            name = "libpipewire-module-raop-discover";
+          }
+        ];
+      };
+    };
   };
 
   # Desktop-specific user groups

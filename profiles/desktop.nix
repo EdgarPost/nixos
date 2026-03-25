@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman
+#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -37,7 +37,7 @@ in
     ../modules/home/zathura.nix    # PDF viewer
     ../modules/home/audio.nix      # Audio profile switching
     ../modules/home/handy.nix      # Offline speech-to-text
-    ../modules/home/calendar.nix   # Calendar & contacts (Fastmail)
+    ../modules/home/thunderbird.nix # Email, calendar & contacts client
   ];
 
   # ==========================================================================
