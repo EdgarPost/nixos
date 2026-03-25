@@ -57,6 +57,9 @@
       # Don't warn when building with uncommitted changes
       # Useful during development, disable for production purity
       warn-dirty = false;
+
+      # Increase download buffer to avoid throttling on large fetches
+      download-buffer-size = 268435456; # 256 MiB
     };
 
     # GARBAGE COLLECTION - Reclaim disk space
@@ -117,6 +120,7 @@
     tree      # Directory tree
     ripgrep   # Fast grep (rg)
     fd        # Fast find
+    nvd       # Nix version diff (compare system closures before switching)
 
     # Spell checking
     hunspell

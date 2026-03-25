@@ -29,6 +29,7 @@
 
   programs.git = {
     enable = true;
+    signing.format = "openpgp";
     settings = {
       # User identity (for commit authorship)
       user.name = user.fullName;
