@@ -34,7 +34,7 @@
     ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
     ../../modules/nixos/sunshine.nix    # Game streaming server (Moonlight)
     ../../modules/nixos/llama.nix       # Local LLM inference (llama.cpp + Vulkan)
-    ../../modules/nixos/open-webui.nix  # Web UI for LLMs (port 8090)
+    ../../modules/nixos/librechat.nix   # AI chat interface (port 3080)
     ../../modules/nixos/bifrost.nix     # AI gateway proxy (port 4000, replaces litellm)
     ../../modules/nixos/bazecor.nix     # Dygma Defy keyboard configurator
   ];
