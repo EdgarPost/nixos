@@ -100,7 +100,7 @@ in
   programs.waybar = {
     enable = true;
     systemd.enable = true; # Managed by systemd - restarts after rebuild/crash
-    systemd.target = "hyprland-session.target"; # Start with Hyprland
+    systemd.targets = [ "hyprland-session.target" ]; # Start with Hyprland
 
     # ========================================================================
     # WAYBAR CONFIGURATION (JSON)
