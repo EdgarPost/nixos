@@ -13,24 +13,34 @@
 { lib, ... }:
 
 {
-  # Desktop: no auto-lock on idle (breaks Sunshine), only DPMS timeout
+  # Desktop: DPMS timeout turns Dell off, creates headless output for Steam Remote Play.
+  # When Dell resumes, headless is destroyed — Steam Deck streams only while Dell sleeps.
   services.hypridle.settings.listener = lib.mkForce [
     {
-      timeout = 300; # 5 min → screen off
-      on-timeout = "hyprctl dispatch dpms off DP-4";
-      on-resume = "hyprctl dispatch dpms on DP-4";
+      timeout = 300; # 5 min → Dell off, headless on for Steam Remote Play
+      on-timeout = ''
+        hyprctl dispatch dpms off DP-4
+        hyprctl output create headless
+        hyprctl keyword monitor "HEADLESS-1,2560x1440@90,auto,1"
+      '';
+      on-resume = ''
+        hyprctl dispatch dpms on DP-4
+        hyprctl output remove HEADLESS-1
+      '';
     }
   ];
 
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
+    # HEADLESS-1: virtual monitor for Steam Remote Play when Dell is asleep
     monitor = [
       "desc:Dell Inc. DELL U4025QW,5120x2160@120,0x0,1.25"
+      "HEADLESS-1,2560x1440@90,auto,1"
     ];
 
-    # Pin gaming workspace to headless output for streaming.
-    # Inert when no headless exists, auto-activates when sunshine-stream-on creates one.
+    # Pin gaming workspace to headless output for Steam Remote Play streaming.
+    # Inert when no headless exists, auto-activates when hypridle creates one.
     workspace = [
       "name:gaming, monitor:HEADLESS-1, default:true"
     ];
