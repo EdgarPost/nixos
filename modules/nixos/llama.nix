@@ -4,7 +4,7 @@ let
   modelDir = "/var/lib/llama-models";
   llama-cpp = pkgs.llama-cpp.override { vulkanSupport = true; };
 
-  mkLlamaService = { model, port, ctxSize, description, autostart ? true }: {
+  mkLlamaService = { model, alias ? null, port, ctxSize, description, autostart ? true, reasoningBudget ? -1 }: {
     inherit description;
     after = [ "network.target" ];
     wantedBy = if autostart then [ "multi-user.target" ] else [];
@@ -12,18 +12,18 @@ let
       Type = "exec";
       User = "llama";
       Group = "llama";
-      ExecStart = builtins.concatStringsSep " " [
+      ExecStart = builtins.concatStringsSep " " ([
         "${llama-cpp}/bin/llama-server"
         "--model" "${modelDir}/${model}"
         "--port" (toString port)
         "--host" "0.0.0.0"
         "--ctx-size" (toString ctxSize)
-        "--no-mmap"
         "-fa" "on"
         "-ngl" "99"
         "--cache-type-k" "q8_0"
         "--cache-type-v" "q8_0"
-      ];
+        "--reasoning-budget" (toString reasoningBudget)
+      ] ++ (if alias != null then [ "--alias" alias ] else []));
       Restart = "on-failure";
       RestartSec = "5s";
     };
@@ -43,15 +43,6 @@ let
       Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf \
       --local-dir ${modelDir}
 
-    echo "Downloading Qwen3.5-27B (reasoning model, ~17GB)..."
-    run $HF download unsloth/Qwen3.5-27B-GGUF \
-      Qwen3.5-27B-UD-Q4_K_XL.gguf \
-      --local-dir ${modelDir}
-
-    echo "Downloading Qwen3.5-4B (fast small model, ~3GB)..."
-    run $HF download unsloth/Qwen3.5-4B-GGUF \
-      Qwen3.5-4B-Q4_K_M.gguf \
-      --local-dir ${modelDir}
 
     echo "Downloading OmniCoder-9B (coding agent, ~6GB)..."
     run $HF download Tesslate/OmniCoder-9B-GGUF \
@@ -63,33 +54,43 @@ let
   '';
 in
 {
+  # ── Non-thinking instances (reasoning off) ──────────────────────────
   systemd.services.llama-qwen3_5-35b-a3b = mkLlamaService {
     model = "Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf";
+    alias = "qwen3.5-35b-a3b";
     port = 8001;
     ctxSize = 65536;
-    description = "llama.cpp - Qwen3.5-35B-A3B (MoE, 3B active)";
+    reasoningBudget = 0;
+    description = "llama.cpp - Qwen3.5-35B-A3B";
   };
 
-  systemd.services.llama-qwen3_5-27b = mkLlamaService {
-    model = "Qwen3.5-27B-UD-Q4_K_XL.gguf";
-    port = 8002;
-    ctxSize = 131072;
-    description = "llama.cpp - Qwen3.5-27B (dense)";
-    autostart = false;
-  };
-
-  systemd.services.llama-qwen3_5-4b = mkLlamaService {
-    model = "Qwen3.5-4B-Q4_K_M.gguf";
-    port = 8003;
-    ctxSize = 32768;
-    description = "llama.cpp - Qwen3.5-4B (fast, Dutch stories)";
-  };
 
   systemd.services.llama-omnicoder-9b = mkLlamaService {
     model = "omnicoder-9b-q4_k_m.gguf";
+    alias = "omnicoder-9b";
     port = 8004;
     ctxSize = 131072;
-    description = "llama.cpp - OmniCoder-9B (coding agent)";
+    reasoningBudget = 0;
+    description = "llama.cpp - OmniCoder-9B";
+  };
+
+  # ── Thinking instances (reasoning on) ───────────────────────────────
+  # Same model files, mmap shares memory pages between instances
+  systemd.services.llama-qwen3_5-35b-a3b-reasoning = mkLlamaService {
+    model = "Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf";
+    alias = "qwen3.5-35b-a3b-reasoning";
+    port = 8011;
+    ctxSize = 65536;
+    description = "llama.cpp - Qwen3.5-35B-A3B (reasoning)";
+  };
+
+
+  systemd.services.llama-omnicoder-9b-reasoning = mkLlamaService {
+    model = "omnicoder-9b-q4_k_m.gguf";
+    alias = "omnicoder-9b-reasoning";
+    port = 8014;
+    ctxSize = 131072;
+    description = "llama.cpp - OmniCoder-9B (reasoning)";
   };
 
   users.users.llama = { isSystemUser = true; group = "llama"; home = modelDir; };
