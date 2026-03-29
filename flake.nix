@@ -102,6 +102,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Bifrost - AI gateway proxy (Go, replaces litellm)
+    bifrost = {
+      url = "github:EdgarPost/bifrost";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # ==========================================================================
@@ -128,6 +134,7 @@
       claude-code,
       handy,
       worktrunk,
+      bifrost,
       ...
     }@inputs:
 
