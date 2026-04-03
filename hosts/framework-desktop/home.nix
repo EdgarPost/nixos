@@ -35,14 +35,8 @@
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
     # HEADLESS-1: virtual monitor for Steam Remote Play when Dell is asleep
     monitor = [
-      "desc:Dell Inc. DELL U4025QW,5120x2160@120,0x0,1.25"
-      "HEADLESS-1,2560x1440@90,auto,1"
-    ];
-
-    # Pin gaming workspace to headless output for Steam Remote Play streaming.
-    # Inert when no headless exists, auto-activates when hypridle creates one.
-    workspace = [
-      "name:gaming, monitor:HEADLESS-1, default:true"
+      "DP-4,5120x2160@120,0x0,1.25"   # Dell U4025QW via DisplayPort
+      "DP-6,disable"                    # Same Dell via Thunderbolt (duplicate, keep TB for KVM peripherals only)
     ];
 
     # XWayland renders at 1x by default, causing pixelation with fractional scaling.
