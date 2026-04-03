@@ -89,6 +89,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Claude Code package - auto-updated hourly (nixpkgs lags behind)
+    claude-code-nix = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Handy - offline speech-to-text (Whisper/Parakeet, Tauri app)
     # Pinned to v0.7.8 — later versions have tauri-runtime build issues with Nix
     handy = {
@@ -176,10 +182,6 @@
           extraHomeModules ? [ ],         # Host-specific home modules (e.g. monitor config)
         }:
         nixpkgs.lib.nixosSystem {
-          # `inherit system` is shorthand for `system = system;`
-          # Common pattern to avoid repetition
-          inherit system;
-
           # SPECIALARGS - How data flows to modules
           # Modules are functions: { config, pkgs, lib, ... }: { ... }
           # specialArgs adds extra args (inputs, user) available in all modules
@@ -194,6 +196,9 @@
           #   - Define new options (for other modules to set)
           #   - Import other modules
           modules = [
+            # Set platform via module instead of top-level `system` arg (recommended)
+            { nixpkgs.hostPlatform = system; }
+
             # Host-specific configuration (hardware, hostname, bootloader)
             # String interpolation: ${hostname} embeds variable in path
             ./hosts/${hostname}
