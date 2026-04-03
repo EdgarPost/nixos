@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird
+#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -61,6 +61,7 @@ in
       inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+      figma-linux      # Unofficial Figma desktop client
       slack            # Only available for x86_64 (no aarch64 build)
       teams-for-linux  # Microsoft Teams client (community Electron wrapper)
       postman          # API testing and development tool
