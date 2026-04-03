@@ -10,7 +10,6 @@
 #   - Hyprland compositor (system-level: portals, fonts, packages)
 #   - greetd login manager with tuigreet
 #   - Podman container runtime
-#   - PipeWire audio stack (ALSA, PulseAudio compatibility, AirPlay/RAOP)
 #   - Desktop user groups (video, audio, pipewire)
 #
 # ============================================================================
@@ -19,11 +18,11 @@
 
 {
   imports = [
-    ../../modules/nixos/1password-gui.nix   # GUI + polkit
-    ../../modules/nixos/hyprland.nix        # Desktop compositor
-    ../../modules/nixos/greetd.nix          # Login manager
-    ../../modules/nixos/keyd.nix            # Caps Lock → Hyper key
-    ../../modules/nixos/podman.nix          # Container runtime
+    ../../modules/nixos/1password-gui.nix # GUI + polkit
+    ../../modules/nixos/hyprland.nix # Desktop compositor
+    ../../modules/nixos/greetd.nix # Login manager
+    ../../modules/nixos/keyd.nix # Caps Lock → Hyper key
+    ../../modules/nixos/podman.nix # Container runtime
   ];
 
   # PipeWire audio stack
@@ -33,22 +32,17 @@
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
-    pulse.enable = true;  # PulseAudio compatibility layer
-    raopOpenFirewall = true;  # Open ports for AirPlay streaming
-    extraConfig.pipewire = {
-      "30-raop-discover" = {
-        "context.modules" = [
-          {
-            name = "libpipewire-module-raop-discover";
-          }
-        ];
-      };
-    };
+    pulse.enable = true; # PulseAudio compatibility layer
   };
 
   # Desktop-specific user groups
   # video: screen brightness control (backlight device access)
   # audio: direct audio device access
   # pipewire: system-wide PipeWire audio access
-  users.users.${user.name}.extraGroups = [ "video" "audio" "pipewire" "keyd" ];
+  users.users.${user.name}.extraGroups = [
+    "video"
+    "audio"
+    "pipewire"
+    "keyd"
+  ];
 }
