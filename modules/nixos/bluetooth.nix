@@ -12,7 +12,7 @@
 #
 # ============================================================================
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   # Enable Bluetooth hardware support
@@ -23,8 +23,22 @@
       General = {
         Enable = "Source,Sink,Media,Socket";
         Experimental = true; # Better codec negotiation
+        Privacy = "device";
+        JustWorksRepairing = "always";
+        Class = "0x000100";
+        FastConnectable = true;
       };
     };
+  };
+
+  # Xbox One wireless controller support
+  hardware.xpadneo.enable = true;
+
+  boot = {
+    extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
+    extraModprobeConfig = ''
+      options bluetooth disable_ertm=Y
+    '';
   };
 
   # Blueman: GTK Bluetooth manager (tray icon, pairing GUI)
