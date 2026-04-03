@@ -40,7 +40,7 @@
       lua-language-server                     # Lua (for neovim config)
       nil                                      # Nix (NixOS-native, better than rnix)
       vtsls                                    # TypeScript/JavaScript (workspace diagnostics)
-      nodePackages.vscode-langservers-extracted # HTML, CSS, JSON, ESLint (from VS Code)
+      vscode-langservers-extracted              # HTML, CSS, JSON, ESLint (from VS Code)
       yaml-language-server                      # YAML (Kubernetes schema validation)
 
       # =====================================================================
