@@ -38,7 +38,7 @@ Claude can read this file to understand current state and continue where we left
 - [x] Waybar: island styling, vertical bars (CPU/mem/volume), shared font variable
 - [x] Tailscale mesh VPN
 - [x] Roon Bridge audio endpoint
-- [x] Wallpapers: swww daemon, catppuccin-wallpapers repo, random on login with animation
+- [x] Wallpapers: awww daemon, catppuccin-wallpapers repo, random on login with animation
 - [x] Transparency & blur: Ghostty opacity, Hyprland blur config, neovim transparent bg
 - [x] greetd: quiet boot (no log spam on tuigreet)
 - [x] Portal fix: dbus-update-activation-environment for re-login support

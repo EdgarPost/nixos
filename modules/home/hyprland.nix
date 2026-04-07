@@ -151,10 +151,10 @@ in
           "wl-paste --watch cliphist store" # Clipboard history daemon
           "1password --silent" # Start 1Password daemon for SSH agent
           # waybar is now managed by systemd (see waybar.nix)
-          "swww-daemon" # Wallpaper daemon (supports animated transitions)
+          "awww-daemon" # Wallpaper daemon (supports animated transitions)
           # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
           # First set Catppuccin Mocha crust color, then transition to wallpaper
-          "until swww clear 11111b 2>/dev/null; do sleep 0.1; done && swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+          "until awww clear 11111b 2>/dev/null; do sleep 0.1; done && awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
           "swaync" # Notification center (replacing mako)
           "handy --start-hidden" # Offline speech-to-text (toggle with Super+V)
         ];
@@ -172,7 +172,7 @@ in
           "$hyper, D, exec, $menu"
           "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
           "$hyper, H, exec, handy --toggle-transcription"
-          "$hyper, W, exec, swww img \"$(find -L ~/.wallpapers -type f | shuf -n 1)\" --transition-type grow --transition-pos center --transition-duration 1"
+          "$hyper, W, exec, awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
           "$hyper, A, exec, audio-menu"
           "$hyper, P, exec, tmux-project"
           "$hyper, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
@@ -502,7 +502,7 @@ in
       slurp # Region selector (used with grim for area screenshots)
       brightnessctl # Brightness: brightnessctl set 50%
       playerctl # Media control: playerctl play-pause, next, previous
-      swww # Wallpaper daemon: swww img ~/wallpaper.png
+      awww # Wallpaper daemon: awww img ~/wallpaper.png
     ]);
   }; # End of config
 }
