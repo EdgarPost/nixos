@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma
+#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma, Morgen
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -62,6 +62,17 @@ in
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
       figma-linux      # Unofficial Figma desktop client
+      # Morgen: use bundled Electron — system Electron 41 causes GPU/window issues
+      (morgen.overrideAttrs (old: {
+        installPhase = old.installPhase + ''
+          rm $out/bin/morgen
+          cat > $out/bin/morgen <<EOF
+#!/bin/sh
+exec $out/opt/Morgen/morgen \''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer --enable-wayland-ime=true}} "\$@"
+EOF
+          chmod +x $out/bin/morgen
+        '';
+      }))
       slack            # Only available for x86_64 (no aarch64 build)
       teams-for-linux  # Microsoft Teams client (community Electron wrapper)
       postman          # API testing and development tool
