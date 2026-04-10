@@ -114,6 +114,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Envsec - per-directory environment variable management
+    envsec = {
+      url = "github:EdgarPost/envsec";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # ==========================================================================
@@ -141,6 +147,7 @@
       handy,
       worktrunk,
       bifrost,
+      envsec,
       ...
     }@inputs:
 
@@ -225,6 +232,8 @@
                   inputs.claude-code.homeManagerModules.default
                   # Worktrunk - git worktree manager with shell integration
                   inputs.worktrunk.homeModules.default
+                  # Envsec - per-directory environment variable management
+                  inputs.envsec.homeManagerModules.default
                   # Home configuration (desktop or server)
                   homeModule
                 ] ++ extraHomeModules;
