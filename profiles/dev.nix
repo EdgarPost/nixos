@@ -53,6 +53,11 @@
     enableFishIntegration = true;
   };
 
+  xdg.configFile."worktrunk/config.toml".text = ''
+    [post-start]
+    copy = "wt step copy-ignored"
+  '';
+
   # ==========================================================================
   # ENVSEC - Per-directory environment variable management
   # ==========================================================================
