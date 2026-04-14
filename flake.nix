@@ -95,13 +95,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Handy - offline speech-to-text (Whisper/Parakeet, Tauri app)
-    # Pinned to v0.7.8 — later versions have tauri-runtime build issues with Nix
-    handy = {
-      url = "github:cjpais/Handy/v0.7.8";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Worktrunk - Git worktree manager for parallel AI agent workflows
     worktrunk = {
       url = "github:max-sixty/worktrunk";
@@ -144,7 +137,6 @@
       roon-cli,
       opencode,
       claude-code,
-      handy,
       worktrunk,
       bifrost,
       envsec,
@@ -170,7 +162,7 @@
       # ========== Network Hosts ==========
       # Hostnames of other machines on the network (resolved via Tailscale/mDNS)
       hosts = {
-        pbstation = "192.168.2.10";  # Synology NAS (Roon Core) - static LAN IP
+        pbstation = "192.168.2.10"; # Synology NAS (Roon Core) - static LAN IP
       };
 
       # ========== Helper Function ==========
@@ -185,8 +177,8 @@
           hostname,
           system ? "x86_64-linux",
           extraModules ? [ ],
-          homeModule ? ./home,            # Which home config to use (default: desktop)
-          extraHomeModules ? [ ],         # Host-specific home modules (e.g. monitor config)
+          homeModule ? ./home, # Which home config to use (default: desktop)
+          extraHomeModules ? [ ], # Host-specific home modules (e.g. monitor config)
         }:
         nixpkgs.lib.nixosSystem {
           # SPECIALARGS - How data flows to modules
@@ -219,7 +211,7 @@
               # Ensures same package versions between system and user
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";  # Auto-backup conflicting files
+              home-manager.backupFileExtension = "backup"; # Auto-backup conflicting files
 
               # Configure this user's home (${user.name} = string interpolation)
               home-manager.users.${user.name} = {
@@ -236,7 +228,8 @@
                   inputs.envsec.homeManagerModules.default
                   # Home configuration (desktop or server)
                   homeModule
-                ] ++ extraHomeModules;
+                ]
+                ++ extraHomeModules;
               };
 
               # Pass same custom args to Home Manager modules
@@ -267,14 +260,14 @@
         framework-laptop = mkSystem {
           hostname = "framework-laptop";
           system = "x86_64-linux";
-          extraHomeModules = [ ./hosts/framework-laptop/home.nix ];  # Monitors, devices, lid switch
+          extraHomeModules = [ ./hosts/framework-laptop/home.nix ]; # Monitors, devices, lid switch
         };
 
         # Primary machine: Framework Desktop (AMD Ryzen AI Max+ 395 / Radeon 8060S)
         framework-desktop = mkSystem {
           hostname = "framework-desktop";
           system = "x86_64-linux";
-          extraHomeModules = [ ./hosts/framework-desktop/home.nix ];  # Monitor, mouse config
+          extraHomeModules = [ ./hosts/framework-desktop/home.nix ]; # Monitor, mouse config
         };
       };
 

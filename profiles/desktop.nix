@@ -16,7 +16,12 @@
 #
 # ============================================================================
 
-{ pkgs, lib, inputs, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 let
   # Shared font configuration - used by terminal, waybar, etc.
@@ -30,13 +35,12 @@ in
   _module.args.font = font;
 
   imports = [
-    ../modules/home/hyprland.nix   # Window manager + keybindings
-    ../modules/home/ghostty.nix    # Terminal emulator
-    ../modules/home/waybar.nix     # Status bar
-    ../modules/home/swaync.nix     # Notification center
-    ../modules/home/zathura.nix    # PDF viewer
-    ../modules/home/audio.nix      # Audio profile switching
-    ../modules/home/handy.nix      # Offline speech-to-text
+    ../modules/home/hyprland.nix # Window manager + keybindings
+    ../modules/home/ghostty.nix # Terminal emulator
+    ../modules/home/waybar.nix # Status bar
+    ../modules/home/swaync.nix # Notification center
+    ../modules/home/zathura.nix # PDF viewer
+    ../modules/home/audio.nix # Audio profile switching
     ../modules/home/thunderbird.nix # Email, calendar & contacts client
   ];
 
@@ -52,30 +56,30 @@ in
   home.packages =
     with pkgs;
     [
-      impala          # WiFi management TUI
-      signal-desktop  # Encrypted messaging
-      libreoffice     # Office suite (Word/Excel/PowerPoint)
+      impala # WiFi management TUI
+      signal-desktop # Encrypted messaging
+      libreoffice # Office suite (Word/Excel/PowerPoint)
 
       # Browser from flake input
       # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
       inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
-      figma-linux      # Unofficial Figma desktop client
+      figma-linux # Unofficial Figma desktop client
       # Morgen: use bundled Electron — system Electron 41 causes GPU/window issues
       (morgen.overrideAttrs (old: {
         installPhase = old.installPhase + ''
-          rm $out/bin/morgen
-          cat > $out/bin/morgen <<EOF
-#!/bin/sh
-exec $out/opt/Morgen/morgen \''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer --enable-wayland-ime=true}} "\$@"
-EOF
-          chmod +x $out/bin/morgen
+                    rm $out/bin/morgen
+                    cat > $out/bin/morgen <<EOF
+          #!/bin/sh
+          exec $out/opt/Morgen/morgen \''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer --enable-wayland-ime=true}} "\$@"
+          EOF
+                    chmod +x $out/bin/morgen
         '';
       }))
-      slack            # Only available for x86_64 (no aarch64 build)
-      teams-for-linux  # Microsoft Teams client (community Electron wrapper)
-      postman          # API testing and development tool
+      slack # Only available for x86_64 (no aarch64 build)
+      teams-for-linux # Microsoft Teams client (community Electron wrapper)
+      postman # API testing and development tool
     ];
 
   # ==========================================================================
@@ -99,9 +103,9 @@ EOF
   # Consistent cursor across all applications (X11, Wayland, GTK, Qt)
   home.pointerCursor = {
     name = "macOS";
-    package = pkgs.apple-cursor;  # macOS-style cursor for Linux
+    package = pkgs.apple-cursor; # macOS-style cursor for Linux
     size = 24;
-    gtk.enable = true;  # Apply to GTK applications too
+    gtk.enable = true; # Apply to GTK applications too
   };
 
   # ==========================================================================

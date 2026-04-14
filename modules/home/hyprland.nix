@@ -156,7 +156,6 @@ in
           # First set Catppuccin Mocha crust color, then transition to wallpaper
           "until awww clear 11111b 2>/dev/null; do sleep 0.1; done && awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
           "swaync" # Notification center (replacing mako)
-          "handy --start-hidden" # Offline speech-to-text (toggle with Super+V)
         ];
 
         # =======================================================================
@@ -171,7 +170,6 @@ in
           # =============================================================
           "$hyper, D, exec, $menu"
           "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
-          "$hyper, H, exec, handy --toggle-transcription"
           "$hyper, W, exec, awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
           "$hyper, A, exec, audio-menu"
           "$hyper, P, exec, tmux-project"
