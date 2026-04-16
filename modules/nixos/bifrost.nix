@@ -9,10 +9,8 @@
 # - Local models (Qwen) work immediately, cloud models need API keys
 #
 # ARCHITECTURE:
-#                        ┌── llama.cpp :8001  (Qwen3.5-35B-A3B)
-#   Bifrost (:4000) ─────┼── llama.cpp :8002  (Qwen3.5-27B)
-#                        ├── llama.cpp :8003  (Qwen3.5-4B)
-#                        ├── llama.cpp :8004  (OmniCoder-9B)
+#                        ┌── llama.cpp :8001  (Qwen3.6-35B-A3B)
+#   Bifrost (:4000) ─────┼── llama.cpp :8004  (OmniCoder-9B)
 #                        ├── Anthropic API    (Claude, optional)
 #                        └── Mistral API      (Codestral, optional)
 #
@@ -36,7 +34,7 @@
     settings = {
       providers = {
         # Local llama.cpp instances (OpenAI-compatible)
-        qwen35-35b-a3b = {
+        qwen36-35b-a3b = {
           keys = [{ name = "local"; value = "none"; models = []; weight = 1.0; }];
           network_config.base_url = "http://127.0.0.1:8001";
           custom_provider_config = {
@@ -63,7 +61,7 @@
         };
 
         # Local llama.cpp instances — reasoning ON (ports 801x)
-        qwen35-35b-a3b-reasoning = {
+        qwen36-35b-a3b-reasoning = {
           keys = [{ name = "local"; value = "none"; models = []; weight = 1.0; }];
           network_config.base_url = "http://127.0.0.1:8011";
           custom_provider_config = {

@@ -8,7 +8,7 @@
 # - Includes anthropic-login/logout shell functions for cloud API access
 #
 # MODELS:
-#   Local:    qwen3.5-27b, qwen3.5-35b-a3b (thinking + no-think variants)
+#   Local:    qwen3.6-35b-a3b (thinking + no-think variants)
 #   Cloud:    devstral, claude-opus, claude-sonnet, claude-haiku (need API keys)
 #
 # SETUP:
@@ -29,7 +29,7 @@
         };
         models = {
           # Bifrost requires provider/model format
-          "qwen35-35b-a3b/qwen3.5-35b-a3b" = {};
+          "qwen36-35b-a3b/qwen3.6-35b-a3b" = {};
           "omnicoder-9b/omnicoder-9b" = {};
           "mistral/devstral-medium-latest" = {};
           "mistral/devstral-small-latest" = {};
@@ -39,7 +39,7 @@
         };
       };
     };
-    model = "local/qwen35-35b-a3b/qwen3.5-35b-a3b";
+    model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
     small_model = "local/omnicoder-9b/omnicoder-9b";
   };
 

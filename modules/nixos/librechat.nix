@@ -22,11 +22,11 @@
 
 let
   localModels = [
-    "qwen35-35b-a3b/qwen3.5-35b-a3b"
+    "qwen36-35b-a3b/qwen3.6-35b-a3b"
     "omnicoder-9b/omnicoder-9b"
   ];
   reasoningModels = [
-    "qwen35-35b-a3b-reasoning/qwen3.5-35b-a3b-reasoning"
+    "qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning"
     "omnicoder-9b-reasoning/omnicoder-9b-reasoning"
   ];
   cloudModels = [
@@ -73,7 +73,7 @@ in
               fetch = true;
             };
             titleConvo = true;
-            titleModel = "qwen35-35b-a3b/qwen3.5-35b-a3b";
+            titleModel = "qwen36-35b-a3b/qwen3.6-35b-a3b";
             modelDisplayLabel = "Bifrost";
           }
         ];
@@ -84,12 +84,12 @@ in
         list = [
           # Local models — fast (thinking off)
           {
-            name = "qwen3.5-35b-a3b";
-            label = "Qwen 3.5 35B A3B";
+            name = "qwen3.6-35b-a3b";
+            label = "Qwen 3.6 35B A3B";
             description = "Fast MoE model (3B active params)";
             preset = {
               endpoint = "Bifrost";
-              model = "qwen35-35b-a3b/qwen3.5-35b-a3b";
+              model = "qwen36-35b-a3b/qwen3.6-35b-a3b";
             };
           }
 
@@ -104,12 +104,12 @@ in
           }
           # Local models — reasoning (separate llama instances with thinking on)
           {
-            name = "qwen3.5-35b-a3b-reasoning";
-            label = "Qwen 3.5 35B A3B (Reasoning)";
+            name = "qwen3.6-35b-a3b-reasoning";
+            label = "Qwen 3.6 35B A3B (Reasoning)";
             description = "MoE model with extended thinking";
             preset = {
               endpoint = "Bifrost";
-              model = "qwen35-35b-a3b-reasoning/qwen3.5-35b-a3b-reasoning";
+              model = "qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning";
             };
           }
 

@@ -38,9 +38,9 @@ let
       sudo -u llama env HF_HUB_ENABLE_HF_TRANSFER=1 "$@"
     }
 
-    echo "Downloading Qwen3.5-35B-A3B (quick model, ~22GB)..."
-    run $HF download unsloth/Qwen3.5-35B-A3B-GGUF \
-      Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf \
+    echo "Downloading Qwen3.6-35B-A3B (quick model, ~22GB)..."
+    run $HF download unsloth/Qwen3.6-35B-A3B-GGUF \
+      Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
       --local-dir ${modelDir}
 
 
@@ -50,18 +50,18 @@ let
       --local-dir ${modelDir}
 
     echo "Done! Start services:"
-    echo "  sudo systemctl start llama-qwen3_5-35b-a3b llama-qwen3_5-27b llama-qwen3_5-4b llama-omnicoder-9b"
+    echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-omnicoder-9b"
   '';
 in
 {
   # ── Non-thinking instances (reasoning off) ──────────────────────────
-  systemd.services.llama-qwen3_5-35b-a3b = mkLlamaService {
-    model = "Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf";
-    alias = "qwen3.5-35b-a3b";
+  systemd.services.llama-qwen3_6-35b-a3b = mkLlamaService {
+    model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
+    alias = "qwen3.6-35b-a3b";
     port = 8001;
-    ctxSize = 65536;
+    ctxSize = 262144;
     reasoningBudget = 0;
-    description = "llama.cpp - Qwen3.5-35B-A3B";
+    description = "llama.cpp - Qwen3.6-35B-A3B";
   };
 
 
@@ -76,12 +76,12 @@ in
 
   # ── Thinking instances (reasoning on) ───────────────────────────────
   # Same model files, mmap shares memory pages between instances
-  systemd.services.llama-qwen3_5-35b-a3b-reasoning = mkLlamaService {
-    model = "Qwen3.5-35B-A3B-UD-Q4_K_XL.gguf";
-    alias = "qwen3.5-35b-a3b-reasoning";
+  systemd.services.llama-qwen3_6-35b-a3b-reasoning = mkLlamaService {
+    model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
+    alias = "qwen3.6-35b-a3b-reasoning";
     port = 8011;
-    ctxSize = 65536;
-    description = "llama.cpp - Qwen3.5-35B-A3B (reasoning)";
+    ctxSize = 262144;
+    description = "llama.cpp - Qwen3.6-35B-A3B (reasoning)";
   };
 
 
