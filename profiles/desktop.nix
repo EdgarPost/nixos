@@ -42,6 +42,7 @@ in
     ../modules/home/zathura.nix # PDF viewer
     ../modules/home/audio.nix # Audio profile switching
     ../modules/home/thunderbird.nix # Email, calendar & contacts client
+    ../modules/home/roon-client.nix # Roon GUI via Wine (x86_64 only)
   ];
 
   # ==========================================================================
