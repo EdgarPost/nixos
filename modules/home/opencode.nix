@@ -10,6 +10,17 @@
 #   Local:    qwen3.6-35b-a3b (non-thinking + reasoning variants)
 #   Zen:      opencode/* (requires OPENCODE_ZEN_API_KEY in shell env)
 #
+# ROLE-BASED MODEL ROUTING:
+#   Global default: kimi-k2.6 (Zen, strong fallback)
+#   Plan agent:     kimi-k2.6 (Zen, for roadmap/architecture thinking)
+#   Build agent:    local qwen3.6-35b-a3b (fast local for code execution)
+#   Small model:    local qwen3.6-35b-a3b (title gen, lightweight tasks)
+#
+# SUBAGENT INHERITANCE (OpenCode native):
+#   - Subagents spawned by plan → use kimi-k2.6
+#   - Subagents spawned by build → use local qwen
+#   - No explicit subagent overrides needed
+#
 # SETUP (Zen):
 #   zen-login    # Reads op://Pilosa/OpenCodeZen/api_key into OPENCODE_ZEN_API_KEY
 #   zen-logout   # Clears the env var
@@ -41,6 +52,14 @@
     };
     model = "opencode/kimi-k2.6";
     small_model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
+    agent = {
+      plan = {
+        model = "opencode/kimi-k2.6";
+      };
+      build = {
+        model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
+      };
+    };
   };
 
   programs.fish.interactiveShellInit = ''
