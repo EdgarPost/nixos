@@ -10,8 +10,8 @@
 #   LibreChat (:3080) → Bifrost (:4000) → llama.cpp / Anthropic / Mistral
 #
 # THINKING MODE:
-#   Two Bifrost endpoints: one injects enable_thinking=false, one =true.
-#   llama.cpp handles thinking per-request via chat_template_kwargs.
+#   Two llama.cpp instances: one with enable_thinking=false, one with thinking on.
+#   Bifrost routes to the correct instance based on provider name.
 #
 # ACCESS:
 #   http://edgar-framework-desktop:3080
@@ -23,18 +23,9 @@
 let
   localModels = [
     "qwen36-35b-a3b/qwen3.6-35b-a3b"
-    "omnicoder-9b/omnicoder-9b"
   ];
   reasoningModels = [
     "qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning"
-    "omnicoder-9b-reasoning/omnicoder-9b-reasoning"
-  ];
-  cloudModels = [
-    "anthropic/claude-opus-4-6"
-    "anthropic/claude-sonnet-4-6"
-    "anthropic/claude-haiku-4-5-20251001"
-    "mistral/devstral-medium-latest"
-    "mistral/devstral-small-latest"
   ];
 in
 {
@@ -67,9 +58,9 @@ in
           {
             name = "Bifrost";
             apiKey = "none";
-            baseURL = "http://127.0.0.1:4000/v1";
+            baseURL = "http://edgar-framework-desktop:4000/v1";
             models = {
-              default = localModels ++ reasoningModels ++ cloudModels;
+              default = localModels ++ reasoningModels;
               fetch = true;
             };
             titleConvo = true;
@@ -93,15 +84,6 @@ in
             };
           }
 
-          {
-            name = "omnicoder-9b";
-            label = "OmniCoder 9B";
-            description = "Coding agent model";
-            preset = {
-              endpoint = "Bifrost";
-              model = "omnicoder-9b/omnicoder-9b";
-            };
-          }
           # Local models — reasoning (separate llama instances with thinking on)
           {
             name = "qwen3.6-35b-a3b-reasoning";
@@ -110,57 +92,6 @@ in
             preset = {
               endpoint = "Bifrost";
               model = "qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning";
-            };
-          }
-
-          {
-            name = "omnicoder-9b-reasoning";
-            label = "OmniCoder 9B (Reasoning)";
-            description = "Coding model with extended thinking";
-            preset = {
-              endpoint = "Bifrost";
-              model = "omnicoder-9b-reasoning/omnicoder-9b-reasoning";
-            };
-          }
-          # Cloud models
-          {
-            name = "claude-opus";
-            label = "Claude Opus 4.6";
-            preset = {
-              endpoint = "Bifrost";
-              model = "anthropic/claude-opus-4-6";
-            };
-          }
-          {
-            name = "claude-sonnet";
-            label = "Claude Sonnet 4.6";
-            preset = {
-              endpoint = "Bifrost";
-              model = "anthropic/claude-sonnet-4-6";
-            };
-          }
-          {
-            name = "claude-haiku";
-            label = "Claude Haiku 4.5";
-            preset = {
-              endpoint = "Bifrost";
-              model = "anthropic/claude-haiku-4-5-20251001";
-            };
-          }
-          {
-            name = "devstral-medium";
-            label = "Devstral Medium";
-            preset = {
-              endpoint = "Bifrost";
-              model = "mistral/devstral-medium-latest";
-            };
-          }
-          {
-            name = "devstral-small";
-            label = "Devstral Small";
-            preset = {
-              endpoint = "Bifrost";
-              model = "mistral/devstral-small-latest";
             };
           }
         ];

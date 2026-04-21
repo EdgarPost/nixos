@@ -3,17 +3,16 @@
 # ============================================================================
 #
 # WHAT IS THIS?
-# - Configures OpenCode to use Bifrost proxy as its AI provider
-# - All models (local + cloud) accessed through single Bifrost endpoint
-# - Includes anthropic-login/logout shell functions for cloud API access
+# - Local models served by Bifrost proxy at edgar-framework-desktop:4000
+# - OpenCode Zen (SST's managed gateway) wired up with 1Password-injected key
 #
 # MODELS:
-#   Local:    qwen3.6-35b-a3b (thinking + no-think variants)
-#   Cloud:    devstral, claude-opus, claude-sonnet, claude-haiku (need API keys)
+#   Local:    qwen3.6-35b-a3b (non-thinking + reasoning variants)
+#   Zen:      opencode/* (requires OPENCODE_ZEN_API_KEY in shell env)
 #
-# SETUP:
-#   anthropic-login   # Load Anthropic key from 1Password → shell + Bifrost
-#   anthropic-logout  # Clear Anthropic key
+# SETUP (Zen):
+#   zen-login    # Reads op://Pilosa/OpenCodeZen/api_key into OPENCODE_ZEN_API_KEY
+#   zen-logout   # Clears the env var
 #
 # ============================================================================
 
@@ -29,43 +28,32 @@
         };
         models = {
           # Bifrost requires provider/model format
-          "qwen36-35b-a3b/qwen3.6-35b-a3b" = {};
-          "omnicoder-9b/omnicoder-9b" = {};
-          "mistral/devstral-medium-latest" = {};
-          "mistral/devstral-small-latest" = {};
-          "anthropic/claude-opus-4-6" = {};
-          "anthropic/claude-sonnet-4-6" = {};
-          "anthropic/claude-haiku-4-5-20251001" = {};
+          "qwen36-35b-a3b/qwen3.6-35b-a3b" = { };
+          "qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning" = { };
         };
+      };
+      opencode = {
+        options.apiKey = "{env:OPENCODE_ZEN_API_KEY}";
       };
     };
     model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
-    small_model = "local/omnicoder-9b/omnicoder-9b";
+    small_model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
   };
 
   programs.fish.interactiveShellInit = ''
-    function anthropic-login --description "Load Anthropic API key from 1Password into Bifrost"
-        set -l op_item "op://Pilosa/Anthropic/api_key"
-        echo "Loading Anthropic API key from 1Password..."
+    function zen-login --description "Load OpenCode Zen API key from 1Password"
+        set -l op_item "op://Pilosa/OpenCodeZen/api_key"
+        echo "Loading OpenCode Zen API key from 1Password..."
 
-        set -l key (op read "$op_item")
+        set -gx OPENCODE_ZEN_API_KEY (op read "$op_item")
         or begin; echo "Failed to read API key from 1Password"; return 1; end
 
-        set -gx ANTHROPIC_API_KEY $key
-
-        # Add to Bifrost env file (preserve other keys)
-        sudo sed -i '/^ANTHROPIC_API_KEY=/d' /var/lib/bifrost/env
-        echo "ANTHROPIC_API_KEY=$key" | sudo tee -a /var/lib/bifrost/env > /dev/null
-        sudo systemctl restart bifrost
-
-        echo "Anthropic API key loaded (shell + Bifrost)"
+        echo "OpenCode Zen API key loaded"
     end
 
-    function anthropic-logout --description "Clear Anthropic API key"
-        set -e ANTHROPIC_API_KEY
-        sudo sed -i '/^ANTHROPIC_API_KEY=/d' /var/lib/bifrost/env
-        sudo systemctl restart bifrost
-        echo "Anthropic API key cleared"
+    function zen-logout --description "Clear OpenCode Zen API key from environment"
+        set -e OPENCODE_ZEN_API_KEY
+        echo "OpenCode Zen API key cleared"
     end
   '';
 }
