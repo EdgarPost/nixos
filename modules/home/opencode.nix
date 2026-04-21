@@ -34,9 +34,12 @@
       };
       opencode = {
         options.apiKey = "{env:OPENCODE_ZEN_API_KEY}";
+        models = {
+          "kimi-k2.6" = { };
+        };
       };
     };
-    model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
+    model = "opencode/kimi-k2.6";
     small_model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
   };
 
