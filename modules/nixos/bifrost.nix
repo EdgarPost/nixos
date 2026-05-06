@@ -10,19 +10,32 @@
 #
 # ARCHITECTURE:
 #                        ┌── llama.cpp :8001  (Qwen3.6-35B-A3B)
-#   Bifrost (:4000) ─────┼── llama.cpp :8011  (Qwen3.6-35B-A3B, reasoning)
-#                        └── Anthropic API    (Claude, optional)
+#   Bifrost (:4000) ─────└── llama.cpp :8011  (Qwen3.6-35B-A3B, reasoning)
 #
 # CLOUD API KEYS:
 #   API keys are loaded from /var/lib/bifrost/env (not in Nix store).
-#   Use `anthropic-login` shell functions to inject keys
-#   from 1Password into both shell env and Bifrost env file.
+#   Secrets managed via: bifrost-secrets-update (reads from 1Password)
 #
 # MCP GATEWAY:
-#   Bifrost can act as a central MCP gateway — register MCP servers once,
-#   all clients (LibreChat, OpenCode, Claude Code) get tool access.
-#   Code Mode replaces 150+ tool defs with 4 meta-tools (~50% token savings).
-#   See mcp block in settings below.
+#   Bifrost acts as a central MCP gateway — but ONLY for HTTP/SSE MCP servers.
+#   Stdio MCP servers (filesystem, github) CANNOT run inside Bifrost's systemd
+#   sandbox (DynamicUser + ProtectHome + no network for npx). They run as
+#   user-level local MCPs in LibreChat and OpenCode instead.
+#
+# MCP CLIENTS IN BIFROST:
+#   tavily — HTTP: Tavily hosted MCP (needs TAVILY_MCP_URL)
+#
+# MCP CLIENTS IN LIBRECHAT/OPENCODE (user-level, no sandbox):
+#   filesystem — stdio: @modelcontextprotocol/server-filesystem ~/Code /tmp
+#   github     — stdio: @modelcontextprotocol/server-github (needs GH_TOKEN)
+#
+# SECRETS (1Password → /var/lib/bifrost/env):
+#   TAVILY_MCP_URL = https://mcp.tavily.com/mcp/?tavilyApiKey=tvly-...
+#
+# CACHING:
+#   Bifrost semantic cache: NOT enabled (requires vector store like Weaviate)
+#   llama.cpp KV-cache:   ENABLED (see modules/nixos/llama.nix)
+#   LibreChat cache:      ENABLED (cache = true in librechat.nix)
 #
 # ============================================================================
 
@@ -36,6 +49,7 @@
     port = 4000;
     host = "0.0.0.0";
     environmentFile = "/var/lib/bifrost/env";
+
     settings = {
       providers = {
         # Local llama.cpp — non-thinking (instruct mode)
@@ -89,43 +103,22 @@
             };
           };
         };
-
-        # Cloud providers (activated when API keys are in env file)
-        anthropic = {
-          keys = [
-            {
-              name = "anthropic";
-              value = "env.ANTHROPIC_API_KEY";
-              weight = 1.0;
-              models = [
-                "claude-opus-4-6"
-                "claude-sonnet-4-6"
-                "claude-haiku-4-5-20251001"
-              ];
-            }
-          ];
-        };
       };
 
-      # MCP Gateway — register MCP servers here for all clients to access
-      # Uncomment when Bifrost MCP support is verified in this version
-      # mcp = {
-      #   client_configs = [
-      #     {
-      #       name = "filesystem";
-      #       connection_type = "stdio";
-      #       stdio_config = {
-      #         command = "npx";
-      #         args = ["-y" "@anthropic/mcp-filesystem"];
-      #       };
-      #       tools_to_execute = ["*"];
-      #       is_code_mode_client = true;
-      #     }
-      #   ];
-      #   tool_manager_config = {
-      #     code_mode_binding_level = "server";
-      #   };
-      # };
+      # MCP Gateway — ONLY HTTP/SSE clients work inside Bifrost's sandbox.
+      # Stdio clients (filesystem, github) run as user-level local MCPs in
+      # LibreChat and OpenCode instead. See those modules for their configs.
+      mcp = {
+        client_configs = [
+          {
+            name = "tavily";
+            connection_type = "http";
+            connection_string = "env.TAVILY_MCP_URL";
+            is_ping_available = false;
+            tools_to_execute = [ "*" ];
+          }
+        ];
+      };
     };
   };
 

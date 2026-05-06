@@ -38,6 +38,7 @@
   home.packages = with pkgs; [
     lazygit # TUI for git operations
     ghq # Git repository manager (ghq get, ghq list)
+    nodejs # Required for OpenCode local MCP servers (npx)
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default # AI coding assistant
     opencode # AI coding agent
   ];

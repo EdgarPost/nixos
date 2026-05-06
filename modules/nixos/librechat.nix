@@ -13,6 +13,12 @@
 #   Two llama.cpp instances: one with enable_thinking=false, one with thinking on.
 #   Bifrost routes to the correct instance based on provider name.
 #
+# MCP SERVERS:
+#   - Tavily (web search): via Bifrost gateway (http://edgar-framework-desktop:4000/mcp)
+#   - Filesystem/GitHub: CANNOT be configured here because secrets would be stored
+#     in the Nix store (world-readable). Add them manually in LibreChat UI instead:
+#       Settings → MCP Servers → Add Server
+#
 # ACCESS:
 #   http://edgar-framework-desktop:3080
 #
@@ -68,6 +74,13 @@ in
             modelDisplayLabel = "Bifrost";
           }
         ];
+      };
+
+      mcpServers = {
+        bifrost = {
+          type = "streamable-http";
+          url = "http://edgar-framework-desktop:4000/mcp";
+        };
       };
 
       modelSpecs = {

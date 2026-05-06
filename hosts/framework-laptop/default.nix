@@ -13,7 +13,13 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -36,14 +42,18 @@
     inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
 
     # Framework-specific services
-    ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
-    ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
+    # ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
+    ../../modules/nixos/bluetooth.nix # Bluetooth audio with high-quality codecs
   ];
 
   # Disable PCIe Active State Power Management (fixes Thunderbolt disconnects)
   # Disable Intel Panel Self Refresh (fixes i915 "Selective fetch" errors causing Hyprland EGL crashes)
   # Disable Thunderbolt CLx link power states (prevents retimer wake failures with Dell U4025QW)
-  boot.kernelParams = [ "pcie_aspm=off" "i915.enable_psr=0" "thunderbolt.clx=0" ];
+  boot.kernelParams = [
+    "pcie_aspm=off"
+    "i915.enable_psr=0"
+    "thunderbolt.clx=0"
+  ];
 
   # Syncthing - full PARA sync on this machine
   services.syncthing.paraFolders = true;
@@ -59,8 +69,8 @@
   # Alternative: GRUB for legacy BIOS or dual-boot scenarios
 
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;  # Only show 5 generations in boot menu
-  boot.loader.efi.canTouchEfiVariables = true;      # Allow UEFI variable writes
+  boot.loader.systemd-boot.configurationLimit = 5; # Only show 5 generations in boot menu
+  boot.loader.efi.canTouchEfiVariables = true; # Allow UEFI variable writes
 
   # ==========================================================================
   # FRAMEWORK-SPECIFIC HARDWARE
@@ -121,18 +131,54 @@
           fanSpeedUpdateFrequency = 5;
           movingAverageInterval = 45; # Longer averaging = smoother response
           speedCurve = [
-            { temp = 0;  speed = 15; }   # Silent baseline
-            { temp = 55; speed = 15; }   # Stay silent up to 55°C
-            { temp = 65; speed = 20; }   # Light use
-            { temp = 70; speed = 25; }   # Moderate use
-            { temp = 75; speed = 35; }   # Ramping up
-            { temp = 78; speed = 40; }   # Approaching load zone
-            { temp = 80; speed = 50; }   # Full load zone
-            { temp = 82; speed = 55; }   # Steady state under stress
-            { temp = 84; speed = 60; }   # Observed peak under stress
-            { temp = 87; speed = 75; }   # Above normal, ramp up
-            { temp = 90; speed = 90; }   # Safety ramp
-            { temp = 95; speed = 100; }  # Full blast
+            {
+              temp = 0;
+              speed = 15;
+            } # Silent baseline
+            {
+              temp = 55;
+              speed = 15;
+            } # Stay silent up to 55°C
+            {
+              temp = 65;
+              speed = 20;
+            } # Light use
+            {
+              temp = 70;
+              speed = 25;
+            } # Moderate use
+            {
+              temp = 75;
+              speed = 35;
+            } # Ramping up
+            {
+              temp = 78;
+              speed = 40;
+            } # Approaching load zone
+            {
+              temp = 80;
+              speed = 50;
+            } # Full load zone
+            {
+              temp = 82;
+              speed = 55;
+            } # Steady state under stress
+            {
+              temp = 84;
+              speed = 60;
+            } # Observed peak under stress
+            {
+              temp = 87;
+              speed = 75;
+            } # Above normal, ramp up
+            {
+              temp = 90;
+              speed = 90;
+            } # Safety ramp
+            {
+              temp = 95;
+              speed = 100;
+            } # Full blast
           ];
         };
       };
@@ -145,7 +191,7 @@
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # VA-API driver for Broadwell+ (iHD)
-      vpl-gpu-rt         # Intel oneVPL GPU runtime for Quick Sync Video
+      vpl-gpu-rt # Intel oneVPL GPU runtime for Quick Sync Video
     ];
   };
 
@@ -164,10 +210,10 @@
   # LOGIND - The systemd login manager
   # Controls what happens on lid close, power button, etc.
   services.logind.settings.Login = {
-    HandleLidSwitch = "suspend";              # Always suspend on lid close
-    HandleLidSwitchExternalPower = "suspend";  # Suspend even when on AC power
-    HandleLidSwitchDocked = "ignore";         # Keep running if docked (external KB/mouse)
-    HandlePowerKey = "ignore";                # Let Hyprland show confirmation menu
+    HandleLidSwitch = "suspend"; # Always suspend on lid close
+    HandleLidSwitchExternalPower = "suspend"; # Suspend even when on AC power
+    HandleLidSwitchDocked = "ignore"; # Keep running if docked (external KB/mouse)
+    HandlePowerKey = "ignore"; # Let Hyprland show confirmation menu
   };
 
   # FIRMWARE UPDATES via fwupd

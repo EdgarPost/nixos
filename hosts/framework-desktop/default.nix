@@ -8,7 +8,13 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -30,12 +36,12 @@
     inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
 
     # Framework-specific services
-    ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
-    ../../modules/nixos/bluetooth.nix   # Bluetooth audio with high-quality codecs
-../../modules/nixos/llama.nix       # Local LLM inference (llama.cpp + Vulkan)
-    ../../modules/nixos/librechat.nix   # AI chat interface (port 3080)
-    ../../modules/nixos/bifrost.nix     # AI gateway proxy (port 4000, replaces litellm)
-    ../../modules/nixos/bazecor.nix     # Dygma Defy keyboard configurator
+    # ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
+    ../../modules/nixos/bluetooth.nix # Bluetooth audio with high-quality codecs
+    ../../modules/nixos/llama.nix # Local LLM inference (llama.cpp + Vulkan)
+    ../../modules/nixos/librechat.nix # AI chat interface (port 3080)
+    ../../modules/nixos/bifrost.nix # AI gateway proxy (port 4000, replaces litellm)
+    ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
   ];
 
   # Syncthing - full PARA sync on this machine
@@ -61,9 +67,9 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    libva-utils  # vainfo to verify VA-API acceleration
-    mangohud     # FPS/CPU/GPU monitoring overlay (launch with mangohud %command%)
-    protonup-qt  # Install/manage custom Proton versions (GE-Proton for better compat)
+    libva-utils # vainfo to verify VA-API acceleration
+    mangohud # FPS/CPU/GPU monitoring overlay (launch with mangohud %command%)
+    protonup-qt # Install/manage custom Proton versions (GE-Proton for better compat)
     protontricks # Manage Proton prefixes and install Windows dependencies
     vulkan-tools # vulkaninfo to verify Vulkan support
   ];

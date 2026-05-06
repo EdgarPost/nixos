@@ -21,9 +21,17 @@
 #   - Subagents spawned by build → use local qwen
 #   - No explicit subagent overrides needed
 #
+# MCP SERVERS (user-level local processes, NOT in Bifrost sandbox):
+#   - filesystem:  npx -y @modelcontextprotocol/server-filesystem ~/Code /tmp
+#   - github:      npx -y @modelcontextprotocol/server-github (needs GITHUB_PERSONAL_ACCESS_TOKEN)
+#   - bifrost:     Remote → http://edgar-framework-desktop:4000/mcp (Tavily web search)
+#
 # SETUP (Zen):
 #   zen-login    # Reads op://Pilosa/OpenCodeZen/api_key into OPENCODE_ZEN_API_KEY
 #   zen-logout   # Clears the env var
+#
+# SETUP (GitHub MCP):
+#   github-mcp-login  # Reads op://Pilosa/GitHub/token into GITHUB_PERSONAL_ACCESS_TOKEN
 #
 # ============================================================================
 
@@ -52,6 +60,23 @@
     };
     model = "opencode/kimi-k2.6";
     small_model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
+    mcp = {
+      filesystem = {
+        type = "local";
+        command = [ "npx" "-y" "@modelcontextprotocol/server-filesystem" "/home/edgar/Code" "/tmp" ];
+        enabled = true;
+      };
+      github = {
+        type = "local";
+        command = [ "npx" "-y" "@modelcontextprotocol/server-github" ];
+        enabled = true;
+      };
+      bifrost = {
+        type = "remote";
+        url = "http://edgar-framework-desktop:4000/mcp";
+        enabled = true;
+      };
+    };
     agent = {
       plan = {
         model = "opencode/kimi-k2.6";
@@ -76,6 +101,21 @@
     function zen-logout --description "Clear OpenCode Zen API key from environment"
         set -e OPENCODE_ZEN_API_KEY
         echo "OpenCode Zen API key cleared"
+    end
+
+    function github-mcp-login --description "Load GitHub token for MCP servers from 1Password"
+        set -l op_item "op://Pilosa/GitHub/token"
+        echo "Loading GitHub token from 1Password..."
+
+        set -gx GITHUB_PERSONAL_ACCESS_TOKEN (op read "$op_item")
+        or begin; echo "Failed to read GitHub token from 1Password"; return 1; end
+
+        echo "GitHub MCP token loaded (GITHUB_PERSONAL_ACCESS_TOKEN)"
+    end
+
+    function github-mcp-logout --description "Clear GitHub MCP token from environment"
+        set -e GITHUB_PERSONAL_ACCESS_TOKEN
+        echo "GitHub MCP token cleared"
     end
   '';
 }

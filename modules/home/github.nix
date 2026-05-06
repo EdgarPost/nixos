@@ -58,9 +58,31 @@
       end
 
       function gh-logout --description "Clear GitHub token from environment"
-          set -e GH_TOKEN
-          echo "GitHub token cleared"
-      end
-    '';
+           set -e GH_TOKEN
+           echo "GitHub token cleared"
+       end
+
+       function bifrost-secrets-update --description "Update Bifrost MCP secrets from 1Password"
+     echo "Reading Tavily MCP URL from 1Password..."
+
+     set -l tavily_url (op read "op://Pilosa/Tavily/mcp_url")
+     or begin; echo "Failed to read Tavily MCP URL from 1Password"; echo "Create it at: op://Pilosa/Tavily/mcp_url"; return 1; end
+
+     set -l env_file "/var/lib/bifrost/env"
+     set -l tmp_file (mktemp)
+
+     if test -f "$env_file"
+         # Read current file (may need sudo), strip managed entries, add new one
+         sudo cat "$env_file" | sed '/^TAVILY_MCP_URL=/d' > "$tmp_file"
+     end
+
+     echo "TAVILY_MCP_URL=$tavily_url" >> "$tmp_file"
+     sudo mv "$tmp_file" "$env_file"
+     sudo chmod 0600 "$env_file"
+
+     echo "Bifrost secrets updated (Tavily)"
+     echo "Run: sudo systemctl restart bifrost"
+ end
+     '';
   };
 }
