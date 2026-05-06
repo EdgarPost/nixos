@@ -153,7 +153,7 @@
     },
     "flake-utils_3": {
       "inputs": {
-        "systems": "systems_3"
+        "systems": "systems_4"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -171,7 +171,7 @@
     },
     "flake-utils_4": {
       "inputs": {
-        "systems": "systems_4"
+        "systems": "systems_5"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -275,6 +275,27 @@
         "type": "github"
       }
     },
+    "pi-mono": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": "systems_3"
+      },
+      "locked": {
+        "lastModified": 1778050034,
+        "narHash": "sha256-Dq/d37m5s9xF7Vzh/g+zmddHMcFpxDkOXSGU3zqR8Ns=",
+        "owner": "lukasl-dev",
+        "repo": "pi-mono.nix",
+        "rev": "316986fc75714dc0174307844806306bc5904fdc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lukasl-dev",
+        "repo": "pi-mono.nix",
+        "type": "github"
+      }
+    },
     "roon-cli": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -307,6 +328,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "opencode": "opencode",
+        "pi-mono": "pi-mono",
         "roon-cli": "roon-cli",
         "worktrunk": "worktrunk",
         "zen-browser": "zen-browser"
@@ -379,6 +401,21 @@
       }
     },
     "systems_4": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_5": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
