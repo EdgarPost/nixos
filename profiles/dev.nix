@@ -41,7 +41,6 @@
     nodejs # Required for OpenCode local MCP servers (npx)
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default # AI coding assistant
     opencode # AI coding agent
-    inputs.pi-mono.packages.${pkgs.stdenv.hostPlatform.system}.default # pi coding agent
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)

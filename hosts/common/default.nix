@@ -22,16 +22,23 @@
 #
 # ============================================================================
 
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   # IMPORTS - Include other modules
   # Paths are relative to this file. Each import adds its config to the merge.
   imports = [
-    ./users.nix                        # User account definitions
-    ../../modules/nixos/1password.nix  # Password manager (CLI + SSH agent)
-    ../../modules/nixos/tailscale.nix  # Mesh VPN
-    ../../modules/nixos/syncthing.nix  # File sync (Code folder on all hosts)
+    ./users.nix # User account definitions
+    ../../modules/nixos/1password.nix # Password manager (CLI + SSH agent)
+    ../../modules/nixos/tailscale.nix # Mesh VPN
+    ../../modules/nixos/syncthing.nix # File sync (Code folder on all hosts)
+    inputs.pi-mono.nixosModules.default # pi coding agent NixOS module
   ];
 
   # Syncthing - Code folder sync on all hosts (PARA folders per-host)
@@ -48,7 +55,10 @@
       # Enable modern Nix features (required for flakes)
       # "nix-command" = new CLI syntax (nix build vs nix-build)
       # "flakes" = the flake system we're using
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       # Deduplicate store paths via hard links (saves disk space)
       # /nix/store contains all packages; many share identical files
@@ -67,7 +77,7 @@
     # rollback to any previous generation. GC removes unreferenced packages.
     gc = {
       automatic = true;
-      dates = "daily";                    # Run daily (lightweight operation)
+      dates = "daily"; # Run daily (lightweight operation)
       options = "--delete-older-than 14d"; # Delete generations older than 14 days
     };
   };
@@ -91,7 +101,10 @@
   # NetworkManager can coexist via split DNS
   services.resolved = {
     enable = true;
-    settings.Resolve.FallbackDNS = [ "1.1.1.1" "8.8.8.8" ];
+    settings.Resolve.FallbackDNS = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
   };
   networking.networkmanager.dns = "systemd-resolved";
 
@@ -112,15 +125,15 @@
   # With it:    [ git vim curl ... ]
 
   environment.systemPackages = with pkgs; [
-    git       # Version control (also needed for flake operations)
-    vim       # Fallback editor (neovim is user-level)
-    curl      # HTTP client
-    wget      # File downloader
-    htop      # Process viewer
-    tree      # Directory tree
-    ripgrep   # Fast grep (rg)
-    fd        # Fast find
-    nvd       # Nix version diff (compare system closures before switching)
+    git # Version control (also needed for flake operations)
+    vim # Fallback editor (neovim is user-level)
+    curl # HTTP client
+    wget # File downloader
+    htop # Process viewer
+    tree # Directory tree
+    ripgrep # Fast grep (rg)
+    fd # Fast find
+    nvd # Nix version diff (compare system closures before switching)
 
     # Spell checking
     hunspell
@@ -138,8 +151,8 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = false;  # SSH keys only (more secure)
-      PermitRootLogin = "no";          # Force normal user + sudo
+      PasswordAuthentication = false; # SSH keys only (more secure)
+      PermitRootLogin = "no"; # Force normal user + sudo
     };
   };
 
@@ -170,4 +183,21 @@
   # NixOS can't run standard Linux binaries by default - this provides the
   # dynamic linker and common libraries they expect.
   programs.nix-ld.enable = true;
+
+  # ==========================================================================
+  # PI CODING AGENT
+  # ==========================================================================
+  programs.pi.coding-agent = {
+    enable = true;
+
+    # Custom extensions
+    extensions = [
+      /home/edgar/Code/github.com/EdgarPost/pi-extensions/extensions/hello/hello.ts
+    ];
+
+    # Custom skills
+    skills = [
+      # ../pi-skills
+    ];
+  };
 }
