@@ -13,6 +13,8 @@
     keyMode = "vi";
 
     extraConfig = ''
+      set -g extended-keys on
+      set -g extended-keys-format csi-u
       set -g set-clipboard on
       set -ga terminal-overrides ',*:Ss=\E[%p1%d q:Se=\E[2 q'
       set -g status-style "bg=default"
