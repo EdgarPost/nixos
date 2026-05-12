@@ -29,6 +29,8 @@
     defaultEditor = true;  # Set $EDITOR to nvim
     viAlias = true;        # `vi` command runs nvim
     vimAlias = true;       # `vim` command runs nvim
+    withRuby = false;      # No Ruby provider (new default in 26.05)
+    withPython3 = false;   # No Python provider (new default in 26.05)
 
     # EXTERNAL DEPENDENCIES
     # These are added to neovim's PATH, not system PATH
