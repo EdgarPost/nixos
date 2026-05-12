@@ -108,6 +108,17 @@ in
           "no_initial_focus on, match:title ^(Picture-in-Picture)$"
           "no_follow_mouse on, match:title ^(Picture-in-Picture)$"
           "focus_on_activate false, match:title ^(Picture-in-Picture)$"
+
+          # hyprland-share-picker (screen/window share selector) reports an
+          # empty window class, so match by its title instead.
+          "float on, match:title ^(Select what to share)$"
+          "center on, match:title ^(Select what to share)$"
+
+          # Keep rendering when occluded so screen sharing can capture these
+          # windows even when they're not currently visible. Costs CPU/GPU for
+          # apps that animate in the background, so limited to a small allowlist.
+          "render_unfocused on, match:class ^(com.mitchellh.ghostty)$"
+          "render_unfocused on, match:class ^(zen)$"
         ];
 
         # =======================================================================
@@ -487,6 +498,17 @@ in
     # Symlink Catppuccin landscape wallpapers to ~/.wallpapers
     # These are fetched from GitHub at build time
     home.file.".wallpapers".source = "${catppuccin-wallpapers}/landscapes";
+
+    # ==========================================================================
+    # XDG-DESKTOP-PORTAL-HYPRLAND (screen sharing)
+    # ==========================================================================
+    # Auto-tick the "allow restore token" checkbox in hyprland-share-picker so
+    # subsequent shares from the same app can skip the picker.
+    xdg.configFile."hypr/xdph.conf".text = ''
+      screencopy {
+        allow_token_by_default = true
+      }
+    '';
 
     # ==========================================================================
     # WAYLAND UTILITIES
