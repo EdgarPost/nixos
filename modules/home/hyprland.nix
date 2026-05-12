@@ -118,6 +118,11 @@ in
         # "auto" = let Hyprland position the monitor
         # Use `hyprctl monitors` to see detected monitors
         monitor = [
+          # Dell U4025QW: connected via both DisplayPort and Thunderbolt (TB is
+          # for USB/KVM passthrough, no video). Both inputs would otherwise show
+          # up as separate outputs and confuse screen-share pickers.
+          "DP-4,5120x2160@120,0x0,1.25"
+          "DP-5,disable"
           ",preferred,auto,1" # Fallback for any other monitors
         ];
 
