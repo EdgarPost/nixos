@@ -184,6 +184,18 @@
   # dynamic linker and common libraries they expect.
   programs.nix-ld.enable = true;
 
+  # npm global prefix: nodejs from the user profile defaults to a /nix/store
+  # path which is read-only, so `npm install -g` (used by pi-coding-agent to
+  # auto-install pi-subagents) fails. Point it at a writable home dir and add
+  # the resulting bin to PATH.
+  environment.sessionVariables = {
+    NPM_CONFIG_PREFIX = "$HOME/.local/share/npm-global";
+    PATH = [
+      "$HOME/.local/share/npm-global/bin"
+      "$PATH"
+    ];
+  };
+
   # ==========================================================================
   # PI CODING AGENT
   # ==========================================================================
@@ -192,12 +204,10 @@
 
     # Custom extensions
     extensions = [
-      /home/edgar/Code/github.com/EdgarPost/pi-extensions/extensions/hello/hello.ts
     ];
 
     # Custom skills
     skills = [
-      # ../pi-skills
     ];
   };
 }
