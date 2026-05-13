@@ -263,6 +263,9 @@ in
           # Move current window to next workspace
           "$mod SHIFT, N, movetoworkspace, e+1"
 
+          # Move current window to next monitor
+          "$mod SHIFT, M, movewindow, mon:+1"
+
         ];
 
         # =======================================================================
