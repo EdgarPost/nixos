@@ -64,18 +64,14 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "*" = {
-        extraOptions = {
-          IdentityAgent = "~/.1password/agent.sock";
-        };
+        IdentityAgent = "~/.1password/agent.sock";
       };
       "pbstation" = {
-        hostname = "pbstation";
-        forwardAgent = true;
-        setEnv = {
-          TERM = "xterm-256color";  # Synology lacks tmux/ghostty terminfo
-        };
+        HostName = "pbstation";
+        ForwardAgent = true;
+        SetEnv = { TERM = "xterm-256color"; };
       };
     };
   };

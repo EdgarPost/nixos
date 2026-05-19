@@ -84,6 +84,7 @@ in
   config = {
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "hyprlang";
       # Use the Hyprland package from NixOS module (avoid duplicate installations)
       package = null;
       portalPackage = null;
