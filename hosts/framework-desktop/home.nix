@@ -13,6 +13,8 @@
 { lib, ... }:
 
 {
+  imports = [ ../../modules/home/vicinae.nix ];
+
   # Desktop: DPMS timeout turns Dell off, creates headless output for Steam Remote Play.
   # When Dell resumes, headless is destroyed — Steam Deck streams only while Dell sleeps.
   services.hypridle.settings.listener = lib.mkForce [

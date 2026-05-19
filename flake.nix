@@ -119,6 +119,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Vicinae - native Linux launcher (Raycast-style)
+    # Do NOT set inputs.nixpkgs.follows — breaks the cachix binary cache.
+    vicinae.url = "github:vicinaehq/vicinae";
+
   };
 
   # ==========================================================================
@@ -147,6 +151,7 @@
       bifrost,
       envsec,
       pi-mono,
+      vicinae,
       ...
     }@inputs:
 

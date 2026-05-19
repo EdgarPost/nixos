@@ -76,13 +76,6 @@ in
         ];
       };
 
-      mcpServers = {
-        bifrost = {
-          type = "streamable-http";
-          url = "http://edgar-framework-desktop:4000/mcp";
-        };
-      };
-
       modelSpecs = {
         enforce = false;
         list = [

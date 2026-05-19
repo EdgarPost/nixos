@@ -142,7 +142,6 @@ in
         "$mod" = "SUPER"; # Windows/Super key as modifier
         "$hyper" = "SUPER SHIFT CTRL ALT"; # Caps Lock via keyd
         "$terminal" = "ghostty"; # Default terminal emulator
-        "$menu" = "rofi -show drun"; # Application launcher
 
         # =======================================================================
         # ENVIRONMENT VARIABLES
@@ -164,7 +163,6 @@ in
           # CRITICAL: Update DBus environment so portals and apps can access Wayland
           # This MUST run first, before any apps that depend on DBus/portals
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
-          "wl-paste --watch cliphist store" # Clipboard history daemon
           "1password --silent" # Start 1Password daemon for SSH agent
           # waybar is now managed by systemd (see waybar.nix)
           "awww-daemon" # Wallpaper daemon (supports animated transitions)
@@ -184,12 +182,10 @@ in
           # HYPER KEY BINDINGS (Caps Lock via keyd)
           # High-level OS actions: app focus, launchers, session control
           # =============================================================
-          "$hyper, D, exec, $menu"
           "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
           "$hyper, W, exec, awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
           "$hyper, A, exec, audio-menu"
           "$hyper, P, exec, tmux-project"
-          "$hyper, V, exec, cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy && wtype -M ctrl -k v"
           "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
           "$hyper, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
           "$hyper, T, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"com.mitchellh.ghostty\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || $terminal"
@@ -524,8 +520,6 @@ in
     ++ (with pkgs; [
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
-      cliphist # Clipboard history manager (stores history, pairs with rofi)
-      wtype # Wayland keyboard input simulator (for auto-paste after clipboard selection)
       grim # Screenshots: grim -g "$(slurp)" screenshot.png
       slurp # Region selector (used with grim for area screenshots)
       brightnessctl # Brightness: brightnessctl set 50%
