@@ -82,7 +82,7 @@
         model = "opencode/kimi-k2.6";
       };
       build = {
-        model = "local/qwen36-35b-a3b/qwen3.6-35b-a3b";
+        model = "local/qwen36-35b-a3b-reasoning/qwen3.6-35b-a3b-reasoning";
       };
     };
   };

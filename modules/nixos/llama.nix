@@ -16,7 +16,8 @@ let
       topP ? null,
       topK ? null,
       minP ? null,
-      chatTemplateKwargs ? null,
+      presencePenalty ? null,
+      reasoning ? null,
       extraFlags ? [],
     }:
     {
@@ -56,12 +57,8 @@ let
           ++ (if topP != null then [ "--top-p" (toString topP) ] else [ ])
           ++ (if topK != null then [ "--top-k" (toString topK) ] else [ ])
           ++ (if minP != null then [ "--min-p" (toString minP) ] else [ ])
-          ++ (
-            if chatTemplateKwargs != null then
-              [ "--chat-template-kwargs" chatTemplateKwargs ]
-            else
-              [ ]
-          )
+          ++ (if presencePenalty != null then [ "--presence-penalty" (toString presencePenalty) ] else [ ])
+          ++ (if reasoning != null then [ "--reasoning" reasoning ] else [ ])
           ++ extraFlags
         );
         Restart = "on-failure";
@@ -99,12 +96,13 @@ in
     topP = 0.8;
     topK = 20;
     minP = 0.0;
-    chatTemplateKwargs = "'{\"enable_thinking\":false}'";
+    presencePenalty = 1.5;
+    reasoning = "off";
     description = "llama.cpp - Qwen3.6-35B-A3B";
   };
 
   # ── Thinking instance ──────────────────────────────────────────────
-  # Unsloth thinking mode (precise coding): temp 0.6, top_p 0.95, top_k 20, min_p 0.0
+  # Unsloth coding+thinking: temp 0.6, top_p 0.95, top_k 20, presence_penalty 0.0
   # Same model file — mmap shares memory pages between instances
   systemd.services.llama-qwen3_6-35b-a3b-reasoning = mkLlamaService {
     model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
@@ -115,6 +113,7 @@ in
     topP = 0.95;
     topK = 20;
     minP = 0.0;
+    presencePenalty = 0.0;
     description = "llama.cpp - Qwen3.6-35B-A3B (reasoning)";
   };
 
