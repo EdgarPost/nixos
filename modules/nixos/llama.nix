@@ -75,10 +75,18 @@ let
       sudo -u llama env HF_HUB_ENABLE_HF_TRANSFER=1 "$@"
     }
 
-    echo "Downloading Qwen3.6-35B-A3B (~22GB)..."
-    run $HF download unsloth/Qwen3.6-35B-A3B-GGUF \
-      Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf \
+    echo "Downloading Qwen3.6-35B-A3B MTP-GGUF (~23GB)..."
+    run $HF download unsloth/Qwen3.6-35B-A3B-MTP-GGUF \
+      --include "*UD-Q4_K_XL*" \
       --local-dir ${modelDir}
+
+    # Normalise to a stable filename regardless of how HF names the file
+    for f in ${modelDir}/*UD-Q4_K_XL*.gguf; do
+      target="${modelDir}/Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf"
+      if [ "$f" != "$target" ]; then
+        sudo -u llama mv "$f" "$target"
+      fi
+    done
 
     echo "Done! Start services:"
     echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-qwen3_6-35b-a3b-reasoning"
@@ -88,7 +96,7 @@ in
   # ── Non-thinking instance ──────────────────────────────────────────
   # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
   systemd.services.llama-qwen3_6-35b-a3b = mkLlamaService {
-    model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
+    model = "Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf";
     alias = "qwen3.6-35b-a3b";
     port = 8001;
     ctxSize = 262144;
@@ -98,6 +106,7 @@ in
     minP = 0.0;
     presencePenalty = 1.5;
     reasoning = "off";
+    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" ];
     description = "llama.cpp - Qwen3.6-35B-A3B";
   };
 
@@ -105,7 +114,7 @@ in
   # Unsloth coding+thinking: temp 0.6, top_p 0.95, top_k 20, presence_penalty 0.0
   # Same model file — mmap shares memory pages between instances
   systemd.services.llama-qwen3_6-35b-a3b-reasoning = mkLlamaService {
-    model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
+    model = "Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf";
     alias = "qwen3.6-35b-a3b-reasoning";
     port = 8011;
     ctxSize = 262144;
@@ -114,6 +123,7 @@ in
     topK = 20;
     minP = 0.0;
     presencePenalty = 0.0;
+    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" ];
     description = "llama.cpp - Qwen3.6-35B-A3B (reasoning)";
   };
 
