@@ -201,13 +201,11 @@
   # ==========================================================================
   programs.pi.coding-agent = {
     enable = true;
+    package = inputs.pi-mono.packages.${pkgs.stdenv.hostPlatform.system}.coding-agent.override {
+      nodejs = pkgs.nodejs_22;
+    };
 
-    # Custom extensions
-    extensions = [
-    ];
-
-    # Custom skills
-    skills = [
-    ];
+    extensions = [ ];
+    skills = [ ];
   };
 }

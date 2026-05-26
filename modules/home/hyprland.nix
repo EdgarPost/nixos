@@ -305,12 +305,13 @@ in
         # APPEARANCE
         # =======================================================================
         # Visual settings for windows and gaps
-        # Border colors are set by the catppuccin module automatically
+        # Border colors set manually (catppuccin.hyprland disabled, incompatible with Hyprland 0.55.x)
         general = {
           layout = "scrolling";
           gaps_in = 8;
           gaps_out = 16;
           border_size = 2;
+          "col.active_border" = "rgba(89b4faff)"; # Catppuccin Mocha blue
           "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
         };
 

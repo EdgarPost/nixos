@@ -69,17 +69,12 @@
 
     # Unified theming across applications
     # One config → consistent colors in terminal, editor, status bar, etc.
-    catppuccin.url = "github:catppuccin/nix";
+    # catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "github:catppuccin/nix/release-26.05";
 
     # Roon CLI - control Roon music player from terminal
     roon-cli = {
       url = "github:EdgarPost/roon-cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # OpenCode - AI coding agent from SST
-    opencode = {
-      url = "github:sst/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -145,7 +140,6 @@
       nixos-hardware,
       zen-browser,
       roon-cli,
-      opencode,
       claude-code,
       worktrunk,
       bifrost,

@@ -5,7 +5,7 @@
 # Development environment and work-specific tooling:
 #   - Neovim, tmux, atuin (shell history), direnv, yazi (file manager)
 #   - Zoxide (smart cd), ghq (repo manager), lazygit
-#   - Claude Code, OpenCode (AI coding assistants)
+#   - Claude Code (AI coding assistants)
 #   - Kubernetes, OpenStack, Gardener (infrastructure)
 #   - GitHub CLI, Mistral API (1Password integration)
 #   - Fish: repo picker function, repo-sync, claude aliases
@@ -29,7 +29,6 @@
     ../modules/home/gardener.nix # Gardener cluster management
     ../modules/home/github.nix # GitHub CLI with 1Password
     ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
-    ../modules/home/opencode.nix # OpenCode config (LiteLLM provider)
   ];
 
   # ==========================================================================
@@ -38,9 +37,7 @@
   home.packages = with pkgs; [
     lazygit # TUI for git operations
     ghq # Git repository manager (ghq get, ghq list)
-    nodejs # Required for OpenCode local MCP servers (npx)
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default # AI coding assistant
-    opencode # AI coding agent
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)

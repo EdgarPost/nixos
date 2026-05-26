@@ -17,7 +17,6 @@
 #   mistral-login         # Authenticate (sets MISTRAL_API_KEY for current shell)
 #   mistral-logout        # Clear the API key from environment
 #   vibe                  # Run Mistral Vibe CLI (uses uvx, no install needed)
-#   opencode              # OpenCode will use MISTRAL_API_KEY automatically
 #
 # ============================================================================
 
@@ -25,8 +24,8 @@
 
 {
   home.packages = with pkgs; [
-    _1password-cli   # 1Password CLI (`op` command) for secure credential injection
-    uv               # Fast Python package installer (uvx runs tools on-demand)
+    _1password-cli # 1Password CLI (`op` command) for secure credential injection
+    uv # Fast Python package installer (uvx runs tools on-demand)
   ];
 
   programs.fish = {
@@ -58,7 +57,7 @@
     '';
 
     shellAliases = {
-      vibe = "uvx --from mistral-vibe vibe";  # Run vibe on-demand without installing
+      vibe = "uvx --from mistral-vibe vibe"; # Run vibe on-demand without installing
     };
   };
 }
