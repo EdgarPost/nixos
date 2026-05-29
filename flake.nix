@@ -118,6 +118,12 @@
     # Do NOT set inputs.nixpkgs.follows — breaks the cachix binary cache.
     vicinae.url = "github:vicinaehq/vicinae";
 
+    # Temporary: roon-bridge fix pending nixpkgs PR merge
+    nixpkgs-roon-bridge = {
+      url = "github:EdgarPost/nixpkgs/roon-bridge-2.60-1501";
+      flake = false;
+    };
+
   };
 
   # ==========================================================================
@@ -146,6 +152,7 @@
       envsec,
       pi-mono,
       vicinae,
+      nixpkgs-roon-bridge,
       ...
     }@inputs:
 
@@ -191,7 +198,7 @@
           # Modules are functions: { config, pkgs, lib, ... }: { ... }
           # specialArgs adds extra args (inputs, user) available in all modules
           # This is THE way to pass custom data through your config
-          specialArgs = { inherit inputs user hosts; };
+          specialArgs = { inherit inputs user hosts nixpkgs-roon-bridge; };
 
           # MODULES - The composition system
           # Each module is a function that returns an attrset of config

@@ -1,9 +1,15 @@
 # ============================================================================
 # ROON BRIDGE - Audio Endpoint for Roon
 # ============================================================================
-{ pkgs, hosts, ... }:
+{ pkgs, hosts, nixpkgs-roon-bridge, ... }:
 
 {
+  nixpkgs.overlays = [
+    (final: _prev: {
+      roon-bridge = final.callPackage "${nixpkgs-roon-bridge}/pkgs/by-name/ro/roon-bridge/package.nix" { };
+    })
+  ];
+
   # Roon Bridge service
   services.roon-bridge = {
     enable = true;
