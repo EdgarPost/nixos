@@ -11,7 +11,7 @@
 #
 # ============================================================================
 
-{ inputs, user, ... }:
+{ inputs, user, pkgs, ... }:
 
 {
   imports = [
@@ -19,6 +19,10 @@
     ../profiles/desktop.nix
     ../profiles/dev.nix
     ../modules/home/roon-cli.nix        # Roon CLI for terminal music control
+  ];
+
+  home.packages = with pkgs; [
+    roon-tui
   ];
 
   # ==========================================================================

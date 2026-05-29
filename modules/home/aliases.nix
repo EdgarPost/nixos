@@ -17,6 +17,11 @@
 
 {
   programs.fish.functions = {
+    roon-tui = ''
+      mkdir -p ~/.config/roon-tui
+      command roon-tui --config ~/.config/roon-tui/config.json --log ~/.config/roon-tui/roon-tui.log $argv
+    '';
+
     # Build NixOS config, show package diff, then switch after confirmation
     nrs = ''
       set flake $argv[1]
