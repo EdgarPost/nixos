@@ -69,8 +69,7 @@
 
     # Unified theming across applications
     # One config → consistent colors in terminal, editor, status bar, etc.
-    # catppuccin.url = "github:catppuccin/nix";
-    catppuccin.url = "github:catppuccin/nix/release-26.05";
+    catppuccin.url = "github:catppuccin/nix";
 
     # Roon CLI - control Roon music player from terminal
     roon-cli = {
@@ -117,6 +116,12 @@
     # Vicinae - native Linux launcher (Raycast-style)
     # Do NOT set inputs.nixpkgs.follows — breaks the cachix binary cache.
     vicinae.url = "github:vicinaehq/vicinae";
+
+    # Noctalia - Wayland desktop shell (Waybar replacement candidate)
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Temporary: roon-bridge fix pending nixpkgs PR merge
     nixpkgs-roon-bridge = {
@@ -239,6 +244,8 @@
                   inputs.worktrunk.homeModules.default
                   # Envsec - per-directory environment variable management
                   inputs.envsec.homeManagerModules.default
+                  # Noctalia - Wayland desktop shell
+                  inputs.noctalia.homeModules.default
                   # Home configuration (desktop or server)
                   homeModule
                 ]
