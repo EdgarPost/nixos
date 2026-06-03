@@ -30,9 +30,12 @@
   # ==========================================================================
   # GLOBAL CATPPUCCIN SETTINGS
   # ==========================================================================
-  # These are inherited by all catppuccin.*.enable modules below
+  # These are inherited by all catppuccin.*.enable modules below.
+  # autoEnable: when true, catppuccin will auto-enroll supported programs.
+  #             Set explicitly to suppress the deprecation warning.
   catppuccin = {
     enable = true;      # Master switch for catppuccin module
+    autoEnable = true;  # Suppress warning; auto-enroll supported ports
     flavor = "mocha";   # Darkest flavor
     accent = "blue";    # Accent color for highlights, selections, etc.
     hyprland.enable = false; # colors{lua-inline} unsupported until Hyprland >0.55.2
