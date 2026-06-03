@@ -65,7 +65,11 @@
   # Add VA-API packages for hardware video decode (YouTube, video calls, etc.)
   hardware.graphics.extraPackages = with pkgs; [
     libvdpau-va-gl # VDPAU via VA-API for AMD
+    mesa.opencl # OpenCL via Rusticl (required for DaVinci Resolve GPU acceleration)
   ];
+
+  # Enable Rusticl OpenCL for RDNA3 (Radeon 8060S) — used by DaVinci Resolve
+  environment.variables.RUSTICL_ENABLE = "radeonsi";
 
   environment.systemPackages = with pkgs; [
     libva-utils # vainfo to verify VA-API acceleration

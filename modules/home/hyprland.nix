@@ -379,7 +379,6 @@ in
           focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
           disable_hyprland_logo = true;
           disable_splash_rendering = true;
-          vfr = true; # Variable Frame Rate - only render when needed (saves CPU)
           mouse_move_enables_dpms = true; # Wake display on mouse move
           key_press_enables_dpms = true; # Wake display on key press
         };

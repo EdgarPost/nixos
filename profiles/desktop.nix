@@ -81,6 +81,7 @@ in
       slack # Only available for x86_64 (no aarch64 build)
       teams-for-linux # Microsoft Teams client (community Electron wrapper)
       postman # API testing and development tool
+      davinci-resolve-studio # Professional video editor (requires manual installer, see below)
     ];
 
   # ==========================================================================
