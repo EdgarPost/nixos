@@ -3,9 +3,10 @@
 # ============================================================================
 #
 # Everything needed for a graphical desktop:
-#   - Hyprland window manager + keybindings + rofi + hyprlock
+#   - Hyprland window manager + keybindings
 #   - Ghostty terminal emulator
-#   - Noctalia desktop shell (bar, notifications, launcher, dock, control center)
+#   - Noctalia desktop shell (bar, notifications, launcher, dock, control center,
+#     clipboard, screenshots, media, volume/brightness, lock screen)
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
