@@ -120,3 +120,9 @@ command = "noctalia:session lock"
 timeout = 660
 command = "noctalia:dpms-off"
 resume_command = "noctalia:dpms-on"
+
+# ----------------------------------------------------------------------------
+# Lock screen: noctalia replaces hyprlock (uses ext-session-lock-v1)
+# ----------------------------------------------------------------------------
+[lockscreen]
+enabled = true

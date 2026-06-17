@@ -82,7 +82,6 @@
 
   # Disable fingerprint authentication everywhere (password-only)
   security.pam.services.sudo.fprintAuth = false;
-  security.pam.services.hyprlock.fprintAuth = false;
   security.pam.services.polkit-1.fprintAuth = false;
 
   # Load i915 early for faster GPU init and better power management

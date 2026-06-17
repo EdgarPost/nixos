@@ -396,58 +396,10 @@ in
     };
 
     # ==========================================================================
-    # HYPRLOCK - Screen Locker
+    # ROFI - Used only by tmux-project picker (not as an app launcher anymore)
     # ==========================================================================
-    # Hyprland-native lock screen with blur and customization
-    # Lock: Super+Escape | Sleep: Super+Shift+Escape
-    programs.hyprlock = {
-      enable = true;
-      settings = {
-        general = {
-          hide_cursor = true;
-        };
-
-        background = [
-          {
-            monitor = "";
-            path = "screenshot"; # Use screenshot of current screen
-            blur_passes = 3;
-            blur_size = 8;
-          }
-        ];
-
-        input-field = [
-          {
-            monitor = "";
-            size = "300, 50";
-            outline_thickness = 2;
-            fade_on_empty = true;
-            placeholder_text = "";
-            hide_input = false;
-          }
-        ];
-
-        label = [ ];
-      };
-    };
-
-    # ==========================================================================
-    # ROFI - Application Launcher
-    # ==========================================================================
-    # Rofi: dmenu replacement with nice UI for launching apps
-    # Triggered by: Super+D (defined in keybindings above)
-    programs.rofi = {
-      enable = true;
-      package = pkgs.rofi;
-      extraConfig = {
-        modi = "drun,run,window";
-        show-icons = true;
-        display-drun = " Apps";
-        display-run = " Run";
-        display-window = " Windows";
-        drun-display-format = "{name}";
-      };
-    };
+    # Noctalia handles app launching now ($hyper+D). Rofi is still invoked
+    # directly by the tmux-project script as a generic dmenu picker.
     # Enable Catppuccin theme for Rofi (from catppuccin flake)
     catppuccin.rofi.enable = true;
 
@@ -475,6 +427,7 @@ in
     # Essential tools for a functional Wayland desktop
     home.packages = [
       tmux-project
+      pkgs.rofi # Used by tmux-project picker (catppuccin.rofi themes it)
     ]
     ++ (with pkgs; [
       jq # JSON query tool
