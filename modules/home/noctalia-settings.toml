@@ -1,15 +1,15 @@
 [bar.default]
-center = [ "notifications", "clock" ]
-end = [ "clock", "battery", "control-center", "session" ]
+center = ["notifications", "clock"]
+end = ["clock", "battery", "control-center", "session"]
 margin_ends = 22
 shadow = false
-start = [ "launcher", "workspaces" ]
+start = ["launcher", "workspaces"]
 
 [calendar]
 enabled = true
 
-    [calendar.account.home_nextcloud]
-    type = "google"
+[calendar.account.home_nextcloud]
+type = "google"
 
 [location]
 address = "Diemen, The Netherlands"
@@ -18,29 +18,29 @@ auto_locate = true
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
-widget_order = [ "lockscreen-login-box@DP-4" ]
+widget_order = ["lockscreen-login-box@DP-4"]
 
-    [lockscreen_widgets.grid]
-    cell_size = 16
-    major_interval = 4
-    visible = true
+[lockscreen_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
-    box_height = 0.0
-    box_width = 0.0
-    cx = 2048.0
-    cy = 1605.0
-    output = "DP-4"
-    rotation = 0.0
-    type = "login_box"
+[lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
+box_height = 0.0
+box_width = 0.0
+cx = 2048.0
+cy = 1605.0
+output = "DP-4"
+rotation = 0.0
+type = "login_box"
 
-        [lockscreen_widgets.widget."lockscreen-login-box@DP-4".settings]
-        background_color = "surface_variant"
-        background_opacity = 0.88
-        background_radius = 12.0
-        input_opacity = 1.0
-        input_radius = 6.0
-        show_login_button = true
+[lockscreen_widgets.widget."lockscreen-login-box@DP-4".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+show_login_button = true
 
 [nightlight]
 enabled = true
@@ -57,26 +57,34 @@ community_palette = "Oxocarbon"
 mode = "dark"
 wallpaper_scheme = "m3-content"
 
-    [theme.templates]
-    builtin_ids = [ "ghostty", "hyprland" ]
-    community_ids = [ "pi-agent", "zen-browser", "neovim", "rofi", "vicinae", "steam", "yazi" ]
+[theme.templates]
+builtin_ids = ["ghostty", "hyprland"]
+community_ids = [
+  "pi-agent",
+  "zen-browser",
+  "neovim",
+  "rofi",
+  "vicinae",
+  "steam",
+  "yazi",
+]
 
 [wallpaper]
 directory = "/home/edgar/.wallpapers"
-transition = [ "disc", "fade", "honeycomb", "stripes", "wipe", "zoom" ]
+transition = ["disc", "fade", "honeycomb", "stripes", "wipe", "zoom"]
 transition_on_startup = true
 
-    [wallpaper.automation]
-    enabled = true
+[wallpaper.automation]
+enabled = true
 
-    [wallpaper.default]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.default]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
-    [wallpaper.last]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.last]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
-    [wallpaper.monitors.DP-4]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.monitors.DP-4]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
 [widget.battery]
 hide_when_plugged = true
