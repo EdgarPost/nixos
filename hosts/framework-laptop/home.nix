@@ -13,8 +13,6 @@
 { lib, ... }:
 
 {
-  imports = [ ../../modules/home/vicinae.nix ];
-
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     monitor = [

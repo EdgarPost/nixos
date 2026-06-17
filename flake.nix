@@ -113,10 +113,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Vicinae - native Linux launcher (Raycast-style)
-    # Do NOT set inputs.nixpkgs.follows — breaks the cachix binary cache.
-    vicinae.url = "github:vicinaehq/vicinae";
-
     # Noctalia - Wayland desktop shell (bar, notifications, launcher, dock)
     # v5 alpha - tracking main for latest fixes; expect breaking config changes.
     noctalia = {
@@ -157,7 +153,6 @@
       bifrost,
       envsec,
       pi-mono,
-      vicinae,
       nixpkgs-roon-bridge,
       ...
     }@inputs:

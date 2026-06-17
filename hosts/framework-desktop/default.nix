@@ -42,7 +42,6 @@
     ../../modules/nixos/librechat.nix # AI chat interface (port 3080)
     ../../modules/nixos/bifrost.nix # AI gateway proxy (port 4000, replaces litellm)
     ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
-    ../../modules/nixos/vicinae.nix
   ];
 
   # Syncthing - full PARA sync on this machine

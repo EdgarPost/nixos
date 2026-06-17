@@ -13,8 +13,6 @@
 { lib, ... }:
 
 {
-  imports = [ ../../modules/home/vicinae.nix ];
-
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
