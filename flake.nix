@@ -265,13 +265,6 @@
       # Build with: nixos-rebuild switch --flake .#<name>
       # Each key is a configuration name (typically matches hostname)
       nixosConfigurations = {
-        # UTM VM for testing on Apple Silicon Mac
-        # aarch64-linux = ARM64 architecture
-        utm-vm = mkSystem {
-          hostname = "utm-vm";
-          system = "aarch64-linux";
-        };
-
         # Framework laptop (thin client)
         framework-laptop = mkSystem {
           hostname = "framework-laptop";

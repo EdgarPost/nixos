@@ -10,7 +10,6 @@ Claude can read this file to understand current state and continue where we left
 
 ### Completed Steps
 - [x] Initial planning and architecture design
-- [x] UTM VM setup with NixOS (aarch64-linux)
 - [x] Git repository initialized with first commit
 - [x] Phase 1: Flake structure with home-manager
 - [x] Phase 2: Skipped SOPS - using 1Password instead
@@ -66,10 +65,9 @@ Claude can read this file to understand current state and continue where we left
 
 | Host | Hardware | Status |
 |------|----------|--------|
-| `utm-vm` | UTM VM on macOS (aarch64) | Ready - for testing |
-| `framework` | Framework 12" Intel 1280p | **Active** - daily driver |
-| `asahi` | M1 Mac with Asahi Linux | Planned (aarch64 support ready) |
-| `server` | Headless dev servers | Planned |
+| `framework-laptop` | Framework Laptop 12" Intel 1280p | **Active** - thin client |
+| `framework-desktop` | Framework Desktop AMD Ryzen AI Max+ 395 | **Active** - primary workstation |
+| `edgar@server` | Headless dev servers | Standalone Home Manager |
 
 ---
 
@@ -83,13 +81,16 @@ nixos/
 ├── hosts/
 │   ├── common/
 │   │   ├── default.nix          # Shared config (all hosts)
+│   │   ├── desktop.nix          # Desktop-specific (hyprland, greetd, etc.)
 │   │   └── users.nix            # User definitions
-│   ├── utm-vm/
-│   │   ├── default.nix
-│   │   └── hardware-configuration.nix
-│   └── framework/
-│       ├── default.nix          # Framework-specific (lid, 120Hz, etc.)
-│       └── hardware-configuration.nix
+│   ├── framework-laptop/
+│   │   ├── default.nix          # Framework laptop (lid, 120Hz, etc.)
+│   │   ├── hardware-configuration.nix
+│   │   └── home.nix             # Host-specific hyprland/input config
+│   └── framework-desktop/
+│       ├── default.nix          # Framework desktop (Dell U4025QW, AMD)
+│       ├── hardware-configuration.nix
+│       └── home.nix             # Host-specific hyprland/monitor config
 ├── modules/
 │   ├── nixos/                   # System-level modules
 │   │   ├── 1password.nix        # Password manager + SSH agent
@@ -173,7 +174,6 @@ Using 1Password instead of SOPS for secrets:
 
 ### Phase 0: Prerequisites
 - [x] Download NixOS ISO
-- [x] Create UTM VM (aarch64, 8GB RAM, 50GB disk, UEFI)
 - [x] Install minimal NixOS
 - [x] Generate hardware-configuration.nix
 - [x] Generate age keypair: `age-keygen -o ~/.config/sops/age/keys.txt`
@@ -242,10 +242,10 @@ git clone https://github.com/<username>/nixos-config.git
 cd nixos-config
 
 # Copy hardware config (generated during install)
-cp /etc/nixos/hardware-configuration.nix hosts/utm-vm/
+cp /etc/nixos/hardware-configuration.nix hosts/<host>/
 
 # Build and switch
-sudo nixos-rebuild switch --flake .#utm-vm
+sudo nixos-rebuild switch --flake .#<host>
 ```
 
 ### SOPS Commands

@@ -34,9 +34,10 @@ nix flake lock --update-input nixpkgs
 │   ├── framework-laptop/     # Framework laptop
 │   │   ├── default.nix       # Host-specific: bootloader, hardware features
 │   │   └── hardware-configuration.nix  # Auto-generated hardware config
-│   └── utm-vm/               # UTM VM (aarch64 testing)
+│   └── framework-desktop/    # Framework Desktop (AMD Ryzen AI Max+ 395)
 │       ├── default.nix
-│       └── hardware-configuration.nix
+│       ├── hardware-configuration.nix
+│       └── home.nix          # Host-specific Hyprland/monitor/input config
 ├── home/
 │   ├── default.nix           # Home Manager entry point (desktop)
 │   └── server.nix            # Standalone Home Manager for headless servers
@@ -130,7 +131,7 @@ Then available in any module:
 | Host | Architecture | Description |
 |------|--------------|-------------|
 | `framework-laptop` | x86_64-linux | Framework Laptop 12" (12th gen Intel) |
-| `utm-vm` | aarch64-linux | UTM VM on Apple Silicon for testing |
+| `framework-desktop` | x86_64-linux | Framework Desktop (AMD Ryzen AI Max+ 395) |
 | `edgar@server` | x86_64-linux | Standalone Home Manager for servers |
 | `edgar@server-arm` | aarch64-linux | Standalone Home Manager for ARM servers |
 
