@@ -361,13 +361,13 @@
         "lastModified": 1781666546,
         "narHash": "sha256-9mstXbgi7/FepdoaTB8QqbaME7sdELMdGLGOQHCrVlA=",
         "owner": "noctalia-dev",
-        "repo": "noctalia-shell",
+        "repo": "noctalia",
         "rev": "6b0e16179645e15693efd94f51109d22b199418c",
         "type": "github"
       },
       "original": {
         "owner": "noctalia-dev",
-        "repo": "noctalia-shell",
+        "repo": "noctalia",
         "type": "github"
       }
     },

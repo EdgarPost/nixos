@@ -130,7 +130,7 @@ in
     pwvucontrol # Modern PipeWire volume control (better than pavucontrol)
     crosspipe   # Visual patchbay for complex audio routing
     # Note: pasystray removed due to build failure in nixpkgs-unstable
-    # Use Mod+A for rofi audio menu, or click waybar volume for pwvucontrol
+    # Use Mod+A for rofi audio menu, or click the noctalia volume widget for pwvucontrol
 
     # Device selection scripts
     audio-select

@@ -4,7 +4,7 @@
 #
 # Composes from mixin profiles:
 #   base.nix    - fish, starship, aliases, catppuccin, basic CLI tools
-#   desktop.nix - hyprland, ghostty, waybar, swaync, audio, workspaces, font, cursor
+#   desktop.nix - hyprland, ghostty, noctalia, audio, workspaces, font, cursor
 #   dev.nix     - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, claude-code, k8s, etc.
 #
 # Plus Edgar-specific config: git (1Password SSH agent, SSH URLs), SSH, roon-cli
@@ -19,6 +19,7 @@
     ../profiles/desktop.nix
     ../profiles/dev.nix
     ../modules/home/roon-cli.nix        # Roon CLI for terminal music control
+    ../modules/home/noctalia.nix        # Wayland desktop shell (bar, notifications, launcher)
   ];
 
   home.packages = with pkgs; [

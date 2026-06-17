@@ -117,9 +117,10 @@
     # Do NOT set inputs.nixpkgs.follows — breaks the cachix binary cache.
     vicinae.url = "github:vicinaehq/vicinae";
 
-    # Noctalia - Wayland desktop shell (Waybar replacement candidate)
+    # Noctalia - Wayland desktop shell (bar, notifications, launcher, dock)
+    # v5 alpha - tracking main for latest fixes; expect breaking config changes.
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -244,7 +245,7 @@
                   inputs.worktrunk.homeModules.default
                   # Envsec - per-directory environment variable management
                   inputs.envsec.homeManagerModules.default
-                  # Noctalia - Wayland desktop shell
+                  # Noctalia - Wayland desktop shell (bar, notifications, launcher, dock)
                   inputs.noctalia.homeModules.default
                   # Home configuration (desktop or server)
                   homeModule

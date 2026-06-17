@@ -5,8 +5,7 @@
 # Everything needed for a graphical desktop:
 #   - Hyprland window manager + keybindings + rofi + hyprlock
 #   - Ghostty terminal emulator
-#   - Waybar status bar
-#   - SwayNC notification center
+#   - Noctalia desktop shell (bar, notifications, launcher, dock, control center)
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
@@ -24,7 +23,7 @@
 }:
 
 let
-  # Shared font configuration - used by terminal, waybar, etc.
+  # Shared font configuration - used by terminal, noctalia, etc.
   font = {
     family = "MonoLisa";
     size = 14;
@@ -37,8 +36,6 @@ in
   imports = [
     ../modules/home/hyprland.nix # Window manager + keybindings
     ../modules/home/ghostty.nix # Terminal emulator
-    ../modules/home/waybar.nix # Status bar
-    ../modules/home/swaync.nix # Notification center
     ../modules/home/zathura.nix # PDF viewer
     ../modules/home/audio.nix # Audio profile switching
     ../modules/home/thunderbird.nix # Email, calendar & contacts client

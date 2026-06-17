@@ -59,7 +59,6 @@
   catppuccin.fish.enable = true;      # Fish shell colors
   catppuccin.starship.enable = true;  # Prompt colors
   catppuccin.ghostty.enable = true;   # Terminal colors
-  catppuccin.waybar.enable = true;    # Status bar CSS variables
   catppuccin.yazi.enable = true;      # File manager colors
   catppuccin.zathura.enable = true;   # PDF viewer colors
   catppuccin.tmux.enable = true;      # Tmux status bar colors

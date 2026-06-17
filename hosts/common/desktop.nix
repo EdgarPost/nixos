@@ -23,6 +23,7 @@
     ../../modules/nixos/greetd.nix # Login manager
     ../../modules/nixos/keyd.nix # Caps Lock → Hyper key
     ../../modules/nixos/podman.nix # Container runtime
+    ../../modules/nixos/cachix-noctalia.nix # Noctalia prebuilt binary cache
   ];
 
   # PipeWire audio stack

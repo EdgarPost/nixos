@@ -88,7 +88,8 @@ in
       # Use the Hyprland package from NixOS module (avoid duplicate installations)
       package = null;
       portalPackage = null;
-      # Let systemd manage the session (creates hyprland-session.target for waybar)
+      # Let systemd manage the session (creates hyprland-session.target)
+      # Noctalia runs as a systemd user service wired to hyprland-session.target
       systemd.enable = true;
 
       settings = {
@@ -165,12 +166,10 @@ in
           # This MUST run first, before any apps that depend on DBus/portals
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
           "1password --silent" # Start 1Password daemon for SSH agent
-          # waybar is now managed by systemd (see waybar.nix)
           "awww-daemon" # Wallpaper daemon (supports animated transitions)
           # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
           # First set Catppuccin Mocha crust color, then transition to wallpaper
           "until awww clear 11111b 2>/dev/null; do sleep 0.1; done && awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
-          "swaync" # Notification center (replacing mako)
         ];
 
         # =======================================================================
@@ -199,7 +198,6 @@ in
           "$mod, Q, killactive"
           "$mod, F, fullscreen"
           "$mod, G, togglefloating"
-          "$hyper, N, exec, swaync-client -t" # Toggle notification center
 
           # Cycle column width (0.333 → 0.5 → 0.75 → 1.0)
           "$mod CTRL, L, layoutmsg, colresize +conf"
@@ -271,8 +269,8 @@ in
         # These trigger repeatedly while the key is held down
         # Perfect for volume, brightness, and window resizing
         binde = [
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 waybar"
-          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 waybar"
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
           ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
 
@@ -287,7 +285,7 @@ in
         # These work even when the screen is locked
         # Useful for mute and hardware switches
         bindl = [
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 waybar"
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
           ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
         ];
 
