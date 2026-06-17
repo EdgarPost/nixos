@@ -1,5 +1,6 @@
 [bar.default]
 center = [ "notifications", "clock" ]
+end = [ "battery", "session" ]
 margin_edge = 18
 margin_ends = 24
 shadow = false
