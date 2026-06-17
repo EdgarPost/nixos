@@ -169,7 +169,7 @@ in
           # =============================================================
           "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
           "$hyper, W, exec, noctalia msg panel-toggle wallpaper" # Wallpaper picker (noctalia IPC)
-          "$hyper, A, exec, audio-menu"
+          "$hyper, A, exec, noctalia msg panel-toggle control-center audio" # Audio panel (noctalia IPC)
           "$hyper, P, exec, tmux-project"
           "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
           "$hyper, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"

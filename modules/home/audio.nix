@@ -1,142 +1,27 @@
 # ============================================================================
-# AUDIO DEVICE SELECTION
+# AUDIO - WirePlumber + PipeWire Configuration
 # ============================================================================
 #
-# Select audio input/output combos from available devices.
+# PipeWire is the system audio server (configured in hosts/common/desktop.nix).
+# This module tunes WirePlumber for our hardware:
+#   - Duplex profiles (mic + output) on both built-in and USB audio
+#   - Don't restore muted state on startup (prevents muted mic surprises)
+#   - Default mic volume at 75% on built-in inputs
+#   - Prefer Logitech C920 webcam over built-in cameras
 #
-# Commands:
-#   audio-select        Select output+input combo (rofi menu)
-#   audio-output        Select output only
-#   audio-input         Select input only
-#
-# Keybinding:
-#   Super+A             Open combo selector
+# Device selection, volume, and the audio control panel all live in noctalia
+# (panel-toggle control-center audio). The rofi-based audio-menu / audio-select
+# / audio-output / audio-input scripts are gone.
 #
 # ============================================================================
 
 { pkgs, ... }:
 
-let
-  # Helper to get sinks
-  getSinks = ''
-    wpctl status | sed -n '/Audio/,/Video/p' | sed -n '/Sinks:/,/Sources:/p' | \
-      grep -E '[0-9]+\.' | sed 's/.*│\s*//' | sed 's/\*\s*//' | sed 's/\s*\[vol:.*$//'
-  '';
-
-  # Helper to get sources
-  getSources = ''
-    wpctl status | sed -n '/Audio/,/Video/p' | sed -n '/Sources:/,/Filters:/p' | \
-      grep -E '[0-9]+\.' | sed 's/.*│\s*//' | sed 's/\*\s*//' | sed 's/\s*\[vol:.*$//'
-  '';
-
-  # Combo selector - pick output then input
-  audio-select = pkgs.writeShellScriptBin "audio-select" ''
-    get_sinks() { ${getSinks} }
-    get_sources() { ${getSources} }
-
-    # Build combo menu: "Out: X | In: Y"
-    build_combos() {
-      sinks=$(get_sinks)
-      sources=$(get_sources)
-
-      while IFS= read -r sink; do
-        sink_name=$(echo "$sink" | sed 's/^[0-9]*\.\s*//')
-        while IFS= read -r source; do
-          source_name=$(echo "$source" | sed 's/^[0-9]*\.\s*//')
-          sink_id=$(echo "$sink" | grep -oP '^\d+')
-          source_id=$(echo "$source" | grep -oP '^\d+')
-          echo "$sink_id:$source_id:Out: $sink_name | In: $source_name"
-        done <<< "$sources"
-      done <<< "$sinks"
-    }
-
-    combos=$(build_combos)
-    if [ -z "$combos" ]; then
-      ${pkgs.libnotify}/bin/notify-send "Audio" "No devices available"
-      exit 1
-    fi
-
-    # Show menu with just the names
-    choice=$(echo "$combos" | cut -d: -f3- | rofi -dmenu -p "Audio" -i)
-
-    if [ -n "$choice" ]; then
-      # Find matching combo and extract IDs
-      line=$(echo "$combos" | grep -F "$choice" | head -1)
-      sink_id=$(echo "$line" | cut -d: -f1)
-      source_id=$(echo "$line" | cut -d: -f2)
-
-      wpctl set-default "$sink_id"
-      wpctl set-default "$source_id"
-
-      ${pkgs.libnotify}/bin/notify-send -i audio-headphones "Audio" "$choice"
-    fi
-  '';
-
-  # Output-only selector
-  audio-output = pkgs.writeShellScriptBin "audio-output" ''
-    get_sinks() { ${getSinks} }
-
-    sinks=$(get_sinks)
-    if [ -z "$sinks" ]; then
-      ${pkgs.libnotify}/bin/notify-send "Audio" "No outputs available"
-      exit 1
-    fi
-
-    choice=$(echo "$sinks" | rofi -dmenu -p "Output" -i)
-    if [ -n "$choice" ]; then
-      sink_id=$(echo "$choice" | grep -oP '^\d+')
-      wpctl set-default "$sink_id"
-      name=$(echo "$choice" | sed 's/^[0-9]*\.\s*//')
-      ${pkgs.libnotify}/bin/notify-send -i audio-speakers "Output" "$name"
-    fi
-  '';
-
-  # Input-only selector
-  audio-input = pkgs.writeShellScriptBin "audio-input" ''
-    get_sources() { ${getSources} }
-
-    sources=$(get_sources)
-    if [ -z "$sources" ]; then
-      ${pkgs.libnotify}/bin/notify-send "Audio" "No inputs available"
-      exit 1
-    fi
-
-    choice=$(echo "$sources" | rofi -dmenu -p "Input" -i)
-    if [ -n "$choice" ]; then
-      source_id=$(echo "$choice" | grep -oP '^\d+')
-      wpctl set-default "$source_id"
-      name=$(echo "$choice" | sed 's/^[0-9]*\.\s*//')
-      ${pkgs.libnotify}/bin/notify-send -i audio-input-microphone "Input" "$name"
-    fi
-  '';
-
-  # Main audio menu - choose mode first
-  audio-menu = pkgs.writeShellScriptBin "audio-menu" ''
-    mode=$(echo -e "Output only (HQ)\nOutput + Input" | rofi -dmenu -p "Audio Mode" -i)
-    case "$mode" in
-      "Output only (HQ)")
-        exec ${audio-output}/bin/audio-output
-        ;;
-      "Output + Input")
-        exec ${audio-select}/bin/audio-select
-        ;;
-    esac
-  '';
-
-in
 {
   home.packages = with pkgs; [
-    # Audio control tools
+    # Audio control tools (GUI)
     pwvucontrol # Modern PipeWire volume control (better than pavucontrol)
     crosspipe   # Visual patchbay for complex audio routing
-    # Note: pasystray removed due to build failure in nixpkgs-unstable
-    # Use Mod+A for rofi audio menu, or click the noctalia volume widget for pwvucontrol
-
-    # Device selection scripts
-    audio-select
-    audio-output
-    audio-input
-    audio-menu
   ];
 
   # WirePlumber: Set duplex profiles by default (enables mic input)
