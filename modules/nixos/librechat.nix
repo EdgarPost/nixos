@@ -35,7 +35,10 @@ let
   ];
 in
 {
-  networking.firewall.allowedTCPPorts = [ 3080 ];
+  networking.firewall.allowedTCPPorts = [
+    3080
+    8000
+  ];
 
   services.librechat = {
     enable = true;

@@ -25,6 +25,8 @@
   # This pattern: Nix attrset → JSON file, is common for app configs
   home.file.".claude/settings.json".text = builtins.toJSON {
 
+    model = "opus";
+
     # ==========================================================================
     # ATTRIBUTION
     # ==========================================================================
