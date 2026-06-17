@@ -54,18 +54,6 @@ let
     fi
   '';
 
-  # Rofi power menu
-  power-menu = pkgs.writeShellScriptBin "power-menu" ''
-    choice=$(echo -e "Lock\nAway\nSuspend\nReboot\nShutdown" | rofi -dmenu -p "Power")
-    case "$choice" in
-      Lock) loginctl lock-session; sleep 1; hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name' | xargs -I{} hyprctl dispatch dpms off {} ;;
-      Away) sleep 1; hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[].name' | xargs -I{} hyprctl dispatch dpms off {} ;;
-      Suspend) systemctl suspend ;;
-      Reboot) systemctl reboot ;;
-      Shutdown) systemctl poweroff ;;
-    esac
-  '';
-
   # Catppuccin wallpapers - fetched at build time
   catppuccin-wallpapers = pkgs.fetchFromGitHub {
     owner = "zhichaoh";
@@ -239,15 +227,15 @@ in
           ", XF86AudioPrev, exec, noctalia msg media previous"
           ", XF86AudioStop, exec, noctalia msg media stop"
 
-          # Power menu (lock, suspend, reboot, shutdown)
-          "$hyper, Escape, exec, power-menu"
+          # Power menu (noctalia session panel: lock, logout, lock&suspend, reboot, shutdown)
+          "$hyper, Escape, exec, noctalia msg panel-toggle session"
 
           # Screenshots (noctalia IPC; copies to clipboard + saves file)
           "$mod CTRL, S, exec, noctalia msg screenshot-fullscreen" # Full screen
           "$mod CTRL SHIFT, S, exec, noctalia msg screenshot-region" # Region select
 
           # Power menu (triggered by power button)
-          ", XF86PowerOff, exec, power-menu"
+          ", XF86PowerOff, exec, noctalia msg panel-toggle session"
 
           # Next/previous workspace
           "$mod, Tab, workspace, e+1"
@@ -486,7 +474,6 @@ in
     # Essential tools for a functional Wayland desktop
     home.packages = [
       tmux-project
-      power-menu
     ]
     ++ (with pkgs; [
       jq # JSON query tool
