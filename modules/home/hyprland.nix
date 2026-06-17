@@ -242,9 +242,9 @@ in
           # Power menu (lock, suspend, reboot, shutdown)
           "$hyper, Escape, exec, power-menu"
 
-          # Screenshots (to clipboard)
-          "$mod CTRL, S, exec, grim - | wl-copy" # Full screen
-          "$mod CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy" # Region select
+          # Screenshots (noctalia IPC; copies to clipboard + saves file)
+          "$mod CTRL, S, exec, noctalia msg screenshot-fullscreen" # Full screen
+          "$mod CTRL SHIFT, S, exec, noctalia msg screenshot-region" # Region select
 
           # Power menu (triggered by power button)
           ", XF86PowerOff, exec, power-menu"
@@ -490,8 +490,6 @@ in
     ++ (with pkgs; [
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
-      grim # Screenshots: grim -g "$(slurp)" screenshot.png
-      slurp # Region selector (used with grim for area screenshots)
       brightnessctl # Brightness: brightnessctl set 50%
       playerctl # Media control: playerctl play-pause, next, previous
     ]);

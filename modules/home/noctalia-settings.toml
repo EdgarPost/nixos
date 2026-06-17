@@ -85,6 +85,16 @@ hide_when_plugged = true
 hide_when_no_unread = true
 
 # ----------------------------------------------------------------------------
+# Screenshots: noctalia IPC replaces grim + slurp + wl-copy pipeline
+# ----------------------------------------------------------------------------
+[shell.screenshot]
+# Always copy to clipboard (matches the old `grim - | wl-copy` behavior)
+copy_to_clipboard = true
+# Also save to disk (Pictures/screenshot_*.png) so the capture is preserved
+save_to_file = true
+# No pipe_to_command (no annotator needed by default)
+
+# ----------------------------------------------------------------------------
 # Idle: time-based lock + screen off (replaces hypridle)
 # ----------------------------------------------------------------------------
 [idle]
