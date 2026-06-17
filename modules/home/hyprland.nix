@@ -189,6 +189,7 @@ in
           "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
           "$hyper, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
           "$hyper, T, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"com.mitchellh.ghostty\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || $terminal"
+          "$hyper, V, exec, noctalia msg panel-toggle clipboard" # Clipboard history (noctalia IPC)
           "$hyper, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
 
           # =============================================================

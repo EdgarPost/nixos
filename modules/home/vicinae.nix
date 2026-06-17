@@ -26,7 +26,8 @@
   wayland.windowManager.hyprland = {
     settings.bind = [
       "$hyper, D, exec, vicinae toggle"
-      "$hyper, V, exec, vicinae vicinae://launch/clipboard/history"
+      # Clipboard history moved to noctalia: $hyper+V is bound in hyprland.nix
+      # to `noctalia msg panel-toggle clipboard`.
     ];
 
     extraConfig = ''
