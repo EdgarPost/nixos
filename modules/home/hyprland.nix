@@ -233,11 +233,11 @@ in
           "$mod SHIFT, 8, movetoworkspace, 8"
           "$mod SHIFT, 9, movetoworkspace, 9"
 
-          # Media controls
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioNext, exec, playerctl next"
-          ", XF86AudioPrev, exec, playerctl previous"
-          ", XF86AudioStop, exec, playerctl stop"
+          # Media controls (noctalia IPC over MPRIS, no playerctl needed)
+          ", XF86AudioPlay, exec, noctalia msg media toggle"
+          ", XF86AudioNext, exec, noctalia msg media next"
+          ", XF86AudioPrev, exec, noctalia msg media previous"
+          ", XF86AudioStop, exec, noctalia msg media stop"
 
           # Power menu (lock, suspend, reboot, shutdown)
           "$hyper, Escape, exec, power-menu"
@@ -491,7 +491,6 @@ in
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
       brightnessctl # Brightness: brightnessctl set 50%
-      playerctl # Media control: playerctl play-pause, next, previous
     ]);
   }; # End of config
 }
