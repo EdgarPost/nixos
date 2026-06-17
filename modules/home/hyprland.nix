@@ -400,7 +400,9 @@ in
     # ==========================================================================
     # Noctalia handles app launching now ($hyper+D). Rofi is still invoked
     # directly by the tmux-project script as a generic dmenu picker.
-    # Enable Catppuccin theme for Rofi (from catppuccin flake)
+    # programs.rofi is enabled so the catppuccin.rofi module can write the
+    # themed config.rasi — the module is gated on programs.rofi.enable.
+    programs.rofi.enable = true;
     catppuccin.rofi.enable = true;
 
     # ==========================================================================
