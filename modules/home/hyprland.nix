@@ -267,10 +267,11 @@ in
         # These trigger repeatedly while the key is held down
         # Perfect for volume, brightness, and window resizing
         binde = [
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
-          ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
+          # Volume / brightness via noctalia IPC (OSD feedback for free)
+          ", XF86AudioRaiseVolume, exec, noctalia msg volume-up"
+          ", XF86AudioLowerVolume, exec, noctalia msg volume-down"
+          ", XF86MonBrightnessUp, exec, noctalia msg brightness-up"
+          ", XF86MonBrightnessDown, exec, noctalia msg brightness-down"
 
           # Resize column
           "$mod CTRL, K, resizeactive, 0 -20"
@@ -283,8 +284,8 @@ in
         # These work even when the screen is locked
         # Useful for mute and hardware switches
         bindl = [
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ", XF86AudioMute, exec, noctalia msg volume-mute"
+          ", XF86AudioMicMute, exec, noctalia msg mic-mute"
         ];
 
         # =======================================================================
@@ -490,7 +491,6 @@ in
     ++ (with pkgs; [
       jq # JSON query tool
       wl-clipboard # Clipboard: wl-copy, wl-paste (like xclip for Wayland)
-      brightnessctl # Brightness: brightnessctl set 50%
     ]);
   }; # End of config
 }
