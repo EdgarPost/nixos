@@ -15,23 +15,6 @@
 {
   imports = [ ../../modules/home/vicinae.nix ];
 
-  # Desktop: DPMS timeout turns Dell off, creates headless output for Steam Remote Play.
-  # When Dell resumes, headless is destroyed — Steam Deck streams only while Dell sleeps.
-  services.hypridle.settings.listener = lib.mkForce [
-    {
-      timeout = 300; # 5 min → Dell off, headless on for Steam Remote Play
-      on-timeout = ''
-        hyprctl dispatch dpms off DP-4
-        hyprctl output create headless
-        hyprctl keyword monitor "HEADLESS-1,2560x1440@90,auto,1"
-      '';
-      on-resume = ''
-        hyprctl dispatch dpms on DP-4
-        hyprctl output remove HEADLESS-1
-      '';
-    }
-  ];
-
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)

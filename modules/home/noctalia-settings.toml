@@ -1,6 +1,6 @@
 [bar.default]
-center = [ "control-center", "notifications", "clock" ]
-end = [ "battery", "session" ]
+center = [ "notifications", "clock" ]
+end = [ "clock", "battery", "control-center", "session" ]
 margin_ends = 22
 shadow = false
 start = [ "launcher", "workspaces" ]
@@ -10,6 +10,10 @@ enabled = true
 
     [calendar.account.home_nextcloud]
     type = "google"
+
+[location]
+address = "Diemen, The Netherlands"
+auto_locate = true
 
 [lockscreen_widgets]
 enabled = false
@@ -41,10 +45,14 @@ widget_order = [ "lockscreen-login-box@DP-4" ]
 [nightlight]
 enabled = true
 
+[notification]
+position = "top_center"
+
 [shell]
 screen_time_enabled = true
 
 [theme]
+builtin = "Catppuccin"
 community_palette = "Oxocarbon"
 mode = "dark"
 wallpaper_scheme = "m3-content"
@@ -62,19 +70,35 @@ transition_on_startup = true
     enabled = true
 
     [wallpaper.default]
-    path = "/home/edgar/.wallpapers/yosemite.png"
+    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
     [wallpaper.last]
-    path = "/home/edgar/.wallpapers/yosemite.png"
+    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
     [wallpaper.monitors.DP-4]
-    path = "/home/edgar/.wallpapers/yosemite.png"
+    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
 [widget.battery]
 hide_when_plugged = true
 
-[widget.clock]
-format = "{:%d %B / %H:%M:%S}"
-
 [widget.notifications]
 hide_when_no_unread = true
+
+# ----------------------------------------------------------------------------
+# Idle: time-based lock + screen off (replaces hypridle)
+# ----------------------------------------------------------------------------
+[idle]
+# Seconds of fade overlay before the idle command runs (0 = no fade).
+# 2s is a nice smooth transition that doesn't feel jarring.
+pre_action_fade_seconds = 2.0
+
+[idle.behavior.lock]
+# 10 min idle → lock session via noctalia's lock screen
+timeout = 600
+command = "noctalia:session lock"
+
+[idle.behavior.screen-off]
+# 11 min idle → turn monitors off; auto-restore on activity
+timeout = 660
+command = "noctalia:dpms-off"
+resume_command = "noctalia:dpms-on"
