@@ -166,10 +166,7 @@ in
           # This MUST run first, before any apps that depend on DBus/portals
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
           "1password --silent" # Start 1Password daemon for SSH agent
-          "awww-daemon" # Wallpaper daemon (supports animated transitions)
-          # Set random wallpaper from ~/.wallpapers on login (wait for daemon, then animate)
-          # First set Catppuccin Mocha crust color, then transition to wallpaper
-          "until awww clear 11111b 2>/dev/null; do sleep 0.1; done && awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
+          # Wallpaper is managed by noctalia (no awww needed)
         ];
 
         # =======================================================================
@@ -183,7 +180,7 @@ in
           # High-level OS actions: app focus, launchers, session control
           # =============================================================
           "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
-          "$hyper, W, exec, awww img $(find -L ~/.wallpapers -type f | shuf -n 1) --transition-type grow --transition-pos center --transition-duration 1"
+          "$hyper, W, exec, noctalia msg panel-toggle wallpaper" # Wallpaper picker (noctalia IPC)
           "$hyper, A, exec, audio-menu"
           "$hyper, P, exec, tmux-project"
           "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
@@ -497,7 +494,6 @@ in
       slurp # Region selector (used with grim for area screenshots)
       brightnessctl # Brightness: brightnessctl set 50%
       playerctl # Media control: playerctl play-pause, next, previous
-      awww # Wallpaper daemon: awww img ~/wallpaper.png
     ]);
   }; # End of config
 }
