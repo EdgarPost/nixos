@@ -12,6 +12,21 @@ enabled = true
     [calendar.account.home_nextcloud]
     type = "google"
 
+    [calendar.account.personal_google]
+    type = "google"
+
+[desktop_widgets]
+enabled = false
+schema_version = 2
+widget_order = []
+
+    [desktop_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget]
+
 [idle]
 behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
 
@@ -34,7 +49,7 @@ behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
 address = ""
 
 [lockscreen_widgets]
-enabled = false
+enabled = true
 schema_version = 2
 widget_order = [ "lockscreen-login-box@DP-5", "lockscreen-login-box@DP-4" ]
 
@@ -90,10 +105,19 @@ position_vertical = "bottom_center"
 [shell]
 screen_time_enabled = true
 
+    [shell.panel]
+    control_center_position = "center"
+    launcher_categories = false
+    launcher_compact = true
+
+    [shell.screen_corners]
+    enabled = true
+
 [theme]
 builtin = "Catppuccin"
 community_palette = "Oxocarbon"
 mode = "dark"
+source = "builtin"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
