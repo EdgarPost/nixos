@@ -42,6 +42,7 @@
     ../../modules/nixos/librechat.nix # AI chat interface (port 3080)
     ../../modules/nixos/bifrost.nix # AI gateway proxy (port 4000, replaces litellm)
     ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
+    ../../modules/nixos/sunshine.nix # Game streaming to Steam Deck (on-demand virtual display)
   ];
 
   # Syncthing - full PARA sync on this machine

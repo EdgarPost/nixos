@@ -16,7 +16,9 @@
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
-    # HEADLESS-1: virtual monitor for Steam Remote Play when Dell is asleep
+    # Game streaming (Sunshine) creates its own headless output on demand and
+    # disables DP-4 for the duration of a stream — see modules/nixos/sunshine.nix.
+    # No static virtual-monitor entry is needed here.
     monitor = [
       "DP-4,5120x2160@120,0x0,1.25"   # Dell U4025QW via DisplayPort
       "DP-6,disable"                    # Same Dell via Thunderbolt (duplicate, keep TB for KVM peripherals only)

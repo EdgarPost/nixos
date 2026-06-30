@@ -38,6 +38,7 @@
     lazygit # TUI for git operations
     ghq # Git repository manager (ghq get, ghq list)
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default # AI coding assistant
+    inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default # AI agent multiplexer
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)

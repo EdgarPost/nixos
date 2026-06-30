@@ -113,6 +113,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Herdr - terminal workspace manager for AI coding agents
+    herdr = {
+      url = "github:ogulcancelik/herdr/v0.7.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Noctalia - Wayland desktop shell (bar, notifications, launcher, dock)
     # v5 alpha - tracking main for latest fixes; expect breaking config changes.
     noctalia = {
@@ -125,6 +131,12 @@
       url = "github:EdgarPost/nixpkgs/roon-bridge-2.60-1501";
       flake = false;
     };
+
+    # Sunshine game streaming: the version in our main nixpkgs lags upstream.
+    # Pin a second nixpkgs (same nixos-unstable channel) used ONLY to build the
+    # sunshine package — see modules/nixos/sunshine.nix. The rest of the system
+    # is unaffected. Bump with: nix flake update nixpkgs-sunshine
+    nixpkgs-sunshine.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   };
 
@@ -153,6 +165,7 @@
       bifrost,
       envsec,
       pi-mono,
+      herdr,
       nixpkgs-roon-bridge,
       ...
     }@inputs:
