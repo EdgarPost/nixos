@@ -36,6 +36,11 @@
     pulse.enable = true; # PulseAudio compatibility layer
   };
 
+  # UPower battery daemon
+  # Required for Noctalia's battery indicator. Enabling the service installs
+  # the package and auto-starts the daemon (no separate package needed).
+  services.upower.enable = true;
+
   # Desktop-specific user groups
   # video: screen brightness control (backlight device access)
   # audio: direct audio device access

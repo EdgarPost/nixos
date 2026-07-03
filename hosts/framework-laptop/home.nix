@@ -39,11 +39,5 @@
         accel_profile = "flat";
       }
     ];
-
-    # Lid switch: manage laptop display (suspend is handled by logind)
-    bindl = [
-      ", switch:on:Lid Switch, exec, hyprctl keyword monitor eDP-1,disable"
-      ", switch:off:Lid Switch, exec, hyprctl keyword monitor eDP-1,preferred,auto,1"
-    ];
   };
 }
