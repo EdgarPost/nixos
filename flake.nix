@@ -212,7 +212,14 @@
           # Modules are functions: { config, pkgs, lib, ... }: { ... }
           # specialArgs adds extra args (inputs, user) available in all modules
           # This is THE way to pass custom data through your config
-          specialArgs = { inherit inputs user hosts nixpkgs-roon-bridge; };
+          specialArgs = {
+            inherit
+              inputs
+              user
+              hosts
+              nixpkgs-roon-bridge
+              ;
+          };
 
           # MODULES - The composition system
           # Each module is a function that returns an attrset of config
