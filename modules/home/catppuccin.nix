@@ -34,10 +34,10 @@
   # autoEnable: when true, catppuccin will auto-enroll supported programs.
   #             Set explicitly to suppress the deprecation warning.
   catppuccin = {
-    enable = true;      # Master switch for catppuccin module
-    autoEnable = true;  # Suppress warning; auto-enroll supported ports
-    flavor = "mocha";   # Darkest flavor
-    accent = "blue";    # Accent color for highlights, selections, etc.
+    enable = true; # Master switch for catppuccin module
+    autoEnable = false; # Suppress warning; auto-enroll supported ports
+    flavor = "mocha"; # Darkest flavor
+    accent = "blue"; # Accent color for highlights, selections, etc.
     hyprland.enable = false; # colors{lua-inline} unsupported until Hyprland >0.55.2
   };
 
@@ -55,13 +55,15 @@
   # ==========================================================================
   # Each of these generates the appropriate config file for that program
   # All inherit flavor and accent from catppuccin.flavor and catppuccin.accent
-  catppuccin.bat.enable = true;       # ~/.config/bat/config
-  catppuccin.fish.enable = true;      # Fish shell colors
-  catppuccin.starship.enable = true;  # Prompt colors
-  catppuccin.ghostty.enable = true;   # Terminal colors
-  catppuccin.yazi.enable = true;      # File manager colors
-  catppuccin.zathura.enable = true;   # PDF viewer colors
-  catppuccin.tmux.enable = true;      # Tmux status bar colors
+  catppuccin.bat.enable = true; # ~/.config/bat/config
+  catppuccin.atuin.enable = true;
+  catppuccin.glamour.enable = true;
+  catppuccin.fish.enable = true; # Fish shell colors
+  catppuccin.starship.enable = true; # Prompt colors
+  catppuccin.ghostty.enable = true; # Terminal colors
+  catppuccin.yazi.enable = true; # File manager colors
+  catppuccin.zathura.enable = true; # PDF viewer colors
+  catppuccin.tmux.enable = true; # Tmux status bar colors
 
   # ==========================================================================
   # QT THEMING (for KDE/Qt apps like KeePassXC, VLC)
@@ -70,8 +72,8 @@
   # Kvantum: A Qt theme engine that can use SVG-based themes
   qt = {
     enable = true;
-    platformTheme.name = "kvantum";  # Tell Qt to use Kvantum
+    platformTheme.name = "kvantum"; # Tell Qt to use Kvantum
     style.name = "kvantum";
   };
-  catppuccin.kvantum.enable = true;  # Apply catppuccin to Kvantum
+  catppuccin.kvantum.enable = true; # Apply catppuccin to Kvantum
 }
