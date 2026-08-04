@@ -92,7 +92,12 @@ lib.mkIf isX86 {
   # Wine draws Roon with an ARGB buffer, so Hyprland honors the per-pixel
   # alpha and the window renders translucent. force_rgbx strips the alpha
   # channel entirely; `opaque` alone only affects blending and doesn't help.
-  wayland.windowManager.hyprland.settings.windowrule = [
-    "force_rgbx on, match:class ^(roon\\.exe)$"
+  # In Lua config mode this becomes a named window rule.
+  wayland.windowManager.hyprland.settings.window_rule = [
+    {
+      name = "roon-force-rgbx";
+      match = { class = "^(roon\\.exe)$"; };
+      force_rgbx = true;
+    }
   ];
 }

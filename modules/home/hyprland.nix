@@ -5,17 +5,6 @@
 # SYSTEM VS HOME MANAGER:
 # System module (modules/nixos/hyprland.nix): Installs Hyprland, portals, fonts
 # This module: User preferences - keybindings, appearance, startup apps
-#
-# HYPRLAND KEYBINDING TYPES:
-#   bind   - Normal binding, executes once per keypress
-#   binde  - Repeating binding, executes while held (volume, resize)
-#   bindl  - Locked binding, works on lockscreen too
-#   bindm  - Mouse binding (drag to move/resize windows)
-#
-# VARIABLE SYNTAX:
-#   $varname = "value"     # Define a variable
-#   $varname, action       # Use the variable
-#
 # ============================================================================
 
 {
@@ -72,7 +61,9 @@ in
   config = {
     wayland.windowManager.hyprland = {
       enable = true;
-      configType = "hyprlang";
+      # Hyprland 0.55+ uses Lua config. This makes Home Manager generate
+      # ~/.config/hypr/hyprland.lua instead of hyprland.conf.
+      configType = "lua";
       # Use the Hyprland package from NixOS module (avoid duplicate installations)
       package = null;
       portalPackage = null;
@@ -81,317 +72,565 @@ in
       systemd.enable = true;
 
       settings = {
-        # =======================================================================
-        # WORKSPACE RULES
-        # =======================================================================
-        workspace = [ ];
+        # =====================================================================
+        # LUA LOCALS
+        # =====================================================================
+        # These become local variables in the generated hyprland.lua and are used
+        # by the raw keybinds in extraConfig.
+        mod = {
+          _var = "SUPER";
+        };
+        # Lua key parser splits modifiers by '+' rather than spaces, so join
+        # the hyper combo with '+' (e.g. "SUPER+SHIFT+CTRL+ALT + M").
+        hyper = {
+          _var = "SUPER+SHIFT+CTRL+ALT";
+        };
+        terminal = {
+          _var = "ghostty";
+        };
 
-        # =======================================================================
-        # WINDOW RULES
-        # =======================================================================
-        windowrule = [
-          "float on, match:title ^(Picture-in-Picture)$"
-          "pin on, match:title ^(Picture-in-Picture)$"
-          "size 640 360, match:title ^(Picture-in-Picture)$"
-          "move 3437 68, match:title ^(Picture-in-Picture)$"
-          "keep_aspect_ratio on, match:title ^(Picture-in-Picture)$"
-          "no_initial_focus on, match:title ^(Picture-in-Picture)$"
-          "no_follow_mouse on, match:title ^(Picture-in-Picture)$"
-          "focus_on_activate false, match:title ^(Picture-in-Picture)$"
-
-          # hyprland-share-picker (screen/window share selector) reports an
-          # empty window class, so match by its title instead.
-          "float on, match:title ^(Select what to share)$"
-          "center on, match:title ^(Select what to share)$"
-
-          # Keep rendering when occluded so screen sharing can capture these
-          # windows even when they're not currently visible. Costs CPU/GPU for
-          # apps that animate in the background, so limited to a small allowlist.
-          "render_unfocused on, match:class ^(com.mitchellh.ghostty)$"
-          "render_unfocused on, match:class ^(zen)$"
-        ];
-
-        # =======================================================================
+        # =====================================================================
         # MONITOR CONFIGURATION
-        # =======================================================================
-        # Format: name,resolution,position,scale
-        # "highrr" = prefer highest refresh rate available
-        # "auto" = let Hyprland position the monitor
+        # =====================================================================
+        # Format: output, mode, position, scale
         # Use `hyprctl monitors` to see detected monitors
         monitor = [
           # Dell U4025QW: connected via both DisplayPort and Thunderbolt (TB is
           # for USB/KVM passthrough, no video). Both inputs would otherwise show
           # up as separate outputs and confuse screen-share pickers.
-          "DP-4,5120x2160@120,0x0,1.25"
-          "DP-5,disable"
-          ",preferred,auto,1" # Fallback for any other monitors
+          {
+            output = "DP-4";
+            mode = "5120x2160@120";
+            position = "0x0";
+            scale = "1.25";
+          }
+          {
+            output = "DP-5";
+            disabled = true;
+          }
+          {
+            output = "";
+            mode = "preferred";
+            position = "auto";
+            scale = "auto";
+          }
         ];
 
-        # Define variables for use throughout config
-        # Similar to shell variables, but Hyprland-specific
-        "$mod" = "SUPER"; # Windows/Super key as modifier
-        "$hyper" = "SUPER SHIFT CTRL ALT"; # Caps Lock via keyd
-        "$terminal" = "ghostty"; # Default terminal emulator
+        # =====================================================================
+        # WINDOW RULES
+        # =====================================================================
+        window_rule = [
+          {
+            name = "picture-in-picture";
+            match = {
+              title = "^(Picture-in-Picture)$";
+            };
+            float = true;
+            pin = true;
+            size = "640 360";
+            move = "3437 68";
+            keep_aspect_ratio = true;
+            no_initial_focus = true;
+            no_follow_mouse = true;
+            focus_on_activate = false;
+          }
 
-        # =======================================================================
+          # hyprland-share-picker (screen/window share selector) reports an
+          # empty window class, so match by its title instead.
+          {
+            name = "share-picker";
+            match = {
+              title = "^(Select what to share)$";
+            };
+            float = true;
+            center = true;
+          }
+
+          # Keep rendering when occluded so screen sharing can capture these
+          # windows even when they're not currently visible. Costs CPU/GPU for
+          # apps that animate in the background, so limited to a small allowlist.
+          {
+            name = "render-unfocused-ghostty";
+            match = {
+              class = "^(com.mitchellh.ghostty)$";
+            };
+            render_unfocused = true;
+          }
+          {
+            name = "render-unfocused-zen";
+            match = {
+              class = "^(zen)$";
+            };
+            render_unfocused = true;
+          }
+        ];
+
+        # =====================================================================
         # ENVIRONMENT VARIABLES
-        # =======================================================================
+        # =====================================================================
         # Required for XDG portals and Wayland apps to work correctly
         env = [
-          "XDG_CURRENT_DESKTOP,Hyprland"
-          "XDG_SESSION_TYPE,wayland"
-          "XDG_SESSION_DESKTOP,Hyprland"
-          "TMUX_TMPDIR,$XDG_RUNTIME_DIR"
+          {
+            _args = [
+              "XDG_CURRENT_DESKTOP"
+              "Hyprland"
+            ];
+          }
+          {
+            _args = [
+              "XDG_SESSION_TYPE"
+              "wayland"
+            ];
+          }
+          {
+            _args = [
+              "XDG_SESSION_DESKTOP"
+              "Hyprland"
+            ];
+          }
+          {
+            _args = [
+              "TMUX_TMPDIR"
+              "$XDG_RUNTIME_DIR"
+            ];
+          }
         ];
 
-        # =======================================================================
+        # =====================================================================
         # STARTUP APPLICATIONS
-        # =======================================================================
-        # exec-once: Run once when Hyprland starts (not on config reload)
-        # exec: Run on every config reload
-        exec-once = [
-          # CRITICAL: Update DBus environment so portals and apps can access Wayland
-          # This MUST run first, before any apps that depend on DBus/portals
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
-          "1password --silent" # Start 1Password daemon for SSH agent
-          # Wallpaper is managed by noctalia (no awww needed)
-        ];
-
-        # =======================================================================
-        # KEYBINDINGS - bind (normal, single press)
-        # =======================================================================
-        # Format: "MODIFIERS, key, action, args"
-        # Modifiers: SUPER, SHIFT, CTRL, ALT (combine with space: "SUPER SHIFT")
-        bind = [
-          # =============================================================
-          # HYPER KEY BINDINGS (Caps Lock via keyd)
-          # High-level OS actions: app focus, launchers, session control
-          # =============================================================
-          "$hyper, M, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"thunderbird\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird"
-          "$hyper, W, exec, noctalia msg panel-toggle wallpaper" # Wallpaper picker (noctalia IPC)
-          "$hyper, A, exec, noctalia msg panel-toggle control-center audio" # Audio panel (noctalia IPC)
-          "$hyper, P, exec, tmux-project"
-          "$hyper, D, exec, noctalia msg panel-toggle launcher" # App launcher (noctalia IPC; supports apps + emoji + calc)
-          "$hyper, B, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"zen\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen"
-          "$hyper, S, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"Slack\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack"
-          "$hyper, T, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"com.mitchellh.ghostty\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || $terminal"
-          "$hyper, V, exec, noctalia msg panel-toggle clipboard" # Clipboard history (noctalia IPC)
-          "$hyper, Y, exec, hyprctl clients -j | jq -e '.[] | select(.class == \"yazi\")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi"
-
-          # =============================================================
-          # MOD KEY BINDINGS (SUPER)
-          # Window management, navigation, workspaces
-          # =============================================================
-          "$mod, Q, killactive"
-          "$mod, F, fullscreen"
-          "$mod, G, togglefloating"
-
-          # Cycle column width (0.333 → 0.5 → 0.75 → 1.0)
-          "$mod CTRL, L, layoutmsg, colresize +conf"
-          "$mod CTRL, H, layoutmsg, colresize -conf"
-
-          # Move focus
-          "$mod, H, movefocus, l"
-          "$mod, L, movefocus, r"
-          "$mod, K, movefocus, u"
-          "$mod, J, movefocus, d"
-
-          # Move window (swapcol keeps windows as standalone columns)
-          "$mod SHIFT, H, layoutmsg, swapcol l"
-          "$mod SHIFT, L, layoutmsg, swapcol r"
-          "$mod SHIFT, K, movewindow, u"
-          "$mod SHIFT, J, movewindow, d"
-
-          # Workspaces 1-9
-          "$mod, 1, workspace, 1"
-          "$mod, 2, workspace, 2"
-          "$mod, 3, workspace, 3"
-          "$mod, 4, workspace, 4"
-          "$mod, 5, workspace, 5"
-          "$mod, 6, workspace, 6"
-          "$mod, 7, workspace, 7"
-          "$mod, 8, workspace, 8"
-          "$mod, 9, workspace, 9"
-          "$mod SHIFT, 1, movetoworkspace, 1"
-          "$mod SHIFT, 2, movetoworkspace, 2"
-          "$mod SHIFT, 3, movetoworkspace, 3"
-          "$mod SHIFT, 4, movetoworkspace, 4"
-          "$mod SHIFT, 5, movetoworkspace, 5"
-          "$mod SHIFT, 6, movetoworkspace, 6"
-          "$mod SHIFT, 7, movetoworkspace, 7"
-          "$mod SHIFT, 8, movetoworkspace, 8"
-          "$mod SHIFT, 9, movetoworkspace, 9"
-
-          # Media controls (noctalia IPC over MPRIS, no playerctl needed)
-          ", XF86AudioPlay, exec, noctalia msg media toggle"
-          ", XF86AudioNext, exec, noctalia msg media next"
-          ", XF86AudioPrev, exec, noctalia msg media previous"
-          ", XF86AudioStop, exec, noctalia msg media stop"
-
-          # Power menu (noctalia session panel: lock, logout, lock&suspend, reboot, shutdown)
-          "$hyper, Escape, exec, noctalia msg panel-toggle session"
-
-          # Screenshots (noctalia IPC; copies to clipboard + saves file)
-          "$mod CTRL, S, exec, noctalia msg screenshot-fullscreen" # Full screen
-          "$mod CTRL SHIFT, S, exec, noctalia msg screenshot-region" # Region select
-
-          # Power menu (triggered by power button)
-          ", XF86PowerOff, exec, noctalia msg panel-toggle session"
-
-          # Next/previous workspace
-          "$mod, Tab, workspace, e+1"
-          "$mod SHIFT, Tab, workspace, e-1"
-
-          # Move current window to next workspace
-          "$mod SHIFT, N, movetoworkspace, e+1"
-
-          # Move current window to next monitor
-          "$mod SHIFT, M, movewindow, mon:+1"
-
-        ];
-
-        # =======================================================================
-        # KEYBINDINGS - binde (repeating, held keys)
-        # =======================================================================
-        # These trigger repeatedly while the key is held down
-        # Perfect for volume, brightness, and window resizing
-        binde = [
-          # Volume / brightness via noctalia IPC (OSD feedback for free)
-          ", XF86AudioRaiseVolume, exec, noctalia msg volume-up"
-          ", XF86AudioLowerVolume, exec, noctalia msg volume-down"
-          ", XF86MonBrightnessUp, exec, noctalia msg brightness-up"
-          ", XF86MonBrightnessDown, exec, noctalia msg brightness-down"
-
-          # Resize column
-          "$mod CTRL, K, resizeactive, 0 -20"
-          "$mod CTRL, J, resizeactive, 0 20"
-        ];
-
-        # =======================================================================
-        # KEYBINDINGS - bindl (locked, work on lockscreen)
-        # =======================================================================
-        # These work even when the screen is locked
-        # Useful for mute and hardware switches
-        bindl = [
-          ", XF86AudioMute, exec, noctalia msg volume-mute"
-          ", XF86AudioMicMute, exec, noctalia msg mic-mute"
-        ];
-
-        # =======================================================================
-        # KEYBINDINGS - bindm (mouse bindings)
-        # =======================================================================
-        # Mod + click/drag to move or resize windows
-        # mouse:272 = left click, mouse:273 = right click
-        bindm = [
-          "$mod, mouse:272, movewindow"
-          "$mod, mouse:273, resizewindow"
-        ];
-
-        # =======================================================================
-        # APPEARANCE
-        # =======================================================================
-        # Visual settings for windows and gaps
-        # Border colors set manually (catppuccin.hyprland disabled, incompatible with Hyprland 0.55.x)
-        general = {
-          layout = "scrolling";
-          gaps_in = 8;
-          gaps_out = 16;
-          border_size = 2;
-          "col.active_border" = "rgba(89b4faff)"; # Catppuccin Mocha blue
-          "col.inactive_border" = "rgba(00000000)"; # Transparent - no border on inactive
-        };
-
-        scrolling = {
-          column_width = 0.5;
-          focus_fit_method = 1; # Fit: minimal scroll to show focused column (two 0.5 columns sit side by side)
-          explicit_column_widths = "0.333, 0.5, 0.75, 1.0";
-        };
-
-        decoration = {
-          rounding = 8;
-          shadow = {
-            enabled = false;
-          };
-          blur = {
-            enabled = cfg.enableFancyEffects;
-            size = 8;
-            passes = 3;
-            new_optimizations = true;
-            xray = false; # Blur desktop behind floating windows, not window below
-            noise = 0.01;
-            contrast = 1.0;
-            brightness = 1.0;
-            vibrancy = 0.2;
-          };
-        };
-
-        animations = {
-          enabled = true;
-          bezier = [
-            "wind, 0.05, 0.85, 0.03, 0.97"
-            "winIn, 0.07, 0.88, 0.04, 0.99"
-            "winOut, 0.20, -0.15, 0, 1"
-            "liner, 1, 1, 1, 1"
-            "md3_decel, 0.05, 0.80, 0.10, 0.97"
-            "menu_decel, 0.05, 0.82, 0, 1"
-            "menu_accel, 0.20, 0, 0.82, 0.10"
-            "easeOutCirc, 0, 0.48, 0.38, 1"
-          ];
-          animation = [
-            "border, 1, 1.6, liner"
-            "borderangle, 1, 82, liner, loop"
-            "windowsIn, 1, 3.2, winIn, slide"
-            "windowsOut, 1, 2.8, easeOutCirc"
-            "windowsMove, 1, 3.0, wind, slide"
-            "fade, 1, 1.8, md3_decel"
-            "layersIn, 1, 1.8, menu_decel, slide"
-            "layersOut, 1, 1.5, menu_accel"
-            "fadeLayersIn, 1, 1.6, menu_decel"
-            "fadeLayersOut, 1, 1.8, menu_accel"
-            "workspaces, 1, 4.0, menu_decel, slide"
-            "specialWorkspace, 1, 2.3, md3_decel, slidefadevert 15%"
+        # =====================================================================
+        # 1Password starts once when Hyprland starts. The dbus/systemd env
+        # import and hyprland-session.target are handled by the module's
+        # systemd.enable integration.
+        on = {
+          _args = [
+            "hyprland.start"
+            (lib.generators.mkLuaInline ''
+              function()
+                hl.exec_cmd("1password --silent")
+              end
+            '')
           ];
         };
 
-        # =======================================================================
-        # MISC SETTINGS
-        # =======================================================================
-        cursor = {
-          no_hardware_cursors = true; # Use software cursors (avoids GPU cursor plane issues)
-          use_cpu_buffer = true; # CPU-side cursor buffer (fixes cursor vanishing on Intel iGPU hotplug)
-        };
-
-        misc = {
-          focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
-          disable_hyprland_logo = true;
-          disable_splash_rendering = true;
-          mouse_move_enables_dpms = true; # Wake display on mouse move
-          key_press_enables_dpms = true; # Wake display on key press
-        };
-
-        # =======================================================================
-        # INPUT CONFIGURATION
-        # =======================================================================
-        input = {
-          kb_layout = "us";
-          kb_options = "compose:ralt"; # Right Alt as Compose key for accented chars
-          follow_mouse = 1; # Focus follows mouse
-          sensitivity = -0.9; # 0 = no modification to input speed
-          accel_profile = "adaptive"; # No acceleration (1:1 mouse movement)
-          touchpad = {
-            natural_scroll = true; # Two-finger scroll direction (like macOS)
+        # =====================================================================
+        # LOOK AND FEEL
+        # =====================================================================
+        # Grouped into hl.config() so the C++ config backend applies them.
+        config = {
+          general = {
+            layout = "scrolling";
+            gaps_in = 8;
+            gaps_out = 16;
+            border_size = 2;
+            # Border colors set manually (catppuccin.hyprland disabled, incompatible with Hyprland 0.55.x)
+            col = {
+              active_border = "rgba(89b4faff)"; # Catppuccin Mocha blue
+              inactive_border = "rgba(00000000)"; # Transparent - no border on inactive
+            };
           };
+
+          scrolling = {
+            column_width = 0.5;
+            focus_fit_method = 1; # Fit: minimal scroll to show focused column (two 0.5 columns sit side by side)
+            explicit_column_widths = "0.333, 0.5, 0.75, 1.0";
+          };
+
+          decoration = {
+            rounding = 8;
+            shadow = {
+              enabled = false;
+            };
+            blur = {
+              enabled = cfg.enableFancyEffects;
+              size = 8;
+              passes = 3;
+              new_optimizations = true;
+              xray = false; # Blur desktop behind floating windows, not window below
+              noise = 0.01;
+              contrast = 1.0;
+              brightness = 1.0;
+              vibrancy = 0.2;
+            };
+          };
+
+          animations = {
+            enabled = true;
+          };
+
+          cursor = {
+            no_hardware_cursors = true; # Use software cursors (avoids GPU cursor plane issues)
+            use_cpu_buffer = true; # CPU-side cursor buffer (fixes cursor vanishing on Intel iGPU hotplug)
+          };
+
+          misc = {
+            focus_on_activate = true; # Auto-focus windows when they request attention (e.g. browser from terminal)
+            disable_hyprland_logo = true;
+            disable_splash_rendering = true;
+            mouse_move_enables_dpms = true; # Wake display on mouse move
+            key_press_enables_dpms = true; # Wake display on key press
+          };
+
+          input = {
+            kb_layout = "us";
+            kb_options = "compose:ralt"; # Right Alt as Compose key for accented chars
+            follow_mouse = 1; # Focus follows mouse
+            sensitivity = -0.9; # 0 = no modification to input speed
+            accel_profile = "adaptive"; # No acceleration (1:1 mouse movement)
+            touchpad = {
+              natural_scroll = true; # Two-finger scroll direction (like macOS)
+            };
+          };
+
+          xwayland = {
+            force_zero_scaling = true;
+          };
+        };
+
+        # Animation curves (hl.curve)
+        curve = [
+          {
+            _args = [
+              "wind"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.05
+                    0.85
+                  ]
+                  [
+                    0.03
+                    0.97
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "winIn"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.07
+                    0.88
+                  ]
+                  [
+                    0.04
+                    0.99
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "winOut"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.20
+                    (-0.15)
+                  ]
+                  [
+                    0
+                    1
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "liner"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    1
+                    1
+                  ]
+                  [
+                    1
+                    1
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "md3_decel"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.05
+                    0.80
+                  ]
+                  [
+                    0.10
+                    0.97
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "menu_decel"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.05
+                    0.82
+                  ]
+                  [
+                    0
+                    1
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "menu_accel"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0.20
+                    0
+                  ]
+                  [
+                    0.82
+                    0.10
+                  ]
+                ];
+              }
+            ];
+          }
+          {
+            _args = [
+              "easeOutCirc"
+              {
+                type = "bezier";
+                points = [
+                  [
+                    0
+                    0.48
+                  ]
+                  [
+                    0.38
+                    1
+                  ]
+                ];
+              }
+            ];
+          }
+        ];
+
+        # Animation definitions (hl.animation)
+        animation = [
+          {
+            leaf = "border";
+            enabled = true;
+            speed = 1.6;
+            bezier = "liner";
+          }
+          {
+            leaf = "borderangle";
+            enabled = true;
+            speed = 82;
+            bezier = "liner";
+            style = "loop";
+          }
+          {
+            leaf = "windowsIn";
+            enabled = true;
+            speed = 3.2;
+            bezier = "winIn";
+            style = "slide";
+          }
+          {
+            leaf = "windowsOut";
+            enabled = true;
+            speed = 2.8;
+            bezier = "easeOutCirc";
+          }
+          {
+            leaf = "windowsMove";
+            enabled = true;
+            speed = 3.0;
+            bezier = "wind";
+            style = "slide";
+          }
+          {
+            leaf = "fade";
+            enabled = true;
+            speed = 1.8;
+            bezier = "md3_decel";
+          }
+          {
+            leaf = "layersIn";
+            enabled = true;
+            speed = 1.8;
+            bezier = "menu_decel";
+            style = "slide";
+          }
+          {
+            leaf = "layersOut";
+            enabled = true;
+            speed = 1.5;
+            bezier = "menu_accel";
+          }
+          {
+            leaf = "fadeLayersIn";
+            enabled = true;
+            speed = 1.6;
+            bezier = "menu_decel";
+          }
+          {
+            leaf = "fadeLayersOut";
+            enabled = true;
+            speed = 1.8;
+            bezier = "menu_accel";
+          }
+          {
+            leaf = "workspaces";
+            enabled = true;
+            speed = 4.0;
+            bezier = "menu_decel";
+            style = "slide";
+          }
+          {
+            leaf = "specialWorkspace";
+            enabled = true;
+            speed = 2.3;
+            bezier = "md3_decel";
+            style = "slidefadevert 15%";
+          }
+        ];
+
+        # Touchpad gestures: 3-finger horizontal swipe switches workspace
+        gesture = {
+          fingers = 3;
+          direction = "horizontal";
+          action = "workspace";
         };
 
       }; # End of settings
 
-      # =======================================================================
-      # EXTRA CONFIGURATION
-      # =======================================================================
-      # Raw Hyprland config for features not yet in Home Manager module
+      # =====================================================================
+      # KEYBINDINGS AND RAW LUA
+      # =====================================================================
+      # The binds are written as raw Lua because many of them are complex
+      # shell pipelines that are easier to express directly than through the
+      # Nix-to-Lua translation for every bind argument.
       extraConfig = ''
-        # Touchpad gestures: 3-finger horizontal swipe switches workspace
-        gesture = 3, horizontal, workspace
+        -- =============================================================
+        -- HYPER KEY BINDINGS (Caps Lock via keyd)
+        -- High-level OS actions: app focus, launchers, session control
+        -- =============================================================
+        hl.bind(hyper .. " + M", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "thunderbird")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird]]))
+        hl.bind(hyper .. " + W", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
+        hl.bind(hyper .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center audio"))
+        hl.bind(hyper .. " + P", hl.dsp.exec_cmd("tmux-project"))
+        hl.bind(hyper .. " + D", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
+        hl.bind(hyper .. " + B", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "zen")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen]]))
+        hl.bind(hyper .. " + S", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "Slack")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack]]))
+        hl.bind(hyper .. " + T", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "com.mitchellh.ghostty")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || ]] .. terminal))
+        hl.bind(hyper .. " + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
+        hl.bind(hyper .. " + Y", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "yazi")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi]]))
+
+        -- =============================================================
+        -- MOD KEY BINDINGS (SUPER)
+        -- Window management, navigation, workspaces
+        -- =============================================================
+        hl.bind(mod .. " + Q", hl.dsp.window.close())
+        hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
+        hl.bind(mod .. " + G", hl.dsp.window.float({ action = "toggle" }))
+
+        hl.bind(mod .. " + CTRL + L", hl.dsp.layout("colresize +conf"))
+        hl.bind(mod .. " + CTRL + H", hl.dsp.layout("colresize -conf"))
+
+        hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))
+        hl.bind(mod .. " + L", hl.dsp.focus({ direction = "right" }))
+        hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
+        hl.bind(mod .. " + J", hl.dsp.focus({ direction = "down" }))
+
+        hl.bind(mod .. " + SHIFT + H", hl.dsp.window.swap({ direction = "left" }))
+        hl.bind(mod .. " + SHIFT + L", hl.dsp.window.swap({ direction = "right" }))
+        hl.bind(mod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
+        hl.bind(mod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
+
+        hl.bind(mod .. " + 1", hl.dsp.focus({ workspace = "1" }))
+        hl.bind(mod .. " + 2", hl.dsp.focus({ workspace = "2" }))
+        hl.bind(mod .. " + 3", hl.dsp.focus({ workspace = "3" }))
+        hl.bind(mod .. " + 4", hl.dsp.focus({ workspace = "4" }))
+        hl.bind(mod .. " + 5", hl.dsp.focus({ workspace = "5" }))
+        hl.bind(mod .. " + 6", hl.dsp.focus({ workspace = "6" }))
+        hl.bind(mod .. " + 7", hl.dsp.focus({ workspace = "7" }))
+        hl.bind(mod .. " + 8", hl.dsp.focus({ workspace = "8" }))
+        hl.bind(mod .. " + 9", hl.dsp.focus({ workspace = "9" }))
+
+        hl.bind(mod .. " + SHIFT + 1", hl.dsp.window.move({ workspace = "1" }))
+        hl.bind(mod .. " + SHIFT + 2", hl.dsp.window.move({ workspace = "2" }))
+        hl.bind(mod .. " + SHIFT + 3", hl.dsp.window.move({ workspace = "3" }))
+        hl.bind(mod .. " + SHIFT + 4", hl.dsp.window.move({ workspace = "4" }))
+        hl.bind(mod .. " + SHIFT + 5", hl.dsp.window.move({ workspace = "5" }))
+        hl.bind(mod .. " + SHIFT + 6", hl.dsp.window.move({ workspace = "6" }))
+        hl.bind(mod .. " + SHIFT + 7", hl.dsp.window.move({ workspace = "7" }))
+        hl.bind(mod .. " + SHIFT + 8", hl.dsp.window.move({ workspace = "8" }))
+        hl.bind(mod .. " + SHIFT + 9", hl.dsp.window.move({ workspace = "9" }))
+
+        hl.bind(mod .. " + Tab", hl.dsp.focus({ workspace = "e+1" }))
+        hl.bind(mod .. " + SHIFT + Tab", hl.dsp.focus({ workspace = "e-1" }))
+
+        hl.bind(mod .. " + SHIFT + N", hl.dsp.window.move({ workspace = "e+1" }))
+        hl.bind(mod .. " + SHIFT + M", hl.dsp.window.move({ monitor = "+1" }))
+
+        -- =============================================================
+        -- MEDIA / SESSION / SCREENSHOT BINDS
+        -- =============================================================
+        hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("noctalia msg media toggle"))
+        hl.bind("XF86AudioNext", hl.dsp.exec_cmd("noctalia msg media next"))
+        hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("noctalia msg media previous"))
+        hl.bind("XF86AudioStop", hl.dsp.exec_cmd("noctalia msg media stop"))
+
+        hl.bind(hyper .. " + Escape", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
+        hl.bind("XF86PowerOff", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
+
+        hl.bind(mod .. " + CTRL + S", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"))
+        hl.bind(mod .. " + CTRL + SHIFT + S", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
+
+        -- =============================================================
+        -- REPEATING BINDS (volume, brightness, resize)
+        -- =============================================================
+        hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { repeating = true })
+        hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("noctalia msg volume-down"), { repeating = true })
+        hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("noctalia msg brightness-up"), { repeating = true })
+        hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("noctalia msg brightness-down"), { repeating = true })
+
+        hl.bind(mod .. " + CTRL + K", hl.dsp.window.resize({ x = 0, y = -20, relative = true }), { repeating = true })
+        hl.bind(mod .. " + CTRL + J", hl.dsp.window.resize({ x = 0, y = 20, relative = true }), { repeating = true })
+
+        -- =============================================================
+        -- LOCKED BINDS (work on lockscreen)
+        -- =============================================================
+        hl.bind("XF86AudioMute", hl.dsp.exec_cmd("noctalia msg volume-mute"), { locked = true })
+        hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("noctalia msg mic-mute"), { locked = true })
+
+        -- =============================================================
+        -- MOUSE BINDS
+        -- =============================================================
+        hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+        hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
       '';
     };
 

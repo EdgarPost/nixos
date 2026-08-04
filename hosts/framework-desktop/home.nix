@@ -20,24 +20,9 @@
     # disables DP-4 for the duration of a stream — see modules/nixos/sunshine.nix.
     # No static virtual-monitor entry is needed here.
     monitor = [
-      "DP-4,5120x2160@120,0x0,1.25"   # Dell U4025QW via DisplayPort
-      "DP-6,disable"                    # Same Dell via Thunderbolt (duplicate, keep TB for KVM peripherals only)
+      { output = "DP-4"; mode = "5120x2160@120"; position = "0x0"; scale = "1.25"; }   # Dell U4025QW via DisplayPort
+      { output = "DP-6"; disabled = true; }                                                 # Same Dell via Thunderbolt (duplicate, keep TB for KVM peripherals only)
     ];
-
-    # XWayland renders at 1x by default, causing pixelation with fractional scaling.
-    # force_zero_scaling disables compositor upscaling so XWayland apps see the real
-    # resolution and handle scaling themselves (Steam via STEAM_FORCE_DESKTOPUI_SCALING).
-    xwayland = {
-      force_zero_scaling = true;
-    };
-
-    # Override shared cursor settings: the base config uses software cursors
-    # as a workaround for Intel iGPU issues. The Radeon 8060S handles hardware
-    # cursors fine, and they're much more responsive.
-    cursor = {
-      no_hardware_cursors = lib.mkForce false;
-      use_cpu_buffer = lib.mkForce false;
-    };
 
     # Per-device input settings
     device = [
@@ -48,5 +33,25 @@
         accel_profile = "flat";
       }
     ];
+
+    # Override shared config sections (must live under config so they merge
+    # with the base hl.config() table instead of generating invalid standalone
+    # hl.cursor / hl.xwayland calls).
+    config = {
+      # XWayland renders at 1x by default, causing pixelation with fractional scaling.
+      # force_zero_scaling disables compositor upscaling so XWayland apps see the real
+      # resolution and handle scaling themselves (Steam via STEAM_FORCE_DESKTOPUI_SCALING).
+      xwayland = {
+        force_zero_scaling = true;
+      };
+
+      # Override shared cursor settings: the base config uses software cursors
+      # as a workaround for Intel iGPU issues. The Radeon 8060S handles hardware
+      # cursors fine, and they're much more responsive.
+      cursor = {
+        no_hardware_cursors = lib.mkForce false;
+        use_cpu_buffer = lib.mkForce false;
+      };
+    };
   };
 }

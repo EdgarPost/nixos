@@ -1,5 +1,5 @@
 [bar.default]
-end = [ "battery", "session" ]
+end = ["battery", "session"]
 margin_edge = 0
 margin_ends = 0
 position = "bottom"
@@ -9,41 +9,41 @@ shadow = false
 [calendar]
 enabled = true
 
-    [calendar.account.home_nextcloud]
-    type = "google"
+[calendar.account.home_nextcloud]
+type = "google"
 
-    [calendar.account.personal_google]
-    type = "google"
+[calendar.account.personal_google]
+type = "google"
 
 [desktop_widgets]
 enabled = false
 schema_version = 2
 widget_order = []
 
-    [desktop_widgets.grid]
-    cell_size = 16
-    major_interval = 4
-    visible = true
+[desktop_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = true
 
-    [desktop_widgets.widget]
+[desktop_widgets.widget]
 
 [idle]
-behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+behavior_order = ["lock", "screen-off", "lock-and-suspend"]
 
-    [idle.behavior.lock]
-    action = "lock"
-    enabled = false
-    timeout = 600
+[idle.behavior.lock]
+action = "lock"
+enabled = false
+timeout = 600
 
-    [idle.behavior.lock-and-suspend]
-    action = "lock_and_suspend"
-    enabled = false
-    timeout = 900
+[idle.behavior.lock-and-suspend]
+action = "lock_and_suspend"
+enabled = false
+timeout = 900
 
-    [idle.behavior.screen-off]
-    action = "screen_off"
-    enabled = true
-    timeout = 600
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 600
 
 [location]
 address = ""
@@ -51,46 +51,46 @@ address = ""
 [lockscreen_widgets]
 enabled = true
 schema_version = 2
-widget_order = [ "lockscreen-login-box@DP-5", "lockscreen-login-box@DP-4" ]
+widget_order = ["lockscreen-login-box@DP-5", "lockscreen-login-box@DP-4"]
 
-    [lockscreen_widgets.grid]
-    cell_size = 16
-    major_interval = 4
-    visible = true
+[lockscreen_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
-    box_height = 70.0
-    box_width = 400.0
-    cx = 2048.0
-    cy = 1605.0
-    output = "DP-4"
-    rotation = 0.0
-    type = "login_box"
+[lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
+box_height = 70.0
+box_width = 400.0
+cx = 2048.0
+cy = 1605.0
+output = "DP-4"
+rotation = 0.0
+type = "login_box"
 
-        [lockscreen_widgets.widget."lockscreen-login-box@DP-4".settings]
-        background_color = "surface_variant"
-        background_opacity = 0.88
-        background_radius = 12.0
-        input_opacity = 1.0
-        input_radius = 6.0
-        show_login_button = true
+[lockscreen_widgets.widget."lockscreen-login-box@DP-4".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+show_login_button = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@DP-5"]
-    box_height = 70.0
-    box_width = 400.0
-    cx = 2560.0
-    cy = 2041.0
-    output = "DP-5"
-    rotation = 0.0
-    type = "login_box"
+[lockscreen_widgets.widget."lockscreen-login-box@DP-5"]
+box_height = 70.0
+box_width = 400.0
+cx = 2560.0
+cy = 2041.0
+output = "DP-5"
+rotation = 0.0
+type = "login_box"
 
-        [lockscreen_widgets.widget."lockscreen-login-box@DP-5".settings]
-        background_color = "surface_variant"
-        background_opacity = 0.88
-        background_radius = 12.0
-        input_opacity = 1.0
-        input_radius = 6.0
-        show_login_button = true
+[lockscreen_widgets.widget."lockscreen-login-box@DP-5".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+input_opacity = 1.0
+input_radius = 6.0
+show_login_button = true
 
 [nightlight]
 enabled = true
@@ -105,13 +105,13 @@ position_vertical = "bottom_center"
 [shell]
 screen_time_enabled = true
 
-    [shell.panel]
-    control_center_position = "center"
-    launcher_categories = false
-    launcher_compact = true
+[shell.panel]
+control_center_position = "center"
+launcher_categories = false
+launcher_compact = true
 
-    [shell.screen_corners]
-    enabled = true
+[shell.screen_corners]
+enabled = true
 
 [theme]
 builtin = "Catppuccin"
@@ -120,26 +120,29 @@ mode = "dark"
 source = "builtin"
 wallpaper_scheme = "m3-content"
 
-    [theme.templates]
-    builtin_ids = [ "ghostty", "hyprland" ]
-    community_ids = [ "pi-agent", "zen-browser", "neovim", "steam", "yazi" ]
+[theme.templates]
+# NOTE: The "hyprland" built-in template is disabled because it writes a
+# ~/.config/hypr/hyprland.lua that overwrites the Home Manager-generated
+# Lua config. Home Manager now owns the Hyprland config directly.
+builtin_ids = ["ghostty"]
+community_ids = ["pi-agent", "zen-browser", "neovim", "steam", "yazi"]
 
 [wallpaper]
 directory = "/home/edgar/.wallpapers"
-transition = [ "disc", "fade", "honeycomb", "stripes", "wipe", "zoom" ]
+transition = ["disc", "fade", "honeycomb", "stripes", "wipe", "zoom"]
 transition_on_startup = true
 
-    [wallpaper.automation]
-    enabled = false
+[wallpaper.automation]
+enabled = false
 
-    [wallpaper.default]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.default]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
-    [wallpaper.last]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.last]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
-    [wallpaper.monitors.DP-4]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+[wallpaper.monitors.DP-4]
+path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
 
 [widget.clock]
 format = "{:%d %B - %H:%M}"
