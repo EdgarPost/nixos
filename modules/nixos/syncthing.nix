@@ -34,23 +34,17 @@ let
 
   # PARA folders - optional, enabled with paraFolders = true
   paraFolders = {
-    "kvnmw-4dzbg" = {
-      label = "Projects";
-      path = "/home/${user.name}/Projects";
-      devices = [ "pbstation" ];
-    };
-    "fmyuz-f43q9" = {
-      label = "Areas";
-      path = "/home/${user.name}/Areas";
-      devices = [ "pbstation" ];
-    };
-    "pcdfl-3k5at" = {
-      label = "Resources";
-      path = "/home/${user.name}/Resources";
-      devices = [ "pbstation" ];
+    "jh6n4-jmv36" = {
+      label = "Edgar PARA";
+      path = "/home/${user.name}/PARA";
+      devices = [
+        "pbstation"
+        "assistant"
+      ];
       ignorePatterns = [
         "Photos (iPhone)"
         "Photos (Miscellaneous)"
+        "/Archive/*"
       ];
     };
   };
@@ -76,6 +70,9 @@ in
           "pbstation" = {
             id = "BT6TVTI-2QCJ6KW-MJ4WVDZ-ERVANSV-3HZSL4Q-E7SQJBW-IZYD5QA-2CPX5QS";
           };
+          "assistant" = {
+            id = "E2IUI2O-LZTEVCE-CDXMJT7-7IXGHND-63OQFMK-75MQ6Y4-5DZN5CH-FQ2ZLQU";
+          };
         };
 
         # Common ignore patterns for all folders
@@ -97,7 +94,10 @@ in
 
     networking.firewall = {
       allowedTCPPorts = [ 22000 ];
-      allowedUDPPorts = [ 22000 21027 ];
+      allowedUDPPorts = [
+        22000
+        21027
+      ];
     };
   };
 }
