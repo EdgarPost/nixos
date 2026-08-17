@@ -19,8 +19,7 @@ let
       presencePenalty ? null,
       reasoning ? null,
       extraFlags ? [],
-    }:
-    {
+    }: {
       inherit description;
       after = [ "network.target" ];
       wantedBy = if autostart then [ "multi-user.target" ] else [ ];
@@ -80,7 +79,12 @@ let
       --include "*UD-Q4_K_XL*" \
       --local-dir ${modelDir}
 
-    # Normalise to a stable filename regardless of how HF names the file
+    echo "Downloading Qwen3.8-27B GGUF (~18GB)..."
+    run $HF download unsloth/Qwen3.8-27B-GGUF \
+      --include "Qwen3.8-27B-UD-Q4_K_XL.gguf" \
+      --local-dir ${modelDir}
+
+    # Normalise MoE model filename regardless of how HF names it
     for f in ${modelDir}/*UD-Q4_K_XL*.gguf; do
       target="${modelDir}/Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf"
       if [ "$f" != "$target" ]; then
@@ -89,12 +93,13 @@ let
     done
 
     echo "Done! Start services:"
-    echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-qwen3_6-35b-a3b-reasoning"
+    echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-qwen3_8-27b"
   '';
 in
 {
-  # ── Non-thinking instance ──────────────────────────────────────────
+  # ── Fast MoE instance (primary) ────────────────────────────────────
   # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
+  # MoE = ~3B active params, MTP speculative decoding for speed
   systemd.services.llama-qwen3_6-35b-a3b = mkLlamaService {
     model = "Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf";
     alias = "qwen3.6-35b-a3b";
@@ -107,24 +112,24 @@ in
     presencePenalty = 1.5;
     reasoning = "off";
     extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" ];
-    description = "llama.cpp - Qwen3.6-35B-A3B";
+    description = "llama.cpp - Qwen3.6-35B-A3B (MoE, fast)";
   };
 
-  # ── Thinking instance ──────────────────────────────────────────────
-  # Unsloth coding+thinking: temp 0.6, top_p 0.95, top_k 20, presence_penalty 0.0
-  # Same model file — mmap shares memory pages between instances
-  systemd.services.llama-qwen3_6-35b-a3b-reasoning = mkLlamaService {
-    model = "Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf";
-    alias = "qwen3.6-35b-a3b-reasoning";
-    port = 8011;
+  # ── Dense instance (reasoning-capable) ─────────────────────────────
+  # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
+  # Dense 27B — slower but better reasoning quality, no draft needed
+  systemd.services.llama-qwen3_8-27b = mkLlamaService {
+    model = "Qwen3.8-27B-UD-Q4_K_XL.gguf";
+    alias = "qwen3.8-27b";
+    port = 8002;
     ctxSize = 262144;
-    temperature = 0.6;
-    topP = 0.95;
+    temperature = 0.7;
+    topP = 0.8;
     topK = 20;
     minP = 0.0;
-    presencePenalty = 0.0;
-    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" ];
-    description = "llama.cpp - Qwen3.6-35B-A3B (reasoning)";
+    presencePenalty = 1.5;
+    reasoning = "off";
+    description = "llama.cpp - Qwen3.8-27B (dense, slower)";
   };
 
   users.users.llama = {
