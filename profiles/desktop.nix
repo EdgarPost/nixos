@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma, Morgen
+#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma, Morgen, Obsidian
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -58,6 +58,7 @@ in
       impala # WiFi management TUI
       signal-desktop # Encrypted messaging
       libreoffice # Office suite (Word/Excel/PowerPoint)
+      obsidian # Note-taking and knowledge base
 
       # Browser from flake input
       # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
