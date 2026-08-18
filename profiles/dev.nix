@@ -24,6 +24,7 @@
     ../modules/home/direnv.nix # Per-directory environments with nix-direnv
     ../modules/home/yazi.nix # File manager (TUI)
     ../modules/home/claude-code.nix # AI coding assistant config
+    ../modules/home/mcp.nix         # MCP servers (obsidian-vault, etc.)
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
     ../modules/home/openstack.nix # OpenStack CLI
     ../modules/home/gardener.nix # Gardener cluster management
