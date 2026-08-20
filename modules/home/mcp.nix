@@ -12,7 +12,7 @@
 #
 # SERVER TYPES:
 #   stdio  — runs as a local process (e.g., filesystem server)
-#   http/sse — connects to a remote HTTP/SSE endpoint (handled by Bifrost gateway)
+#   http/sse — connects to a remote HTTP/SSE endpoint (e.g. a local llama.cpp server)
 #
 # ============================================================================
 

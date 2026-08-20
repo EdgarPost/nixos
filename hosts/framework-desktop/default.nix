@@ -39,8 +39,6 @@
     ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
     ../../modules/nixos/bluetooth.nix # Bluetooth audio with high-quality codecs
     ../../modules/nixos/llama.nix # Local LLM inference (llama.cpp + Vulkan)
-    ../../modules/nixos/librechat.nix # AI chat interface (port 3080)
-    ../../modules/nixos/bifrost.nix # AI gateway proxy (port 4000, replaces litellm)
     ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
     ../../modules/nixos/sunshine.nix # Game streaming to Steam Deck (on-demand virtual display)
   ];

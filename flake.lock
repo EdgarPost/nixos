@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "bifrost": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1774471153,
-        "narHash": "sha256-SSSYrr17rAnknj5EH6rvzLydKO+d7OIxQHM38x12Z8Y=",
-        "owner": "EdgarPost",
-        "repo": "bifrost",
-        "rev": "c3aa7ee68a328bc83f232ebe5b4f57ea6b111dfb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "EdgarPost",
-        "repo": "bifrost",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -435,7 +415,6 @@
     },
     "root": {
       "inputs": {
-        "bifrost": "bifrost",
         "catppuccin": "catppuccin",
         "claude-code": "claude-code",
         "claude-code-nix": "claude-code-nix",

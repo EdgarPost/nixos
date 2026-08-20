@@ -47,7 +47,6 @@ let
             "--cache-type-v"
             "q8_0"
             "--swa-full"
-            "--mlock"
             "--keep"
             "1024"
           ]
@@ -74,62 +73,53 @@ let
       sudo -u llama env HF_HUB_ENABLE_HF_TRANSFER=1 "$@"
     }
 
-    echo "Downloading Qwen3.6-35B-A3B MTP-GGUF (~23GB)..."
+    # NOTE: the MTP repo files are named WITHOUT "MTP" in the filename.
+    # Use exact filenames per download; never glob+rename across models
+    # (a previous glob-based "normalise" loop overwrote the MoE file with
+    #  the 27B file, so the fast instance silently served the dense model).
+    echo "Downloading Qwen3.6-35B-A3B MTP-GGUF UD-Q4_K_XL (~22.9GB)..."
     run $HF download unsloth/Qwen3.6-35B-A3B-MTP-GGUF \
-      --include "*UD-Q4_K_XL*" \
+      --include "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf" \
       --local-dir ${modelDir}
 
-    echo "Downloading Qwen3.8-27B GGUF (~18GB)..."
-    run $HF download unsloth/Qwen3.8-27B-GGUF \
-      --include "Qwen3.8-27B-UD-Q4_K_XL.gguf" \
-      --local-dir ${modelDir}
-
-    # Normalise MoE model filename regardless of how HF names it
-    for f in ${modelDir}/*UD-Q4_K_XL*.gguf; do
-      target="${modelDir}/Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf"
-      if [ "$f" != "$target" ]; then
-        sudo -u llama mv "$f" "$target"
-      fi
-    done
-
-    echo "Done! Start services:"
-    echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-qwen3_8-27b"
+    echo "Done! Start service:"
+    echo "  sudo systemctl start llama-qwen3_6-35b-a3b"
   '';
 in
 {
-  # ── Fast MoE instance (primary) ────────────────────────────────────
+  # ── Fast MoE instance (only instance) ──────────────────────────────
   # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
-  # MoE = ~3B active params, MTP speculative decoding for speed
+  # MoE = ~3B active params, MTP speculative decoding for speed.
+  #
+  # ON-DEMAND REASONING (no separate instance needed):
+  #   Thinking is OFF by default (--reasoning off). Any request can opt in
+  #   per-call via the OpenAI-compatible API:
+  #     chat_template_kwargs: { "enable_thinking": true }
+  #   → response includes reasoning_content (thinking tokens).
+  #   NOTE: top-level "reasoning_effort" does NOT enable Qwen thinking on
+  #   llama.cpp build 10408 (only makes replies verbose) — use the kwargs
+  #   above. Verified empirically on this host. Remove the --reasoning off
+  #   default (reasoning=null) to let the model's template decide instead.
+  #
+  # NO MLOCK: with -ngl 99 weights live in Vulkan device memory (UMA/GTT),
+  # not the process mapping — VmLck stays 0 kB, so --load-mode mlock is a
+  # no-op on this build and was removed (verified empirically).
   systemd.services.llama-qwen3_6-35b-a3b = mkLlamaService {
-    model = "Qwen3.6-35B-A3B-MTP-UD-Q4_K_XL.gguf";
+    # Real HF filename in unsloth/Qwen3.6-35B-A3B-MTP-GGUF (no "MTP" in the name).
+    model = "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf";
     alias = "qwen3.6-35b-a3b";
     port = 8001;
-    ctxSize = 262144;
+    # Sweet spot: 256K ctx measurably costs prompt-processing speed on Strix
+    # Halo (~68% of 4K-ctx pp speed is retained at 64K; more at 128K).
+    ctxSize = 131072;
     temperature = 0.7;
     topP = 0.8;
     topK = 20;
     minP = 0.0;
     presencePenalty = 1.5;
     reasoning = "off";
-    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" ];
+    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" "--ubatch-size" "1024" "--poll" "100" ];
     description = "llama.cpp - Qwen3.6-35B-A3B (MoE, fast)";
-  };
-
-  # ── Dense instance (reasoning-capable) ─────────────────────────────
-  # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
-  # Dense 27B — slower but better reasoning quality, no draft needed
-  systemd.services.llama-qwen3_8-27b = mkLlamaService {
-    model = "Qwen3.8-27B-UD-Q4_K_XL.gguf";
-    alias = "qwen3.8-27b";
-    port = 8002;
-    ctxSize = 262144;
-    temperature = 0.7;
-    topP = 0.8;
-    topK = 20;
-    minP = 0.0;
-    presencePenalty = 1.5;
-    reasoning = "off";
-    description = "llama.cpp - Qwen3.8-27B (dense, slower)";
   };
 
   users.users.llama = {

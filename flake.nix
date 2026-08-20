@@ -95,11 +95,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Bifrost - AI gateway proxy (Go, replaces litellm)
-    bifrost = {
-      url = "github:EdgarPost/bifrost";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Bifrost - AI gateway proxy (Go)
+    # REMOVED: bifrost/librechat retired — llama.cpp served directly on :8001
 
     # Envsec - per-directory environment variable management
     envsec = {
@@ -162,7 +159,6 @@
       roon-cli,
       claude-code,
       worktrunk,
-      bifrost,
       envsec,
       pi-mono,
       herdr,
