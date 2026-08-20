@@ -22,7 +22,7 @@
 #
 # ============================================================================
 
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.noctalia = {
@@ -35,4 +35,12 @@
     # time and copies it to ~/.config/noctalia/config.toml on activation.
     settings = ./noctalia-settings.toml;
   };
+
+  # The official screen_recorder plugin records with gpu-screen-recorder,
+  # which it expects on PATH. The plugin itself is already enabled in
+  # noctalia-settings.toml ([plugins] enabled = [ "noctalia/screen_recorder" ]).
+  # https://noctalia.dev/plugins/official/screen_recorder
+  home.packages = with pkgs; [
+    gpu-screen-recorder # Hardware-accelerated screen recording backend
+  ];
 }
