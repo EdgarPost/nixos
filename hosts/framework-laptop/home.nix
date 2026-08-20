@@ -57,21 +57,6 @@
       };
     };
 
-    # Per-device input settings (Framework hardware)
-    device = [
-      {
-        name = "pixa3854:00-093a:0274-touchpad"; # Framework 12th gen Pixart touchpad
-        sensitivity = 0.3;
-        accel_profile = "adaptive";
-      }
-      {
-        name = "logitech-g502-1"; # Logitech G502
-        sensitivity = -0.5;
-        scroll_factor = 0.3;
-        accel_profile = "flat";
-      }
-    ];
-
     # Lid switch: manage laptop display (suspend is handled by logind)
     # bindl is hyprlang syntax; use raw hl.bind with locked=true for Lua.
     extraConfig = ''
