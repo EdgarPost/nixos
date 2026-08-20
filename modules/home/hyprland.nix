@@ -534,19 +534,38 @@ in
       # Nix-to-Lua translation for every bind argument.
       extraConfig = ''
         -- =============================================================
-        -- HYPER KEY BINDINGS (Caps Lock via keyd)
-        -- High-level OS actions: app focus, launchers, session control
+        -- FOCUS-OR-LAUNCH HELPER
+        -- Focus any existing window whose WM_CLASS matches `class`; if none
+        -- exists, run `cmd` to spawn a fresh instance. Keeps the shared
+        -- hyprctl/jq pipeline in one place so new app binds are one-liners.
         -- =============================================================
-        hl.bind(hyper .. " + M", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "thunderbird")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:thunderbird || thunderbird]]))
+        local function focus_or_launch(class, cmd)
+          -- Hyprland 0.55 Lua config dropped the old `hyprctl dispatch
+          -- focuswindow class:<X>` syntax. Focus via the Lua window query API
+          -- instead: grab existing windows by WM_CLASS and focus the first.
+          return "hyprctl clients -j | jq -e '.[] | select(.class == \"" .. class .. "\")' > /dev/null 2>&1 && hyprctl dispatch 'hl.dsp.focus({window = hl.get_windows({class=\"" .. class .. "\"})[1]})' || " .. cmd
+        end
+
+        -- =============================================================
+        -- HYPER KEY BINDINGS (Caps Lock via keyd)
+        -- High-level OS actions: app toggle, launchers, session control
+        -- =============================================================
+        hl.bind(hyper .. " + M", hl.dsp.exec_cmd(focus_or_launch("thunderbird", "thunderbird")))
         hl.bind(hyper .. " + W", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
         hl.bind(hyper .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center audio"))
         hl.bind(hyper .. " + P", hl.dsp.exec_cmd("tmux-project"))
         hl.bind(hyper .. " + D", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
-        hl.bind(hyper .. " + B", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "zen")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:zen || zen]]))
-        hl.bind(hyper .. " + S", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "Slack")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:Slack || slack]]))
-        hl.bind(hyper .. " + T", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "com.mitchellh.ghostty")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:com.mitchellh.ghostty || ]] .. terminal))
+        hl.bind(hyper .. " + B", hl.dsp.exec_cmd(focus_or_launch("zen", "zen")))
+        hl.bind(hyper .. " + S", hl.dsp.exec_cmd(focus_or_launch("Slack", "slack")))
+        hl.bind(hyper .. " + T", hl.dsp.exec_cmd(focus_or_launch("com.mitchellh.ghostty", terminal)))
         hl.bind(hyper .. " + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
-        hl.bind(hyper .. " + Y", hl.dsp.exec_cmd([[hyprctl clients -j | jq -e '.[] | select(.class == "yazi")' > /dev/null 2>&1 && hyprctl dispatch focuswindow class:yazi || ghostty --class=yazi -e yazi]]))
+        hl.bind(hyper .. " + Y", hl.dsp.exec_cmd(focus_or_launch("yazi", "ghostty --class=yazi -e yazi")))
+
+        -- Extra app toggles (extend freely: letter = mnemonic, class must match WM_CLASS)
+        hl.bind(hyper .. " + O", hl.dsp.exec_cmd(focus_or_launch("obsidian", "obsidian")))
+        hl.bind(hyper .. " + F", hl.dsp.exec_cmd(focus_or_launch("figma-linux", "figma-linux")))
+        hl.bind(hyper .. " + I", hl.dsp.exec_cmd(focus_or_launch("Signal", "signal-desktop")))
+        hl.bind(hyper .. " + G", hl.dsp.exec_cmd(focus_or_launch("Steam", "steam")))
 
         -- =============================================================
         -- MOD KEY BINDINGS (SUPER)
@@ -661,6 +680,17 @@ in
         allow_token_by_default = true
       }
     '';
+
+    # ==========================================================================
+    # FORCE-OVERWRITE HYPRLAND.LUA
+    # ==========================================================================
+    # Home Manager's safety net refuses to replace the generated hyprland.lua
+    # when its on-disk symlink into /nix/store is ever stale/regenerated (new
+    # store hash each rebuild). Without this, HM aborts activation and the
+    # compositor is left without a config file. force = true lets HM always
+    # (re)write it. This is only the HM-generated file option; the raw Lua
+    # content itself comes from wayland.windowManager.hyprland.configType = "lua".
+    xdg.configFile."hypr/hyprland.lua".force = true;
 
     # ==========================================================================
     # WAYLAND UTILITIES

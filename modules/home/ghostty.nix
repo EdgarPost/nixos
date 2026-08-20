@@ -59,6 +59,15 @@
   };
 
   # ==========================================================================
+  # FORCE-OVERWRITE GHOSTTY CONFIG
+  # ==========================================================================
+  # Same recurring issue as hyprland.lua: HM's safety net refuses to replace the
+  # generated ghostty/config when its /nix/store symlink goes stale across a
+  # rebuild (new store hash each time), aborting activation and leaving the
+  # terminal without a config. force = true lets HM always (re)write it.
+  xdg.configFile."ghostty/config".force = true;
+
+  # ==========================================================================
   # CUSTOM SHADER
   # ==========================================================================
   # The cursor smear shader creates a trailing effect when the cursor moves

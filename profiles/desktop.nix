@@ -112,6 +112,7 @@ in
   # ==========================================================================
   # Consistent cursor across all applications (X11, Wayland, GTK, Qt)
   home.pointerCursor = {
+    enable = true;
     name = "macOS";
     package = pkgs.apple-cursor; # macOS-style cursor for Linux
     size = 24;
