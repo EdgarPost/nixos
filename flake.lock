@@ -290,16 +290,16 @@
     "nixpkgs-roon-bridge": {
       "flake": false,
       "locked": {
-        "lastModified": 1780041217,
-        "narHash": "sha256-TD8GJ7eEwCdC6u/RCNa4cc4GIUyT0zYwFOqNoffJeLA=",
-        "owner": "EdgarPost",
+        "lastModified": 1787204773,
+        "narHash": "sha256-+F2Il9ZNRX44vCmEFqClBUes6ltfkwuO9NfklcMdwWs=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "25f38066ebef70d516637ec206b0b998381877b1",
+        "rev": "d15d24eaa805bae75e66efbd94820401e463f197",
         "type": "github"
       },
       "original": {
-        "owner": "EdgarPost",
-        "ref": "roon-bridge-2.60-1501",
+        "owner": "NixOS",
+        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }

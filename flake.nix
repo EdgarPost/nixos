@@ -124,8 +124,11 @@
     };
 
     # Temporary: roon-bridge fix pending nixpkgs PR merge
+    # TESTING against upstream master — merged PR #525472 (2.60.1501) is on
+    # master but not yet on the nixos-unstable channel this flake consumes.
+    # Pin at github:NixOS/nixpkgs/master until the unstable channel catches up.
     nixpkgs-roon-bridge = {
-      url = "github:EdgarPost/nixpkgs/roon-bridge-2.60-1501";
+      url = "github:NixOS/nixpkgs/master";
       flake = false;
     };
 
