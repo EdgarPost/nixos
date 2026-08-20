@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, Teams, Postman, Thunderbird, Figma, Morgen, Obsidian
+#   - Desktop apps: Zen Browser, Signal, Slack, zoom-us, Teams, Postman, Thunderbird, Figma, Morgen, Obsidian
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -78,6 +78,7 @@ in
         '';
       }))
       slack # Only available for x86_64 (no aarch64 build)
+      pkgs.zoom-us # Video conferencing (official Zoom client)
       teams-for-linux # Microsoft Teams client (community Electron wrapper)
       postman # API testing and development tool
       davinci-resolve-studio # Professional video editor (requires manual installer, see below)
