@@ -7,6 +7,10 @@ let
   mkLlamaService =
     {
       model,
+      # Optional speculative MTP draft (separate GGUF, e.g. dense Qwen 27B:
+      # "MTP/mtp-Qwen3.8-27B-Q4_0.gguf"). Passed via -md; the unit also
+      # requires the draft to exist before starting.
+      draftModel ? null,
       alias ? null,
       port,
       ctxSize,
@@ -32,6 +36,9 @@ let
             "${llama-cpp}/bin/llama-server"
             "--model"
             "${modelDir}/${model}"
+          ]
+          ++ (if draftModel != null then [ "-md" "${modelDir}/${draftModel}" ] else [ ])
+          ++ [
             "--port"
             (toString port)
             "--host"
@@ -62,7 +69,9 @@ let
         Restart = "on-failure";
         RestartSec = "5s";
       };
-      unitConfig.ConditionPathExists = "${modelDir}/${model}";
+      unitConfig.ConditionPathExists =
+        [ "${modelDir}/${model}" ]
+        ++ (if draftModel != null then [ "${modelDir}/${draftModel}" ] else [ ]);
     };
 
   llama-download-models = pkgs.writeShellScriptBin "llama-download-models" ''
@@ -82,12 +91,18 @@ let
       --include "Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf" \
       --local-dir ${modelDir}
 
-    echo "Done! Start service:"
-    echo "  sudo systemctl start llama-qwen3_6-35b-a3b"
+    echo "Downloading Qwen3.8-27B UD-Q4_K_M (~16.5GB)..."
+    run $HF download unsloth/Qwen3.8-27B-GGUF \
+      --include "Qwen3.8-27B-UD-Q4_K_M.gguf" \
+      --include "MTP/mtp-Qwen3.8-27B-Q4_0.gguf" \
+      --local-dir ${modelDir}
+
+    echo "Done! Start services:"
+    echo "  sudo systemctl start llama-qwen3_6-35b-a3b llama-qwen3_8-27b"
   '';
 in
 {
-  # ── Fast MoE instance (only instance) ──────────────────────────────
+  # ── Fast MoE instance (port 8001) ──────────────────────────────────
   # Unsloth instruct mode: temp 0.7, top_p 0.8, top_k 20, min_p 0.0
   # MoE = ~3B active params, MTP speculative decoding for speed.
   #
@@ -120,6 +135,43 @@ in
     reasoning = "off";
     extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" "--ubatch-size" "1024" "--poll" "100" ];
     description = "llama.cpp - Qwen3.6-35B-A3B (MoE, fast)";
+  };
+
+  # ── Dense quality instance (port 8002) ─────────────────────────────
+  # Qwen3.8-27B = DENSE 27B (all params active; NOT MoE, so it is
+  # inherently slower than the 35B-A3B instance above — this one is the
+  # quality/vision/agentic workhorse. Unsloth Dynamic V3.0 quants: the
+  # repo's current "UD-" files are the updated Dynamic 3.0 builds
+  # (verified on the HF tree 2026-08-26; no separate UD3- files there).
+  #
+  # MTP speculative decode: Qwen3.8-27B ships a separate tiny draft
+  # (MTP/mtp-Qwen3.8-27B-Q4_0.gguf, ~1.4GB) — reuse the same
+  # --spec-type draft-mtp trick as the MoE instance, only via -md,
+  # since the dense 27B does NOT bake the MTP head into the main GGUF.
+  # This is the main decode-speed lever for a dense model.
+  #
+  # Sampling: unsloth's documented Qwen3.8 run recipe
+  # (--temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0) instead of the
+  # MoE's tuned instruct-mode values. Reasoning left ON (template
+  # decides); disable per-call with chat_template_kwargs if wanted.
+  #
+  # CONTEXT: native 256K (262144, extensible to 1M). KV q8_0 ≈ 8.4 GB at
+  # 256K on this hybrid arch (only the 16 gated-attention blocks cache KV;
+  # DeltaNet blocks use a small recurrent state) — cheap on 125 GB RAM.
+  # Cost of the big window is prompt-processing speed on LONG contexts;
+  # short prompts are unaffected. 35B stays at 128K (fast instance).
+  systemd.services.llama-qwen3_8-27b = mkLlamaService {
+    model = "Qwen3.8-27B-UD-Q4_K_M.gguf";
+    draftModel = "MTP/mtp-Qwen3.8-27B-Q4_0.gguf";
+    alias = "qwen3.8-27b";
+    port = 8002;
+    ctxSize = 262144;
+    temperature = 1.0;
+    topP = 0.95;
+    topK = 20;
+    minP = 0.0;
+    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" "--ubatch-size" "1024" "--poll" "100" ];
+    description = "llama.cpp - Qwen3.8-27B (dense, quality)";
   };
 
   users.users.llama = {
