@@ -11,6 +11,14 @@ let
       # "MTP/mtp-Qwen3.8-27B-Q4_0.gguf"). Passed via -md; the unit also
       # requires the draft to exist before starting.
       draftModel ? null,
+      # KV cache quant. q8_0 = default (quality, what both instances
+      # historically used). q4_0/q4_1 = ~1.8× smaller KV -> less UMA
+      # bandwidth per attention step, so faster decode at LONG contexts
+      # (never slower; negligible difference at short contexts), at a
+      # small quality cost confined to the 16 gated-attention layers on
+      # this hybrid arch (the DeltaNet blocks cache no KV at all).
+      cacheTypeK ? "q8_0",
+      cacheTypeV ? "q8_0",
       alias ? null,
       port,
       ctxSize,
@@ -50,9 +58,9 @@ let
             "-ngl"
             "99"
             "--cache-type-k"
-            "q8_0"
+            cacheTypeK
             "--cache-type-v"
-            "q8_0"
+            cacheTypeV
             "--swa-full"
             "--keep"
             "1024"
@@ -131,9 +139,14 @@ in
     topP = 0.8;
     topK = 20;
     minP = 0.0;
-    presencePenalty = 1.5;
+    presencePenalty = 1.0;
     reasoning = "off";
-    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" "--ubatch-size" "1024" "--poll" "100" ];
+    # Speed instance: q4_0 KV cache (~1.8× smaller -> faster attention at
+    # long contexts, equal at short; tiny quality cost on the 16 attention
+    # layers) + ubatch 2048 for prompt-processing throughput.
+    cacheTypeK = "q4_0";
+    cacheTypeV = "q4_0";
+    extraFlags = [ "--spec-type" "draft-mtp" "--spec-draft-n-max" "2" "--ubatch-size" "2048" "--poll" "100" ];
     description = "llama.cpp - Qwen3.6-35B-A3B (MoE, fast)";
   };
 
