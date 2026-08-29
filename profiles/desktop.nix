@@ -57,6 +57,7 @@ in
     [
       impala # WiFi management TUI
       signal-desktop # Encrypted messaging
+      discord # Voice, video & text chat
       libreoffice # Office suite (Word/Excel/PowerPoint)
       obsidian # Note-taking and knowledge base
 
