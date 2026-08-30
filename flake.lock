@@ -295,26 +295,6 @@
         "type": "github"
       }
     },
-    "noctalia": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1787962868,
-        "narHash": "sha256-kST4FTVCH5qsMU9FWalSqMxt6JeBnnAT83cMWSeN5Dc=",
-        "owner": "noctalia-dev",
-        "repo": "noctalia",
-        "rev": "4b03775fac344d87c078431f49e52c1e5b2be528",
-        "type": "github"
-      },
-      "original": {
-        "owner": "noctalia-dev",
-        "repo": "noctalia",
-        "type": "github"
-      }
-    },
     "pi-mono": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -368,7 +348,6 @@
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",
-        "noctalia": "noctalia",
         "pi-mono": "pi-mono",
         "roon-cli": "roon-cli",
         "worktrunk": "worktrunk",
