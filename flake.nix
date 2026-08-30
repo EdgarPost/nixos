@@ -110,12 +110,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Herdr - terminal workspace manager for AI coding agents
-    herdr = {
-      url = "github:ogulcancelik/herdr/v0.7.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Noctalia - Wayland desktop shell (bar, notifications, launcher, dock)
     # v5 alpha - tracking main for latest fixes; expect breaking config changes.
     noctalia = {
@@ -149,7 +143,6 @@
       worktrunk,
       envsec,
       pi-mono,
-      herdr,
       ...
     }@inputs:
 
