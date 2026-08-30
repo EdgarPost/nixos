@@ -16,9 +16,6 @@
   wayland.windowManager.hyprland.settings = {
     # Monitor configuration
     # Dell U4025QW ultrawide at 120Hz (connected via DP 2.1)
-    # Game streaming (Sunshine) creates its own headless output on demand and
-    # disables DP-4 for the duration of a stream — see modules/nixos/sunshine.nix.
-    # No static virtual-monitor entry is needed here.
     monitor = [
       { output = "DP-4"; mode = "5120x2160@120"; position = "0x0"; scale = "1.25"; }   # Dell U4025QW via DisplayPort
       { output = "DP-6"; disabled = true; }                                                 # Same Dell via Thunderbolt (duplicate, keep TB for KVM peripherals only)

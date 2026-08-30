@@ -40,7 +40,6 @@
     ../../modules/nixos/bluetooth.nix # Bluetooth audio with high-quality codecs
     ../../modules/nixos/llama.nix # Local LLM inference (llama.cpp + Vulkan)
     ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
-    ../../modules/nixos/sunshine.nix # Game streaming to Steam Deck (on-demand virtual display)
   ];
 
   # Syncthing - full PARA sync on this machine
