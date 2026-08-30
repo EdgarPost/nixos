@@ -104,12 +104,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # pi - terminal coding agent
-    pi-mono = {
-      url = "github:lukasl-dev/pi-mono.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
   };
 
   # ==========================================================================
@@ -135,7 +129,6 @@
       claude-code,
       worktrunk,
       envsec,
-      pi-mono,
       ...
     }@inputs:
 

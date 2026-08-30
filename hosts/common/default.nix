@@ -38,7 +38,7 @@
     ../../modules/nixos/1password.nix # Password manager (CLI + SSH agent)
     ../../modules/nixos/tailscale.nix # Mesh VPN
     ../../modules/nixos/syncthing.nix # File sync (Code folder on all hosts)
-    inputs.pi-mono.nixosModules.default # pi coding agent NixOS module
+    ../../modules/nixos/pi-coding-agent.nix # pi coding agent NixOS module (pkg from nixpkgs)
   ];
 
   # Syncthing - Code folder sync on all hosts (PARA folders per-host)
@@ -199,11 +199,11 @@
   # ==========================================================================
   # PI CODING AGENT
   # ==========================================================================
+  # package comes from nixpkgs (pkgs.pi-coding-agent). The old pi-mono flake
+  # package let us pin nodejs; the nixpkgs package uses its own build nodejs,
+  # so no override here.
   programs.pi.coding-agent = {
     enable = true;
-    package = inputs.pi-mono.packages.${pkgs.stdenv.hostPlatform.system}.coding-agent.override {
-      nodejs = pkgs.nodejs_22;
-    };
 
     extensions = [ ];
     skills = [ ];
