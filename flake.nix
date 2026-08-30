@@ -123,21 +123,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Temporary: roon-bridge fix pending nixpkgs PR merge
-    # TESTING against upstream master — merged PR #525472 (2.60.1501) is on
-    # master but not yet on the nixos-unstable channel this flake consumes.
-    # Pin at github:NixOS/nixpkgs/master until the unstable channel catches up.
-    nixpkgs-roon-bridge = {
-      url = "github:NixOS/nixpkgs/master";
-      flake = false;
-    };
-
-    # Sunshine game streaming: the version in our main nixpkgs lags upstream.
-    # Pin a second nixpkgs (same nixos-unstable channel) used ONLY to build the
-    # sunshine package — see modules/nixos/sunshine.nix. The rest of the system
-    # is unaffected. Bump with: nix flake update nixpkgs-sunshine
-    nixpkgs-sunshine.url = "github:NixOS/nixpkgs/nixos-unstable";
-
   };
 
   # ==========================================================================
@@ -165,7 +150,6 @@
       envsec,
       pi-mono,
       herdr,
-      nixpkgs-roon-bridge,
       ...
     }@inputs:
 
@@ -216,7 +200,6 @@
               inputs
               user
               hosts
-              nixpkgs-roon-bridge
               ;
           };
 
