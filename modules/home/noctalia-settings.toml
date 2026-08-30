@@ -5,7 +5,7 @@ margin_ends = 0
 position = "bottom"
 radius = 0
 shadow = false
-start = [ "launcher", "wallpaper", "workspaces", "recorder" ]
+start = [ "recorder" ]
 
 [calendar]
 enabled = true
@@ -124,16 +124,11 @@ position = "bottom_center"
 position = "bottom_center"
 position_vertical = "bottom_center"
 
-[plugins]
-enabled = [ "noctalia/screen_recorder" ]
-
-# screen_recorder plugin-level settings (Settings -> Plugins).
-# Default video_codec is h264, which caps at 4096x4096 on the hardware
-# encoder — but this display is 5120x2160, so recording failed at capture
-# start. hevc supports 5K width and is hardware-accelerated on the
-# Ryzen/Radeon 8060S.
 [plugin_settings."noctalia/screen_recorder"]
 video_codec = "hevc"
+
+[plugins]
+enabled = [ "noctalia/screen_recorder" ]
 
 [shell]
 screen_time_enabled = true
@@ -170,13 +165,13 @@ transition_on_startup = true
     enabled = false
 
     [wallpaper.default]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
 
     [wallpaper.last]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
 
     [wallpaper.monitors.DP-4]
-    path = "/home/edgar/.wallpapers/tropic_island_evening.jpg"
+    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
 
 [widget.clock]
 format = "{:%d %B - %H:%M}"
