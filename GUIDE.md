@@ -1,7 +1,7 @@
 # NixOS Configuration Guide
 
 This file tracks progress and provides context for building this NixOS configuration.
-Claude can read this file to understand current state and continue where we left off.
+AI coding agents can read this file to understand current state and continue where we left off.
 
 ## Project Status
 
@@ -9,6 +9,7 @@ Claude can read this file to understand current state and continue where we left
 **Last Updated:** 2025-12-19 (evening)
 
 ### Completed Steps
+
 - [x] Initial planning and architecture design
 - [x] Git repository initialized with first commit
 - [x] Phase 1: Flake structure with home-manager
@@ -18,7 +19,6 @@ Claude can read this file to understand current state and continue where we left
 - [x] Framework laptop configured and working
 - [x] Git push from Framework working
 - [x] Zen browser added
-- [x] Claude Code added
 - [x] Waybar configured
 - [x] Yazi file manager added
 - [x] Neovim with LazyVim configured
@@ -103,7 +103,6 @@ nixos/
 │   └── home/                    # Home-manager modules
 │       ├── atuin.nix            # Shell history (cloud sync)
 │       ├── catppuccin.nix       # Unified theming
-│       ├── claude-code.nix      # AI coding assistant
 │       ├── gardener.nix         # Kubernetes cluster management
 │       ├── ghostty.nix          # Terminal emulator
 │       ├── hyprland.nix         # WM keybindings + rules
@@ -122,6 +121,7 @@ nixos/
 ## Secrets Management (1Password)
 
 Using 1Password instead of SOPS for secrets:
+
 - [x] SSH keys (via 1Password SSH Agent)
 - [x] OpenStack credentials (Pilosa/OpenStack-Leafcloud)
 - [x] Gardener kubeconfigs (Pilosa/Gardener-Leafcloud)
@@ -130,6 +130,7 @@ Using 1Password instead of SOPS for secrets:
 **SSH Agent:** `~/.1password/agent.sock`
 
 **Cloud CLI Functions:**
+
 - `os-login` - Load OpenStack credentials from 1Password
 - `gardener-login` - Load Gardener kubeconfigs from 1Password
 
@@ -138,12 +139,14 @@ Using 1Password instead of SOPS for secrets:
 ## Software Stack
 
 ### Desktop Environment
+
 - **Window Manager:** Hyprland (Wayland)
 - **Login Manager:** greetd + tuigreet
 - **Launcher:** Rofi (wayland fork)
 - **Theme:** Catppuccin (all apps)
 
 ### Terminal
+
 - **Emulator:** Ghostty
 - **Shell:** Fish
 - **Prompt:** Starship
@@ -152,14 +155,15 @@ Using 1Password instead of SOPS for secrets:
 - **File Manager:** Yazi
 
 ### Development
+
 - **Editor:** Neovim (Nix-managed, LazyVim-style)
 - **Git:** SSH signing via 1Password agent
 - **Containers:** Podman (rootless)
-- **AI:** Claude Code
 - **Kubernetes:** k3s (local), kubie (context isolation), Gardener (prod)
 - **Cloud:** OpenStack CLI (Leafcloud, 1Password auth)
 
 ### Applications
+
 - **Password Manager:** 1Password
 - **Notes:** Obsidian
 - **Calendar:** Calcurse + vdirsyncer
@@ -173,6 +177,7 @@ Using 1Password instead of SOPS for secrets:
 ## Phase Checklist
 
 ### Phase 0: Prerequisites
+
 - [x] Download NixOS ISO
 - [x] Install minimal NixOS
 - [x] Generate hardware-configuration.nix
@@ -180,21 +185,25 @@ Using 1Password instead of SOPS for secrets:
 - [x] Create GitHub repo and push initial commit
 
 ### Phase 1: Foundation
+
 - [x] 1.1 Create flake.nix with minimal bootable system
 - [x] 1.2 Add home-manager as flake module
 - [x] 1.3 Create common host module
 
 ### Phase 2: Secrets (1Password)
+
 - [x] 2.1 ~~SOPS~~ → Using 1Password instead
 - [x] 2.2 1Password GUI + SSH Agent configured
 
 ### Phase 3: Wayland Desktop
+
 - [x] 3.1 Hyprland + Wayland base
 - [x] 3.2 greetd + tuigreet
 - [x] 3.3 Rofi launcher
 - [x] 3.4 Waybar
 
 ### Phase 4: Terminal Environment
+
 - [x] 4.1 Ghostty terminal (with tmux auto-attach + cursor smear shader)
 - [x] 4.2 Fish + Starship
 - [x] 4.3 Atuin (cloud sync)
@@ -202,15 +211,16 @@ Using 1Password instead of SOPS for secrets:
 - [x] 4.5 Yazi
 
 ### Phase 5: Development Tools
+
 - [x] 5.1 Neovim (LazyVim, LSPs via Nix)
 - [x] 5.2 Git configured
 - [x] 5.3 Podman (rootless, Docker-compatible)
-- [x] 5.4 Claude Code
-- [x] 5.5 k3s + kubie (local Kubernetes with context isolation)
+- [x] 5.4 k3s + kubie (local Kubernetes with context isolation)
 - [x] 5.6 OpenStack CLI (1Password integration for credentials)
 - [x] 5.7 Gardener cluster management (1Password integration)
 
 ### Phase 6: Applications
+
 - [x] 6.1 1Password
 - [x] 6.2 Zen Browser
 - [x] 6.3 Hyprlock screen locker
@@ -218,11 +228,13 @@ Using 1Password instead of SOPS for secrets:
 - [x] 6.5 Tailscale + Roon
 
 ### Phase 7: Catppuccin Theming
+
 - [x] 7.1 Catppuccin flake added
 - [x] 7.2 Themed: Ghostty, Tmux, Fish, Starship, Bat, Yazi, Waybar, Neovim
 - [x] 7.3 Theme: Hyprland, Rofi, Mako, Qt/Kvantum (GTK archived upstream)
 
 ### Phase 8: Multi-Host
+
 - [x] 8.1 Framework laptop profile (lid switch, 120Hz, touchpad sensitivity)
 - [x] 8.2 Multi-arch support (x86_64 + aarch64-linux)
 - [ ] 8.3 Server profile template
@@ -276,9 +288,10 @@ nix flake show
 
 ---
 
-## Notes for Claude
+## Notes for AI coding agents
 
 When continuing this project:
+
 1. Read this GUIDE.md first to understand current state
 2. Check the Phase Checklist for next steps
 3. Each completed step should be committed to git
@@ -287,6 +300,7 @@ When continuing this project:
 6. User wants to learn - explain each step
 
 **User preferences:**
+
 - Explain each step thoroughly
 - One git commit per logical step (atomic commits)
 - Challenge decisions when appropriate
@@ -325,25 +339,27 @@ When continuing this project:
 
 | Resource | URL |
 |----------|-----|
-| NixOS & Flakes Book | https://nixos-and-flakes.thiscute.world/ |
-| Nix Starter Configs | https://github.com/Misterio77/nix-starter-configs |
-| Home Manager Manual | https://nix-community.github.io/home-manager/ |
-| SOPS-nix | https://github.com/Mic92/sops-nix |
-| Catppuccin Nix | https://nix.catppuccin.com/ |
-| Hyprland Wiki | https://wiki.hypr.land/ |
-| Framework NixOS | https://wiki.nixos.org/wiki/Hardware/Framework/Laptop_13 |
-| NixOS Wiki | https://wiki.nixos.org/ |
-| nixCats-nvim | https://nixcats.org/ |
+| NixOS & Flakes Book | <https://nixos-and-flakes.thiscute.world/> |
+| Nix Starter Configs | <https://github.com/Misterio77/nix-starter-configs> |
+| Home Manager Manual | <https://nix-community.github.io/home-manager/> |
+| SOPS-nix | <https://github.com/Mic92/sops-nix> |
+| Catppuccin Nix | <https://nix.catppuccin.com/> |
+| Hyprland Wiki | <https://wiki.hypr.land/> |
+| Framework NixOS | <https://wiki.nixos.org/wiki/Hardware/Framework/Laptop_13> |
+| NixOS Wiki | <https://wiki.nixos.org/> |
+| nixCats-nvim | <https://nixcats.org/> |
 
 ### Best Practices Discovered
 
 **SOPS with Age:**
+
 - Use age over GPG (ed25519 > RSA)
 - Generate with: `age-keygen -o ~/.config/sops/age/keys.txt`
 - Can convert SSH host keys: `ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub`
 - Keep backup age key in password manager
 
 **Hyprland on NixOS:**
+
 ```nix
 # System config
 { programs.hyprland.enable = true; }
@@ -358,6 +374,7 @@ When continuing this project:
 ```
 
 **greetd + tuigreet:**
+
 ```nix
 { pkgs, ... }: {
   services.greetd = {
@@ -373,6 +390,7 @@ When continuing this project:
 ```
 
 **Atuin with SOPS:**
+
 ```nix
 { config, ... }: {
   programs.atuin = {
@@ -389,16 +407,19 @@ When continuing this project:
 ```
 
 **Ghostty:**
+
 - Available in nixpkgs-unstable as `pkgs.ghostty`
 - Or use official flake: `github:ghostty-org/ghostty`
 
 **Zen Browser:**
+
 - Use `github:youwen5/zen-browser-flake` (NixOS wiki recommended)
 - Supports both x86_64-linux and aarch64-linux
 - Add to home.packages: `inputs.zen-browser.packages.${stdenv.hostPlatform.system}.default`
 - For 1Password: add "zen" to `/etc/1password/custom_allowed_browsers`
 
 **Multi-Architecture Packages:**
+
 ```nix
 # Conditional packages (use lib.optionals, NOT lib.mkIf in lists)
 home.packages = with pkgs; [
@@ -411,17 +432,20 @@ home.packages = with pkgs; [
 ```
 
 **Neovim (nixCats + LazyVim):**
+
 - nixCats-nvim with LazyVim template recommended over nixvim
 - Nix handles plugin installation (reproducible)
 - Lua config files live in repo (familiar, portable)
 - Clone anywhere → rebuild → exact same editor
 
 **Framework 12th Gen:**
+
 - Use nixos-hardware module: `nixos-hardware.nixosModules.framework-12th-gen-intel`
 - Everything works out of box including fingerprint
 - No custom kernel needed on current NixOS
 
 **Catppuccin:**
+
 - Use `github:catppuccin/nix` flake
 - Provides modules for: Hyprland, Fish, Starship, Tmux, Nvim, GTK, etc.
 - Cachix: `catppuccin.cachix.org`

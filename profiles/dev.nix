@@ -5,10 +5,9 @@
 # Development environment and work-specific tooling:
 #   - Neovim, tmux, atuin (shell history), direnv, yazi (file manager)
 #   - Zoxide (smart cd), ghq (repo manager), lazygit
-#   - Claude Code (AI coding assistants)
 #   - Kubernetes, OpenStack, Gardener (infrastructure)
-#   - GitHub CLI, Mistral API (1Password integration)
-#   - Fish: repo picker function, repo-sync, claude aliases
+#   - GitHub CLI (1Password integration)
+#   - Fish: repo picker function, repo-sync aliases
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -23,14 +22,12 @@
     ../modules/home/atuin.nix # Shell history sync
     ../modules/home/direnv.nix # Per-directory environments with nix-direnv
     ../modules/home/yazi.nix # File manager (TUI)
-    ../modules/home/claude-code.nix # AI coding assistant config
     ../modules/home/mcp.nix         # MCP servers (obsidian-vault, etc.)
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
     ../modules/home/openstack.nix # OpenStack CLI
     ../modules/home/azure.nix # Azure CLI + Azure DevOps extension
     ../modules/home/gardener.nix # Gardener cluster management
     ../modules/home/github.nix # GitHub CLI with 1Password
-    ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
   ];
 
   # ==========================================================================
@@ -39,7 +36,7 @@
   home.packages = with pkgs; [
     lazygit # TUI for git operations
     ghq # Git repository manager (ghq get, ghq list)
-    inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default # AI coding assistant
+    worktrunk # Git worktree manager for parallel AI agent workflows (from nixpkgs)
     herdr # AI agent multiplexer (from nixpkgs)
   ];
 
@@ -49,11 +46,10 @@
   # ==========================================================================
   # WORKTRUNK - Git worktree manager for parallel AI agent workflows
   # ==========================================================================
-  programs.worktrunk = {
-    enable = true;
-    enableFishIntegration = true;
-  };
-
+  # The worktrunk binary comes from nixpkgs (see home.packages above).
+  # Upstream home-manager doesn't ship a programs.worktrunk module yet, so the
+  # fish shell integration (equivalent of the flake's enableFishIntegration) is
+  # wired in the fish section below.
   xdg.configFile."worktrunk/config.toml".text = ''
     [post-start]
     copy = "wt step copy-ignored"
@@ -91,15 +87,15 @@
         end | sort -rn | cut -d' ' -f2- | fzf)
         and cd $dir
       end
+
+      # worktrunk shell integration (package from nixpkgs, see WORKTRUNK above)
+      ${pkgs.worktrunk}/bin/wt config shell init fish | source
     '';
 
     # Shell aliases for dev workflows
     shellAliases = {
       # ghq bootstrap - clone all repos from config
       repo-sync = "grep -v '^#' ~/Code/repos.txt | grep -v '^$' | xargs -I {} ghq get {}";
-      # claude code
-      c = "claude";
-      cc = "claude --continue";
     };
   };
 }

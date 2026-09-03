@@ -4,11 +4,10 @@
 #
 # WHAT IS MCP?
 # The Model Context Protocol (MCP) is a standard for connecting AI applications
-# like Claude Code to external data sources and tools ("servers").
+# to external data sources and tools ("servers").
 #
 # This config writes ~/.config/mcp/mcp.json declaratively via Nix, so the same
-# servers are always available regardless of how Claude Code or other MCP clients
-# are installed or updated.
+# servers are always available regardless of which MCP client is used.
 #
 # SERVER TYPES:
 #   stdio  — runs as a local process (e.g., filesystem server)
@@ -25,7 +24,7 @@
       # OBSIDIAN VAULT
       # ==========================================================================
       # Reads from your PARA Obsidian vault (Areas section).
-      # Lets Claude Code search, read, and write notes in your knowledge base.
+      # Lets AI agents search, read, and write notes in your knowledge base.
       obsidian-vault = {
         command = "npx";
         args = [

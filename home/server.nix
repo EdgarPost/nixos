@@ -8,7 +8,7 @@
 #
 # Composes from mixin profiles:
 #   base.nix - fish, starship, aliases, catppuccin, basic CLI tools
-#   dev.nix  - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, claude-code, k8s, etc.
+#   dev.nix  - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, k8s, etc.
 #
 # USAGE:
 #   # Install Nix on server, then:

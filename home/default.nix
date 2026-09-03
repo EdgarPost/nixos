@@ -5,7 +5,7 @@
 # Composes from mixin profiles:
 #   base.nix    - fish, starship, aliases, catppuccin, basic CLI tools
 #   desktop.nix - hyprland, ghostty, noctalia, audio, workspaces, font, cursor
-#   dev.nix     - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, claude-code, k8s, etc.
+#   dev.nix     - nvim, tmux, atuin, direnv, yazi, zoxide, ghq, k8s, etc.
 #
 # Plus Edgar-specific config: git (1Password SSH agent, SSH URLs), SSH, roon-cli
 #

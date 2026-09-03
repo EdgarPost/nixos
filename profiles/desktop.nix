@@ -10,7 +10,7 @@
 #   - Audio profile switching (headset, meeting, mobile, analog)
 #   - Tmux project picker (Super+P)
 #   - MonoLisa font, macOS cursor theme
-#   - Desktop apps: Zen Browser, Signal, Slack, zoom-us, Teams, Postman, Thunderbird, Figma, Morgen, Obsidian
+#   - Desktop apps: Zen Browser, Signal, Slack, zoom-us, Teams, Postman, Figma, Morgen, Obsidian
 #
 # This profile is independent - it does not import other profiles.
 #
@@ -37,9 +37,7 @@ in
   imports = [
     ../modules/home/hyprland.nix # Window manager + keybindings
     ../modules/home/ghostty.nix # Terminal emulator
-    ../modules/home/zathura.nix # PDF viewer
     ../modules/home/audio.nix # Audio profile switching
-    ../modules/home/thunderbird.nix # Email, calendar & contacts client
     ../modules/home/roon-client.nix # Roon GUI via Wine (x86_64 only)
   ];
 

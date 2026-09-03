@@ -56,13 +56,11 @@ nix flake lock --update-input nixpkgs
         ├── atuin.nix         # Shell history sync
         ├── audio.nix         # Audio device selection (rofi menus)
         ├── catppuccin.nix    # Unified theming (Mocha)
-        ├── claude-code.nix   # AI assistant config
         ├── gardener.nix      # SAP Gardener CLI tools
         ├── ghostty.nix       # Terminal emulator + cursor smear shader
         ├── github.nix        # GitHub CLI with 1Password
         ├── hyprland.nix      # Keybindings, appearance, wallpapers
         ├── kubernetes.nix    # Kubie + kubectx
-        ├── mistral.nix       # Mistral API + Vibe CLI
         ├── nvim.nix          # Neovim + LSPs (Nix-managed)
         ├── openstack.nix     # OpenStack CLI with 1Password
         ├── roon-cli.nix      # Roon CLI service
@@ -78,6 +76,7 @@ nix flake lock --update-input nixpkgs
 ### Flakes
 
 Flakes provide reproducible builds by pinning exact dependency versions:
+
 - `inputs` = dependencies (like package.json)
 - `flake.lock` = locked versions (like package-lock.json)
 - `outputs` = what the flake produces (system configurations)
@@ -142,7 +141,7 @@ Then available in any module:
 - **Neovim** - LSPs and formatters managed by Nix (not Mason)
 - **Ghostty** - GPU-accelerated terminal with cursor smear shader
 - **Tmux** - Vim-style pane navigation, Fish shell
-- **1Password** - SSH agent + CLI secret injection (GitHub, OpenStack, Gardener, Mistral)
+- **1Password** - SSH agent + CLI secret injection (GitHub, OpenStack, Gardener)
 - **Atuin** - Shell history with cloud sync
 - **Waybar** - Status bar with CPU temp, battery, Bluetooth, notifications
 - **Podman** - Rootless containers with Docker compatibility
@@ -176,6 +175,7 @@ nix repl --expr 'builtins.getFlake (toString ./.)'
 ## Adding a New Host
 
 1. Create `hosts/<hostname>/default.nix`:
+
    ```nix
    { config, pkgs, ... }:
    {
@@ -187,11 +187,13 @@ nix repl --expr 'builtins.getFlake (toString ./.)'
    ```
 
 2. Generate hardware config:
+
    ```bash
    nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
    ```
 
 3. Add to `flake.nix`:
+
    ```nix
    nixosConfigurations.<hostname> = mkSystem {
      hostname = "<hostname>";
@@ -202,18 +204,21 @@ nix repl --expr 'builtins.getFlake (toString ./.)'
 ## Adding Packages
 
 **System-wide** (all users, requires rebuild):
+
 ```nix
 # hosts/common/default.nix
 environment.systemPackages = with pkgs; [ package-name ];
 ```
 
 **User-only** (just your user):
+
 ```nix
 # home/default.nix
 home.packages = with pkgs; [ package-name ];
 ```
 
 **With configuration**:
+
 ```nix
 # Create modules/home/app.nix
 programs.app = {

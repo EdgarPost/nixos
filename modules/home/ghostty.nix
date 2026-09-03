@@ -38,7 +38,7 @@
       gtk-single-instance = true;      # Reuse running instance (faster new windows)
       copy-on-select = "clipboard";    # Auto-copy selections to clipboard
       mouse-scroll-multiplier = 0.2;   # Slower scrolling
-      desktop-notifications = false;   # Disable OSC desktop notifications (e.g. from Claude Code)
+      desktop-notifications = false;   # Disable OSC desktop notifications (e.g. from AI agents)
 
 
       # =======================================================================

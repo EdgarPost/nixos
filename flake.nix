@@ -77,27 +77,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Claude Code extensions - custom commands, agents, and skills
-    claude-code = {
-      url = "github:EdgarPost/claude-code";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Claude Code package - auto-updated hourly (nixpkgs lags behind)
-    claude-code-nix = {
-      url = "github:sadjow/claude-code-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Worktrunk - Git worktree manager for parallel AI agent workflows
-    worktrunk = {
-      url = "github:max-sixty/worktrunk";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Bifrost - AI gateway proxy (Go)
-    # REMOVED: bifrost/librechat retired — llama.cpp served directly on :8001
-
     # Envsec - per-directory environment variable management
     envsec = {
       url = "github:EdgarPost/envsec";
@@ -134,8 +113,6 @@
       nixos-hardware,
       zen-browser,
       roon-cli,
-      claude-code,
-      worktrunk,
       envsec,
       ...
     }@inputs:
@@ -154,12 +131,6 @@
         git = {
           email = "github@edgarpost.com";
         };
-      };
-
-      # ========== Network Hosts ==========
-      # Hostnames of other machines on the network (resolved via Tailscale/mDNS)
-      hosts = {
-        pbstation = "192.168.2.10"; # Synology NAS (Roon Core) - static LAN IP
       };
 
       # ========== Helper Function ==========
@@ -186,7 +157,6 @@
             inherit
               inputs
               user
-              hosts
               ;
           };
 
@@ -222,10 +192,6 @@
                   inputs.catppuccin.homeModules.catppuccin
                   # Roon CLI - adds services.roon-cli options
                   inputs.roon-cli.homeManagerModules.default
-                  # Claude Code extensions - commands, agents, skills
-                  inputs.claude-code.homeManagerModules.default
-                  # Worktrunk - git worktree manager with shell integration
-                  inputs.worktrunk.homeModules.default
                   # Envsec - per-directory environment variable management
                   inputs.envsec.homeManagerModules.default
                   # Home configuration (desktop or server)
@@ -235,7 +201,7 @@
               };
 
               # Pass same custom args to Home Manager modules
-              home-manager.extraSpecialArgs = { inherit inputs user hosts; };
+              home-manager.extraSpecialArgs = { inherit inputs user; };
             }
 
             # LIST CONCATENATION: `++` joins two lists
@@ -280,7 +246,7 @@
             system = "x86_64-linux";
             config.allowUnfree = true;
           };
-          extraSpecialArgs = { inherit inputs user hosts; };
+          extraSpecialArgs = { inherit inputs user; };
           modules = [
             inputs.catppuccin.homeModules.catppuccin
             ./home/server.nix

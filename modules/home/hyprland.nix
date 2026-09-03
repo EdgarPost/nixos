@@ -550,7 +550,6 @@ in
         -- HYPER KEY BINDINGS (Caps Lock via keyd)
         -- High-level OS actions: app toggle, launchers, session control
         -- =============================================================
-        hl.bind(hyper .. " + M", hl.dsp.exec_cmd(focus_or_launch("thunderbird", "thunderbird")))
         hl.bind(hyper .. " + W", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
         hl.bind(hyper .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center audio"))
         hl.bind(hyper .. " + P", hl.dsp.exec_cmd("tmux-project"))

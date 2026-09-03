@@ -1,7 +1,7 @@
 # ============================================================================
 # ROON BRIDGE - Audio Endpoint for Roon
 # ============================================================================
-{ pkgs, hosts, ... }:
+{ pkgs, ... }:
 
 {
   # Roon Bridge service (roon-bridge 2.60.1501 from nixpkgs since 2026-08)
@@ -14,17 +14,9 @@
   # Official docs only mention 9100-9200, but RAAT binds random high ports
   # See: https://community.roonlabs.com/t/roon-bridge-network-ports/55839
   #
-  # Allow from:
-  # - Roon Core (pbstation) on local LAN
-  # - Tailscale network (trustedInterface handles this)
-  networking.firewall.extraCommands = ''
-    iptables -A INPUT -p tcp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT
-    iptables -A INPUT -p udp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT
-  '';
-  networking.firewall.extraStopCommands = ''
-    iptables -D INPUT -p tcp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT || true
-    iptables -D INPUT -p udp -s ${hosts.pbstation} --dport 30000:65535 -j ACCEPT || true
-  '';
+  # Roon Core (pbstation) is reached over Tailscale (MagicDNS), and the
+  # tailscale0 interface is trusted by the firewall (see tailscale.nix), so no
+  # explicit source-IP rules are needed here.
 
   # Avahi (mDNS/DNS-SD) for Roon Core to auto-discover this bridge on the network
   services.avahi = {
