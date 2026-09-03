@@ -2,16 +2,19 @@
 
 My personal NixOS configuration using flakes and Home Manager.
 
+The `.nix` files are the source of truth — this README only covers the general
+layout and the common workflows.
+
 ## Quick Start
 
 ```bash
 # Apply configuration
-sudo nixos-rebuild switch --flake .#framework-laptop
+sudo nixos-rebuild switch --flake .#<hostname>
 
 # Test without making default boot entry
-sudo nixos-rebuild test --flake .#framework-laptop
+sudo nixos-rebuild test --flake .#<hostname>
 
-# Apply standalone Home Manager config on a server
+# Apply standalone Home Manager config on a non-NixOS server
 home-manager switch --flake .#edgar@server
 
 # Update all dependencies
@@ -19,80 +22,33 @@ nix flake update
 
 # Update single input
 nix flake lock --update-input nixpkgs
+
+# Show what this flake produces
+nix flake show
 ```
 
-## Structure
-
-```
-.
-├── flake.nix                 # Entry point - inputs, outputs, system definitions
-├── flake.lock                # Locked dependency versions (reproducibility)
-├── hosts/
-│   ├── common/               # Shared system configuration
-│   │   ├── default.nix       # Nix settings, packages, services
-│   │   └── users.nix         # User accounts and groups
-│   ├── framework-laptop/     # Framework laptop
-│   │   ├── default.nix       # Host-specific: bootloader, hardware features
-│   │   └── hardware-configuration.nix  # Auto-generated hardware config
-│   └── framework-desktop/    # Framework Desktop (AMD Ryzen AI Max+ 395)
-│       ├── default.nix
-│       ├── hardware-configuration.nix
-│       └── home.nix          # Host-specific Hyprland/monitor/input config
-├── home/
-│   ├── default.nix           # Home Manager entry point (desktop)
-│   └── server.nix            # Standalone Home Manager for headless servers
-└── modules/
-    ├── nixos/                # System-level modules (require sudo)
-    │   ├── 1password.nix     # Password manager + SSH agent
-    │   ├── bluetooth.nix     # Bluetooth audio (SBC-XQ, mSBC codecs)
-    │   ├── greetd.nix        # Login manager (tuigreet)
-    │   ├── hyprland.nix      # Compositor, portals, fonts
-    │   ├── podman.nix        # Rootless containers (Docker compat)
-    │   ├── roon-bridge.nix   # Roon audio bridge
-    │   ├── syncthing.nix     # File sync with PARA folder support
-    │   └── tailscale.nix     # Mesh VPN
-    └── home/                 # User-level modules (no sudo)
-        ├── aliases.nix       # Fish shell aliases
-        ├── atuin.nix         # Shell history sync
-        ├── audio.nix         # Audio device selection (rofi menus)
-        ├── catppuccin.nix    # Unified theming (Mocha)
-        ├── gardener.nix      # SAP Gardener CLI tools
-        ├── ghostty.nix       # Terminal emulator + cursor smear shader
-        ├── github.nix        # GitHub CLI with 1Password
-        ├── hyprland.nix      # Keybindings, appearance, wallpapers
-        ├── kubernetes.nix    # Kubie + kubectx
-        ├── nvim.nix          # Neovim + LSPs (Nix-managed)
-        ├── openstack.nix     # OpenStack CLI with 1Password
-        ├── roon-cli.nix      # Roon CLI service
-        ├── swaync.nix        # Notification center
-        ├── tmux.nix          # Terminal multiplexer
-        ├── waybar.nix        # Status bar
-        ├── workspaces.nix    # Project workspace management
-        └── yazi.nix          # File manager
-```
-
-## Key Concepts
+## How It's Set Up
 
 ### Flakes
 
 Flakes provide reproducible builds by pinning exact dependency versions:
 
-- `inputs` = dependencies (like package.json)
+- `inputs` = dependencies (declared in `flake.nix`, like package.json)
 - `flake.lock` = locked versions (like package-lock.json)
 - `outputs` = what the flake produces (system configurations)
 
-### NixOS vs Home Manager
+### NixOS + Home Manager
 
-| NixOS | Home Manager |
-|-------|--------------|
-| System-level config | User-level config |
-| Requires `sudo` | No sudo needed |
-| `/etc`, services, kernel | `~/.config`, dotfiles |
-| `environment.systemPackages` | `home.packages` |
+|NixOS|Home Manager|
+|-|-|
+|System-level config|User-level config|
+|Requires `sudo`|No sudo needed|
+|`/etc`, services, kernel|`~/.config`, dotfiles|
+|`environment.systemPackages`|`home.packages`|
 
-Both are managed together via `nixos-rebuild switch` (Home Manager as NixOS module).
-
-Standalone Home Manager configs (`home/server.nix`) can also be used on non-NixOS servers.
+Both are managed together via `nixos-rebuild switch` (Home Manager is imported
+as a NixOS module). Standalone Home Manager configs (`home/server.nix`) can also
+be used on non-NixOS servers.
 
 ### Module System
 
@@ -110,7 +66,7 @@ NixOS merges all modules: lists concatenate, attrsets merge recursively.
 
 ### Special Args
 
-Custom data flows through `specialArgs` in flake.nix:
+Custom data flows through `specialArgs` in `flake.nix`:
 
 ```nix
 specialArgs = { inherit inputs user; };
@@ -125,36 +81,41 @@ Then available in any module:
 }
 ```
 
-## Hosts
+### Secrets
 
-| Host | Architecture | Description |
-|------|--------------|-------------|
-| `framework-laptop` | x86_64-linux | Framework Laptop 12" (12th gen Intel) |
-| `framework-desktop` | x86_64-linux | Framework Desktop (AMD Ryzen AI Max+ 395) |
-| `edgar@server` | x86_64-linux | Standalone Home Manager for servers |
-| `edgar@server-arm` | aarch64-linux | Standalone Home Manager for ARM servers |
+Secrets are handled via **1Password** (not SOPS): the 1Password CLI acts as the
+SSH agent (`~/.1password/agent.sock`) and provides secret injection for various
+CLIs. No secrets are stored in this repo.
 
-## Features
+## Structure
 
-- **Hyprland** - Wayland compositor with ultrawide + laptop multi-monitor
-- **Catppuccin Mocha** - Consistent theming across 15+ apps
-- **Neovim** - LSPs and formatters managed by Nix (not Mason)
-- **Ghostty** - GPU-accelerated terminal with cursor smear shader
-- **Tmux** - Vim-style pane navigation, Fish shell
-- **1Password** - SSH agent + CLI secret injection (GitHub, OpenStack, Gardener)
-- **Atuin** - Shell history with cloud sync
-- **Waybar** - Status bar with CPU temp, battery, Bluetooth, notifications
-- **Podman** - Rootless containers with Docker compatibility
-- **Tailscale** - Mesh VPN with MagicDNS
-- **Syncthing** - File sync with PARA folder support
-- **Zoxide** - Smart directory jumping
-- **Project workspaces** - Hyprland workspace management with ghq repos
+```text
+.
+├── flake.nix                 # Entry point: inputs, user config, system definitions
+├── flake.lock                # Locked dependency versions (reproducibility)
+├── hosts/                    # System-level config, per host
+│   ├── common/               # Shared config (all hosts): users, services, hardening
+│   └── <hostname>/           # One dir per machine
+│       ├── default.nix       # Host-specific: bootloader, import of modules
+│       ├── hardware-configuration.nix  # Machine-generated
+│       └── home.nix          # Host-specific home-manager bits (monitors, devices)
+├── home/                     # Home Manager entry points
+│   ├── default.nix           # Desktop (composes the profiles below)
+│   └── server.nix            # Standalone Home Manager for headless servers
+├── profiles/                 # Composable home-manager profiles
+│   ├── base.nix              # Shell, theming, common tools
+│   ├── desktop.nix           # GUI / Wayland stack
+│   └── dev.nix               # Development tooling
+└── modules/
+    ├── nixos/                # System-level modules (require sudo) — one per feature
+    └── home/                 # User-level modules (no sudo) — one per program
+```
 
 ## Common Tasks
 
 ```bash
 # Rebuild and switch
-sudo nixos-rebuild switch --flake .#framework-laptop
+sudo nixos-rebuild switch --flake .#<hostname>
 
 # Garbage collect old generations
 sudo nix-collect-garbage -d
@@ -168,8 +129,24 @@ sudo nixos-rebuild switch --rollback
 # Search packages
 nix search nixpkgs firefox
 
-# Open nix repl with flake
+# Open nix repl with this flake
 nix repl --expr 'builtins.getFlake (toString ./.)'
+```
+
+## Bootstrapping a Fresh Machine
+
+```bash
+# Get git temporarily on a minimal install
+nix-shell -p git
+
+# Clone repo
+git clone <repo-url> nixos && cd nixos
+
+# Copy the machine-generated hardware config into the new host dir
+cp /etc/nixos/hardware-configuration.nix hosts/<hostname>/
+
+# Build and switch
+sudo nixos-rebuild switch --flake .#<hostname>
 ```
 
 ## Adding a New Host
@@ -182,17 +159,17 @@ nix repl --expr 'builtins.getFlake (toString ./.)'
      imports = [ ../common ./hardware-configuration.nix ];
      networking.hostName = "<hostname>";
      boot.loader.systemd-boot.enable = true;
-     system.stateVersion = "25.05";
+     system.stateVersion = "25.05";  # set once, don't bump afterwards
    }
    ```
 
-2. Generate hardware config:
+2. Generate the hardware config:
 
    ```bash
    nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
    ```
 
-3. Add to `flake.nix`:
+3. Add the configuration to `flake.nix`:
 
    ```nix
    nixosConfigurations.<hostname> = mkSystem {
@@ -217,20 +194,31 @@ environment.systemPackages = with pkgs; [ package-name ];
 home.packages = with pkgs; [ package-name ];
 ```
 
-**With configuration**:
+**With configuration** (create `modules/home/<app>.nix`):
 
 ```nix
-# Create modules/home/app.nix
 programs.app = {
   enable = true;
   settings = { ... };
 };
 ```
 
+**Architecture-gated packages** (use `lib.optionals`, not `lib.mkIf`, inside lists):
+
+```nix
+home.packages =
+  with pkgs;
+  [ universal-package ]
+  ++ lib.optionals (stdenv.hostPlatform.system == "x86_64-linux") [
+    x86-only-package
+  ];
+```
+
 ## Resources
 
+- [NixOS & Flakes Book](https://nixos-and-flakes.thiscute.world/)
+- [Nix Starter Configs](https://github.com/Misterio77/nix-starter-configs)
 - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 - [Home Manager Options](https://nix-community.github.io/home-manager/options.xhtml)
 - [Nix Package Search](https://search.nixos.org/packages)
 - [NixOS Hardware](https://github.com/NixOS/nixos-hardware)
-- [Catppuccin Nix](https://github.com/catppuccin/nix)
