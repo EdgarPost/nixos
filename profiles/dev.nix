@@ -27,6 +27,7 @@
     ../modules/home/mcp.nix         # MCP servers (obsidian-vault, etc.)
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
     ../modules/home/openstack.nix # OpenStack CLI
+    ../modules/home/azure.nix # Azure CLI + Azure DevOps extension
     ../modules/home/gardener.nix # Gardener cluster management
     ../modules/home/github.nix # GitHub CLI with 1Password
     ../modules/home/mistral.nix # Mistral API key + Vibe CLI with 1Password
