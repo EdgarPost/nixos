@@ -104,6 +104,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # ai-usagebar - AI plan usage for the noctalia bar widget (Rust port of claudebar)
+    # Provides the `ai-usagebar` + `ai-usagebar-tui` binaries that the
+    # `felipeartur/ai-usagebar` noctalia plugin shells out to.
+    ai-usagebar = {
+      url = "github:akitaonrails/ai-usagebar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   # ==========================================================================
