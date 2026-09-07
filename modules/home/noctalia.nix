@@ -152,14 +152,8 @@ in
       # which it expects on PATH. The plugin itself is already enabled in
       # noctalia-settings.toml ([plugins] enabled = [ "noctalia/screen_recorder" ]).
       # https://noctalia.dev/plugins/official/screen_recorder
-      #
-      # The felipeartur/ai-usagebar community plugin shells out to the
-      # external `ai-usagebar` binary (`ai-usagebar usage --json`), so that
-      # binary has to be on PATH too. It ships from the ai-usagebar flake.
-      # https://github.com/akitaonrails/ai-usagebar
       home.packages = [
         pkgs.gpu-screen-recorder # Hardware-accelerated screen recording backend
-        inputs.ai-usagebar.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 
       # ======================================================================

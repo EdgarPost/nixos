@@ -1,5 +1,5 @@
 [bar.default]
-center = [ "clock", "bar" ]
+center = [ "clock" ]
 end = [ "battery", "tray" ]
 margin_edge = 0
 margin_ends = 0
@@ -129,7 +129,7 @@ position_vertical = "bottom_center"
 video_codec = "hevc"
 
 [plugins]
-enabled = [ "noctalia/screen_recorder", "felipeartur/ai-usagebar" ]
+enabled = [ "noctalia/screen_recorder" ]
 
 [shell]
 screen_time_enabled = true
@@ -177,9 +177,6 @@ transition_on_startup = true
 
     [wallpaper.monitors.DP-4]
     path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
-
-[widget.bar]
-type = "felipeartur/ai-usagebar:bar"
 
 [widget.clock]
 format = "{:%d %B - %H:%M}"
