@@ -99,11 +99,13 @@ in
     defaultNotificationUrgency = "normal";
   };
 
+  # Deliberately leave x-scheme-handler/msteams unregistered. Registering
+  # teams-for-linux as its default handler makes the browser hand every
+  # msteams:// meeting redirect to the app, which auto-opens and joins the
+  # meeting. Unset means meeting links stay in the browser (web Teams).
   xdg.mimeApps = {
     enable = true;
-    defaultApplications = {
-      "x-scheme-handler/msteams" = "teams-for-linux.desktop";
-    };
+    defaultApplications = { };
   };
 
   # ==========================================================================
