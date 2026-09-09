@@ -58,6 +58,7 @@ in
       discord # Voice, video & text chat
       libreoffice # Office suite (Word/Excel/PowerPoint)
       obsidian # Note-taking and knowledge base
+      jetbrains.datagrip # Database IDE (JetBrains, unfree — requires JetBrains license)
 
       # Browser from flake input
       # ${stdenv.hostPlatform.system} resolves to "x86_64-linux" or "aarch64-linux"
