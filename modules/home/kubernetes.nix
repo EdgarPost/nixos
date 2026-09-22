@@ -76,8 +76,12 @@ in
   # Fish shell integration for kubie
   programs.fish.interactiveShellInit = ''
     # No Kubernetes access outside kubie shells: point KUBECONFIG at an empty
-    # config so kubectl/k9s/etc. find no clusters. Inside a kubie shell, the
-    # kubie_preexec hook re-points KUBECONFIG at the shell's isolated config.
-    set -gx KUBECONFIG ~/.kube/empty-config.yaml
+    # config so kubectl/k9s/etc. find no clusters. Inside a kubie shell
+    # (KUBIE_ACTIVE is set), leave kubie's env-provided config in place so the
+    # first prompt already shows the context; kubie_preexec re-asserts it per
+    # command after that.
+    if not set -q KUBIE_ACTIVE
+      set -gx KUBECONFIG ~/.kube/empty-config.yaml
+    end
   '';
 }
