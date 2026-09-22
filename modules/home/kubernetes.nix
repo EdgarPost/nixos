@@ -34,6 +34,7 @@ in
   home.packages = with pkgs; [
     kubie       # Context isolation (one context per shell)
     kubectx     # Quick context/namespace switching (kubens for namespaces)
+    k9s         # Terminal UI for clusters (uses KUBECONFIG, so kubie-scoped)
   ];
 
   # Kubie configuration (generated as proper YAML)
@@ -60,11 +61,23 @@ in
     };
   };
 
+  # An empty kubeconfig used as the default KUBECONFIG outside kubie shells.
+  # With KUBECONFIG unset, kubectl/k9s/etc. would fall back to ~/.kube/config
+  # and reach whatever cluster it points at; pointing at this empty config
+  # instead ensures no cluster is reachable until you enter one via kubie.
+  home.file.".kube/empty-config.yaml".text = ''
+    apiVersion: v1
+    kind: Config
+    clusters: []
+    contexts: []
+    users: []
+  '';
+
   # Fish shell integration for kubie
   programs.fish.interactiveShellInit = ''
-    # Ensure KUBECONFIG is not set globally
-    # This prevents accidental cluster access outside kubie sessions
-    # When you run `kubie ctx`, it sets KUBECONFIG for that shell only
-    set -e KUBECONFIG
+    # No Kubernetes access outside kubie shells: point KUBECONFIG at an empty
+    # config so kubectl/k9s/etc. find no clusters. Inside a kubie shell, the
+    # kubie_preexec hook re-points KUBECONFIG at the shell's isolated config.
+    set -gx KUBECONFIG ~/.kube/empty-config.yaml
   '';
 }
