@@ -37,7 +37,9 @@ in
   ];
 
   # Kubie configuration (generated as proper YAML)
-  xdg.configFile."kubie.yaml".source = yamlFormat.generate "kubie.yaml" {
+  # NOTE: kubie reads ~/.kube/kubie.yaml (not ~/.config/kubie.yaml), so this
+  # must live in home.file.".kube", not xdg.configFile.
+  home.file.".kube/kubie.yaml".source = yamlFormat.generate "kubie.yaml" {
     # Shell to spawn for kubie sessions
     shell = "fish";
 

@@ -160,7 +160,11 @@
           #   - Import other modules
           modules = [
             # Set platform via module instead of top-level `system` arg (recommended)
-            { nixpkgs.hostPlatform = system; }
+            {
+              nixpkgs.hostPlatform = system;
+              # Local package customizations (e.g. the kubie fish 4.9 fix)
+              nixpkgs.overlays = [ (import ./overlays) ];
+            }
 
             # Host-specific configuration (hardware, hostname, bootloader)
             # String interpolation: ${hostname} embeds variable in path
@@ -236,6 +240,7 @@
           pkgs = import nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
+            overlays = [ (import ./overlays) ];
           };
           extraSpecialArgs = { inherit inputs user; };
           modules = [
