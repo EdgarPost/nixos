@@ -41,9 +41,15 @@
       pkgs.xdg-desktop-portal-gtk
     ];
     config = {
-      common.default = [ "hyprland" "gtk" ];
+      common.default = [
+        "hyprland"
+        "gtk"
+      ];
       # Explicitly route screen sharing to Hyprland portal
-      hyprland.default = [ "hyprland" "gtk" ];
+      hyprland.default = [
+        "hyprland"
+        "gtk"
+      ];
     };
   };
 
@@ -55,7 +61,7 @@
   # ==========================================================================
   # WAYLAND ENVIRONMENT
   # ==========================================================================
-  # Hint Electron apps (VS Code, Slack, Discord) to use native Wayland
+  # Hint Electron apps (VS Code, Slack) to use native Wayland
   # instead of XWayland. Gives better scaling and input handling.
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -66,9 +72,9 @@
   # Nerd Fonts: Regular fonts patched with programming icons/ligatures
   # Noto: Google's font family with wide Unicode coverage
   fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono  # Primary coding font (includes powerline icons)
-    nerd-fonts.fira-code       # Alternative with ligatures
-    noto-fonts                 # Sans/serif for documents
-    noto-fonts-color-emoji     # Emoji support (🎉)
+    nerd-fonts.jetbrains-mono # Primary coding font (includes powerline icons)
+    nerd-fonts.fira-code # Alternative with ligatures
+    noto-fonts # Sans/serif for documents
+    noto-fonts-color-emoji # Emoji support (🎉)
   ];
 }

@@ -55,7 +55,6 @@ in
     [
       impala # WiFi management TUI
       signal-desktop # Encrypted messaging
-      discord # Voice, video & text chat
       libreoffice # Office suite (Word/Excel/PowerPoint)
       obsidian # Note-taking and knowledge base
       jetbrains.datagrip # Database IDE (JetBrains, unfree — requires JetBrains license)
@@ -81,7 +80,7 @@ in
       pkgs.zoom-us # Video conferencing (official Zoom client)
       teams-for-linux # Microsoft Teams client (community Electron wrapper)
       postman # API testing and development tool
-      davinci-resolve-studio # Professional video editor (requires manual installer, see below)
+      # davinci-resolve-studio # Professional video editor (requires manual installer, see below)
     ];
 
   # ==========================================================================

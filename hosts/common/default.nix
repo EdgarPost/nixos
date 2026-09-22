@@ -27,6 +27,7 @@
   pkgs,
   lib,
   inputs,
+  user,
   ...
 }:
 

@@ -16,30 +16,28 @@
 {
   programs.ghostty = {
     enable = true;
-    enableFishIntegration = true;  # Shell integration (title, current dir, etc.)
+    enableFishIntegration = true; # Shell integration (title, current dir, etc.)
 
     settings = {
       # =======================================================================
       # APPEARANCE
       # =======================================================================
       font-family = font.family;
-      font-size = font.size - 1;  # Slightly smaller than global default
-      window-padding-x = 8;            # Pixels of padding inside window
+      font-size = font.size - 1; # Slightly smaller than global default
+      window-padding-x = 8; # Pixels of padding inside window
       window-padding-y = 8;
-      background-opacity = 0.95;       # Subtle transparency
-      background = "#1e1e2e";          # Catppuccin mocha base (transparency applied on top)
-      adjust-cell-height = "20%";        # Extra line spacing
+      background-opacity = 0.95; # Subtle transparency
+      background = "#1e1e2e"; # Catppuccin mocha base (transparency applied on top)
+      adjust-cell-height = "20%"; # Extra line spacing
 
       # =======================================================================
       # BEHAVIOR
       # =======================================================================
-      term = "xterm-256color";         # Compatibility for SSH to systems without ghostty terminfo
-      shell-integration = "fish";      # Enable Fish-specific features
-      gtk-single-instance = true;      # Reuse running instance (faster new windows)
-      copy-on-select = "clipboard";    # Auto-copy selections to clipboard
-      mouse-scroll-multiplier = 0.2;   # Slower scrolling
-      desktop-notifications = false;   # Disable OSC desktop notifications (e.g. from AI agents)
-
+      term = "xterm-256color"; # Compatibility for SSH to systems without ghostty terminfo
+      shell-integration = "fish"; # Enable Fish-specific features
+      gtk-single-instance = true; # Reuse running instance (faster new windows)
+      copy-on-select = "clipboard"; # Auto-copy selections to clipboard
+      desktop-notifications = false; # Disable OSC desktop notifications (e.g. from AI agents)
 
       # =======================================================================
       # KEYBINDINGS
@@ -54,7 +52,7 @@
       cursor-style = "block";
       cursor-style-blink = false;
       custom-shader = "~/.config/ghostty/shaders/cursor-smear.glsl";
-      custom-shader-animation = true;  # Enable shader animations
+      custom-shader-animation = true; # Enable shader animations
     };
   };
 

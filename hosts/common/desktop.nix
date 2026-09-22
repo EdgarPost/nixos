@@ -9,6 +9,7 @@
 #   - 1Password GUI with polkit integration
 #   - Hyprland compositor (system-level: portals, fonts, packages)
 #   - greetd login manager with tuigreet
+#   - gnome-keyring Secret Service (Noctalia clipboard persistence, app tokens)
 #   - Podman container runtime
 #   - Desktop user groups (video, audio, pipewire)
 #
@@ -22,6 +23,7 @@
     ../../modules/nixos/hyprland.nix # Desktop compositor
     ../../modules/nixos/greetd.nix # Login manager
     ../../modules/nixos/keyd.nix # Caps Lock → Hyper key
+    ../../modules/nixos/gnome-keyring.nix # Secret Service (Noctalia clipboard persistence, tokens)
     ../../modules/nixos/podman.nix # Container runtime
     ../../modules/nixos/cachix-noctalia.nix # Noctalia prebuilt binary cache
   ];
