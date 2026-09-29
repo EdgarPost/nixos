@@ -38,6 +38,7 @@
     ghq # Git repository manager (ghq get, ghq list)
     worktrunk # Git worktree manager for parallel AI agent workflows (from nixpkgs)
     herdr # AI agent multiplexer (from nixpkgs)
+    hunk # Review-first terminal diff viewer (from nixpkgs)
   ];
 
   # ghq repository manager config (lives here because ghq is a dev tool)
