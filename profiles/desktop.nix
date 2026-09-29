@@ -57,6 +57,7 @@ in
       signal-desktop # Encrypted messaging
       libreoffice # Office suite (Word/Excel/PowerPoint)
       obsidian # Note-taking and knowledge base
+      handy # Offline speech-to-text (whisper) dictation
       jetbrains.datagrip # Database IDE (JetBrains, unfree — requires JetBrains license)
 
       # Browser from flake input
