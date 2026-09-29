@@ -22,7 +22,7 @@
     ../modules/home/atuin.nix # Shell history sync
     ../modules/home/direnv.nix # Per-directory environments with nix-direnv
     ../modules/home/yazi.nix # File manager (TUI)
-    ../modules/home/mcp.nix         # MCP servers (obsidian-vault, etc.)
+    ../modules/home/mcp.nix # MCP servers (obsidian-vault, etc.)
     ../modules/home/kubernetes.nix # k8s tools (kubie, kubectx)
     ../modules/home/openstack.nix # OpenStack CLI
     ../modules/home/azure.nix # Azure CLI + Azure DevOps extension
@@ -53,6 +53,40 @@
   xdg.configFile."worktrunk/config.toml".text = ''
     [post-start]
     copy = "wt step copy-ignored"
+  '';
+
+  # ==========================================================================
+  # HERDR - AI agent multiplexer
+  # ==========================================================================
+  # The herdr binary comes from nixpkgs (see home.packages above).
+  # The worktrunk plugin itself is installed imperatively and lives outside
+  # home-manager (plugin code + plugins.json under ~/.config/herdr):
+  #   herdr plugin install devashish2203/herdr-worktrunk
+  # Here we only declare its keybindings. Note this overrides herdr's built-in
+  # prefix+shift+d (close workspace) and prefix+shift+r (reload config).
+  xdg.configFile."herdr/config.toml".text = ''
+    onboarding = false
+
+    # Override herdr's built-in "new worktree" key (prefix+shift+g) with
+    # worktrunk's default-branch switch/create picker:
+    [[keys.command]]
+    key = "prefix+shift+g"
+    type = "plugin_action"
+    command = "worktrunk.open-with-remotes"
+    description = "Worktree: switch / create from default branch"
+
+    # Optional: bind current-branch creation separately.
+    [[keys.command]]
+    key = "prefix+shift+c"
+    type = "plugin_action"
+    command = "worktrunk.open-current"
+    description = "Worktree: switch / create from current branch"
+
+    [[keys.command]]
+    key = "prefix+shift+d"
+    type = "plugin_action"
+    command = "worktrunk.remove"
+    description = "Worktree: remove"
   '';
 
   # ==========================================================================
