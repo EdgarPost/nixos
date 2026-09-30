@@ -26,4 +26,30 @@ final: prev: {
   kubie = prev.kubie.overrideAttrs (old: {
     patches = (old.patches or []) ++ [ ./kubie-fish-escape.patch ];
   });
+
+  # --------------------------------------------------------------------------
+  # herdr - fix link failure against ld.bfd
+  # --------------------------------------------------------------------------
+  # herdr vendors libghostty-vt, which Zig builds as a static library. Zig's
+  # default config bundles its own compiler-rt and ubsan runtime objects into
+  # that archive; their CFI overlaps the Rust objects, so the final link dies
+  # with:
+  #
+  #   ld.bfd: .eh_frame_hdr refers to overlapping FDEs
+  #   ld.bfd: final link failed: bad value
+  #
+  # Backport of nixpkgs commit 277383a83357 ("herdr: fix build for linux"),
+  # which disables the bundled runtime archives. Drop this override once our
+  # locked nixpkgs contains that fix.
+  #
+  # See https://github.com/NixOS/nixpkgs/commit/277383a83357
+  herdr = prev.herdr.overrideAttrs (old: {
+    postPatch =
+      (old.postPatch or "")
+      + prev.lib.optionalString prev.stdenv.hostPlatform.isLinux ''
+        substituteInPlace vendor/libghostty-vt/src/build/GhosttyLibVt.zig \
+          --replace-fail 'lib.bundle_compiler_rt = true;' 'lib.bundle_compiler_rt = false;' \
+          --replace-fail 'lib.bundle_ubsan_rt = true;' 'lib.bundle_ubsan_rt = false;'
+      '';
+  });
 }
