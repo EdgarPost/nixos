@@ -40,6 +40,7 @@
     ../../modules/nixos/tailscale.nix # Mesh VPN
     ../../modules/nixos/syncthing.nix # File sync (Code folder on all hosts)
     ../../modules/nixos/printing.nix # CUPS + network printer discovery (Canon)
+    ../../modules/nixos/yubikey.nix # YubiKey base support (udev rules + tooling)
     ../../modules/nixos/pi-coding-agent.nix # pi coding agent NixOS module (pkg from nixpkgs)
   ];
 

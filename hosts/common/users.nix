@@ -33,8 +33,15 @@
     ];
 
     # SSH public key for remote access between machines (from 1Password "Nixos SSH Key")
+    # Kept as fallback until the YubiKey sk keys are proven end-to-end.
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCuHwyv8T62zhlWarSHBMeIf8/kwAAAKhMfYAnbSyIQVXEXqs2QANCygBkVhm5QgoViDi1HIZCuYWv0Drhgo/J/SaEKn19xuo1YYq6Z/BmJkNUKMvjVTSrA3UhDd0/lJoIR3jXkbfzY4eiuA9jnBInYWPKxBiaxNS9H953Rz++GDkG4DVPBnOzMN5e5kjAudxBqjmcCmR/P+QYvmRuAbd5+dLQlim/NeC9Xu4lUR1M6FdO3E9/gMoxjVjhr7F9jvYGIcScx5vYeEBkFgXpH4QIMU6iHQL79q0zV4kMWS85ledv3CHxuNkBR1fvzctiWm9Gu3xBNXv141j9JUD1TSeNf"
+
+      # YubiKey FIDO2 resident sk keys (one per physical key). Touch-to-use,
+      # private key never leaves the device. Both keys must be enrolled so a
+      # lost primary is recoverable with the backup.
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIOD9ZC936zfKSmGDGKNpEdlqn0/OljEqNG8WFWKOGRS6AAAABHNzaDo= yubikey-primary"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIDPFXEEtpM7CRApZEQcb0g7jZ2fZfm2XlIwO9YifbqhLAAAABHNzaDo= yubikey-backup"
     ];
   };
 
