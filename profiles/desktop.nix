@@ -54,6 +54,7 @@ in
     with pkgs;
     [
       impala # WiFi management TUI
+      bitwarden-desktop # Password manager (Vaultwarden client; SSH agent later)
       signal-desktop # Encrypted messaging
       libreoffice # Office suite (Word/Excel/PowerPoint)
       obsidian # Note-taking and knowledge base
