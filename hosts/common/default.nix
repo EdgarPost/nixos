@@ -208,6 +208,9 @@
     enable = true;
 
     extensions = [ ];
-    skills = [ ];
+    # Hunk ships its agent skills inside the package (share/skills/hunk/*);
+    # pi discovers directories with SKILL.md recursively, so one path covers
+    # hunk-review and hunk-extensions and tracks hunk upgrades automatically.
+    skills = [ "${pkgs.hunk}/share/skills/hunk" ];
   };
 }
