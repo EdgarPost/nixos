@@ -674,9 +674,17 @@ in
     # ==========================================================================
     # Auto-tick the "allow restore token" checkbox in hyprland-share-picker so
     # subsequent shares from the same app can skip the picker.
+    #
+    # cursor_mode = 2 (EMBEDDED): XDPH only advertises HIDDEN|EMBEDDED cursor
+    # modes, but Chromium/Electron (Slack, Zen, Teams, Discord) requests
+    # METADATA (4). XDPH logs "unsupported cursor_mode 4, fallback to ..." and
+    # falls back to its own default, which is HIDDEN — so viewers never see the
+    # mouse in a screen share. Forcing EMBEDDED makes Hyprland composite the
+    # cursor into the shared frames.
     xdg.configFile."hypr/xdph.conf".text = ''
       screencopy {
         allow_token_by_default = true
+        cursor_mode = 2
       }
     '';
 
