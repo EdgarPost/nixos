@@ -35,6 +35,7 @@ in
     kubie       # Context isolation (one context per shell)
     kubectx     # Quick context/namespace switching (kubens for namespaces)
     k9s         # Terminal UI for clusters (uses KUBECONFIG, so kubie-scoped)
+    fluxcd      # Flux CLI (uses KUBECONFIG, so kubie-scoped)
   ];
 
   # Kubie configuration (generated as proper YAML)
