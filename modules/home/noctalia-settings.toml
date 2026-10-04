@@ -1,12 +1,12 @@
 [bar.default]
-center = [ "notifications", "battery", "clock" ]
-end = [ "control-center", "session" ]
+center = [ "clock" ]
+end = [ "battery", "tray" ]
 margin_edge = 0
 margin_ends = 0
 position = "bottom"
 radius = 0
 shadow = false
-start = [ "workspaces" ]
+start = [ "recorder" ]
 
 [calendar]
 enabled = true
@@ -52,9 +52,9 @@ address = ""
 auto_locate = true
 
 [lockscreen_widgets]
-enabled = false
+enabled = true
 schema_version = 2
-widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-login-box@DP-4" ]
+widget_order = [ "lockscreen-login-box@FALLBACK", "lockscreen-login-box@DP-5", "lockscreen-login-box@DP-4" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
@@ -63,12 +63,12 @@ widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-login-box@DP-4" ]
 
     [lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
     box_height = 196.0
-    box_width = 810.0
-    cx = 1536.0
+    box_width = 720.0
+    cx = 2048.0
     cy = 1605.0
     output = "DP-4"
     placement_height = 1728.0
-    placement_width = 3072.0
+    placement_width = 4096.0
     rotation = 0.0
     type = "login_box"
 
@@ -142,33 +142,6 @@ widget_order = [ "lockscreen-login-box@eDP-1", "lockscreen-login-box@DP-4" ]
         show_unlock_hint = true
         show_weather = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
-    box_height = 196.0
-    box_width = 810.0
-    cx = 2256.0
-    cy = 1504.0
-    output = "eDP-1"
-    placement_height = 1504.0
-    placement_width = 2256.0
-    rotation = 0.0
-    type = "login_box"
-
-        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
-        background_color = "surface_variant"
-        background_opacity = 0.88
-        background_radius = 12.0
-        center_password_text = false
-        input_opacity = 1.0
-        input_radius = 6.0
-        layout = "regular"
-        show_caps_lock = true
-        show_keyboard_layout = true
-        show_login_button = true
-        show_media = true
-        show_session_buttons = true
-        show_unlock_hint = true
-        show_weather = true
-
 [nightlight]
 enabled = true
 
@@ -191,13 +164,9 @@ screen_time_enabled = true
     [shell.animation]
     enabled = false
 
-    [shell.launcher]
-    categories = false
-    compact = true
-
-        [shell.launcher.providers.emoji]
-        global = false
-        prefix = ""
+    [shell.launcher.providers.emoji]
+    global = false
+    prefix = ""
 
     [shell.panel]
     control_center_position = "center"
@@ -235,14 +204,6 @@ transition_on_startup = true
 
     [wallpaper.monitors.DP-4]
     path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
-
-    [wallpaper.monitors.eDP-1]
-    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
-
-[widget.battery]
-display_mode = "graphic"
-hide_when_full = true
-show_label = false
 
 [widget.clock]
 format = "{:%d %B - %H:%M}"
