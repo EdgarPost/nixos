@@ -41,7 +41,6 @@
     ../../modules/nixos/syncthing.nix # File sync (Code folder on all hosts)
     ../../modules/nixos/printing.nix # CUPS + network printer discovery (Canon)
     ../../modules/nixos/yubikey.nix # YubiKey base support (udev rules + tooling)
-    ../../modules/nixos/pi-coding-agent.nix # pi coding agent NixOS module (pkg from nixpkgs)
   ];
 
   # Syncthing - Code folder sync on all hosts (PARA folders per-host)
@@ -199,19 +198,4 @@
     ];
   };
 
-  # ==========================================================================
-  # PI CODING AGENT
-  # ==========================================================================
-  # package comes from nixpkgs (pkgs.pi-coding-agent). The old pi-mono flake
-  # package let us pin nodejs; the nixpkgs package uses its own build nodejs,
-  # so no override here.
-  programs.pi.coding-agent = {
-    enable = true;
-
-    extensions = [ ];
-    # Hunk ships its agent skills inside the package (share/skills/hunk/*);
-    # pi discovers directories with SKILL.md recursively, so one path covers
-    # hunk-review and hunk-extensions and tracks hunk upgrades automatically.
-    skills = [ "${pkgs.hunk}/share/skills/hunk" ];
-  };
 }

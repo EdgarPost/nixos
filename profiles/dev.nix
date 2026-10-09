@@ -39,7 +39,23 @@
     worktrunk # Git worktree manager for parallel AI agent workflows (from nixpkgs)
     herdr # AI agent multiplexer (from nixpkgs)
     hunk # Review-first terminal diff viewer (from nixpkgs)
+    pi-coding-agent # AI coding agent (from nixpkgs)
   ];
+
+  # ==========================================================================
+  # PI CODING AGENT
+  # ==========================================================================
+  # Installed unwrapped so `pi update`, `pi list`, etc. work: subcommands
+  # dispatch on argv[0], so a wrapper that prepends `--skill` would break them.
+  # Pi auto-discovers skills under ~/.pi/agent/skills, so we symlink hunk's
+  # bundled skills there instead of passing --skill flags (one path covers
+  # hunk-review and hunk-extensions and tracks hunk upgrades automatically).
+  home.file.".pi/agent/skills/hunk".source = "${pkgs.hunk}/share/skills/hunk";
+
+  # Global communication style, appended to pi's built-in system prompt.
+  # Lives in the repo so it survives reinstalls; keep editing it here, not in
+  # ~/.pi/agent (that path is a store symlink).
+  home.file.".pi/agent/APPEND_SYSTEM.md".source = ../modules/home/pi/APPEND_SYSTEM.md;
 
   # ghq repository manager config (lives here because ghq is a dev tool)
   programs.git.settings.ghq.root = "~/Code";
