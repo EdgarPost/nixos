@@ -15,6 +15,53 @@
 
 { pkgs, inputs, ... }:
 
+let
+  # ==========================================================================
+  # GREENPT - Pilosa's EU-hosted, OpenAI-compatible AI API
+  # ==========================================================================
+  # One key covers chat, embeddings, reranking, OCR, speech, scraping and
+  # search. Pi reaches it as a custom provider in models.json (GreenPT is not
+  # a built-in provider), under provider name "greenpt".
+  #
+  # The key lives in 1Password (Pilosa vault, item "GreenPT", field api_key).
+  # `apiKey` is a command Pi runs at request time, so the key never enters the
+  # environment or a file on disk; `op` must be on PATH (it is, via github.nix,
+  # from the dev profile).
+  #
+  # GreenPT publishes EUR per 1M tokens, Pi's cost fields are USD, so convert
+  # with one constant. Bump it when the rate drifts materially.
+  eurToUsd = 1.16;
+  eur = n: builtins.floor (n * eurToUsd * 10000.0 + 0.5) / 10000.0;
+
+  # Only the models worth a slot for a coding agent. contextWindow (1M) and
+  # maxTokens (64k, the documented ceiling for this class) are verified against
+  # the live endpoint. Costs: input, output, cached input per 1M tokens.
+  greenptModel =
+    {
+      id,
+      name,
+      input ? [ "text" ],
+      inputCost,
+      outputCost,
+      cacheReadCost,
+    }:
+    {
+      inherit
+        id
+        name
+        input
+        ;
+      reasoning = true;
+      contextWindow = 1000000;
+      maxTokens = 65536;
+      cost = {
+        input = eur inputCost;
+        output = eur outputCost;
+        cacheRead = eur cacheReadCost;
+        cacheWrite = 0;
+      };
+    };
+in
 {
   imports = [
     ../modules/home/nvim.nix # Text editor
@@ -56,6 +103,57 @@
   # Lives in the repo so it survives reinstalls; keep editing it here, not in
   # ~/.pi/agent (that path is a store symlink).
   home.file.".pi/agent/APPEND_SYSTEM.md".source = ../modules/home/pi/APPEND_SYSTEM.md;
+
+  # Pi model providers. Declarative so it survives reinstalls (the previous
+  # imperative file is migrated here verbatim). Pi reads this file and reloads
+  # it on /model; it never writes to it (/login writes auth.json, catalog
+  # persistence goes to models-store.json), so a store symlink is safe.
+  # Do not edit ~/.pi/agent/models.json directly — this path is a store link.
+  home.file.".pi/agent/models.json".text = builtins.toJSON {
+    providers = {
+      # Local llama.cpp router on the desktop; the dummy key satisfies Pi.
+      local-qwen36 = {
+        baseUrl = "http://edgar-framework-desktop:8001/v1";
+        api = "openai-completions";
+        apiKey = "ollama";
+        models = [ { id = "local/qwen3.6-35b-a3b"; } ];
+      };
+
+      greenpt = {
+        # EU inference. Use https://api.us.greenpt.ai/v1 to serve from the US.
+        baseUrl = "https://api.greenpt.ai/v1";
+        api = "openai-completions";
+        apiKey = "!op read 'op://Pilosa/GreenPT/api_key'";
+        models = [
+          (greenptModel {
+            id = "glm-5.3-flash";
+            name = "GLM-5.3 Flash";
+            inputCost = 0.11;
+            outputCost = 0.44;
+            cacheReadCost = 0.022;
+          })
+          (greenptModel {
+            id = "glm-5.3";
+            name = "GLM-5.3";
+            inputCost = 1.10;
+            outputCost = 4.40;
+            cacheReadCost = 0.275;
+          })
+          (greenptModel {
+            id = "deepseek-v4.1-flash";
+            name = "DeepSeek V4.1 Flash";
+            input = [
+              "text"
+              "image"
+            ];
+            inputCost = 0.22;
+            outputCost = 1.10;
+            cacheReadCost = 0.011;
+          })
+        ];
+      };
+    };
+  };
 
   # ghq repository manager config (lives here because ghq is a dev tool)
   programs.git.settings.ghq.root = "~/Code";
