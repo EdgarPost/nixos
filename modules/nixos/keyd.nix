@@ -6,7 +6,7 @@
       ids = [ "*" "-mouse" ];
       settings = {
         main = {
-          capslock = "hyper"; # hold = hyper, tap does nothing (Caps Lock disabled)
+          capslock = "layer(hyper)"; # hold = hyper, tap does nothing (Caps Lock disabled)
         };
         meta = {
           left = "home";
