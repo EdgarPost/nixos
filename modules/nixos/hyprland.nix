@@ -36,8 +36,14 @@
   # portal handles screen sharing. Both are needed for full functionality.
   xdg.portal = {
     enable = true;
+    # Do NOT list pkgs.xdg-desktop-portal-hyprland here: since the 2026-10-27
+    # nixpkgs bump, programs.hyprland adds its own `portalPackage` to this very
+    # option, built against the hyprland the module actually runs. Listing the
+    # plain package as well puts two different xdg-desktop-portal-hyprland
+    # build outputs in xdg.portal.extraPortals, which become systemd.packages
+    # and both ship share/systemd/user/xdg-desktop-portal-hyprland.service, so
+    # the user-units builder fails with "ln: File exists".
     extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];
     config = {
