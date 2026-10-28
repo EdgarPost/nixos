@@ -36,7 +36,7 @@
     inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
 
     # Framework-specific services
-    ../../modules/nixos/roon-bridge.nix # Roon audio endpoint
+    #../../modules/nixos/roon-bridge.nix # Roon audio endpoint
     ../../modules/nixos/bluetooth.nix # Bluetooth audio with high-quality codecs
     ../../modules/nixos/llama.nix # Local LLM inference (llama.cpp + Vulkan)
     ../../modules/nixos/bazecor.nix # Dygma Defy keyboard configurator
