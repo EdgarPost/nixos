@@ -223,6 +223,7 @@ in
             gaps_in = 8;
             gaps_out = 16;
             border_size = 2;
+            resize_on_border = true; # Drag a floating window's edge or corner to resize it, no modifier
             # Border colors set manually (catppuccin.hyprland disabled, incompatible with Hyprland 0.55.x)
             col = {
               active_border = "rgba(89b4faff)"; # Catppuccin Mocha blue
