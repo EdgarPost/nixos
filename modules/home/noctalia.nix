@@ -64,6 +64,38 @@ in
   # https://noctalia.dev/plugins/official/screen_recorder
   home.packages = [
     pkgs.gpu-screen-recorder # Hardware-accelerated screen recording backend
+
+    # ====================================================================
+    # LOCK / UNLOCK HOOKS
+    # ====================================================================
+    # Named by [hooks] in noctalia-settings.toml. Slack is killed while the
+    # session is locked so the account shows as offline, and started again on
+    # unlock only if it was running when the session locked (marker file in
+    # XDG_RUNTIME_DIR, which is cleared on logout/reboot).
+    (pkgs.writeShellScriptBin "noctalia-lock-hook" ''
+      set -euo pipefail
+      # shortcut: a lock within ~1s of an unlock misses the still-starting
+      # Slack, which then stays online while locked. Upgrade if it bites.
+      marker="''${XDG_RUNTIME_DIR:-/tmp}/noctalia-slack-resume"
+      if pgrep -x slack >/dev/null; then
+        touch "$marker"
+        pkill -TERM -x slack || true
+      fi
+    '')
+    (pkgs.writeShellScriptBin "noctalia-unlock-hook" ''
+      set -euo pipefail
+      marker="''${XDG_RUNTIME_DIR:-/tmp}/noctalia-slack-resume"
+      if [[ -e "$marker" ]]; then
+        rm -f "$marker"
+        # setsid keeps Slack alive after the hook exits.
+        # -u/--startup is Slack's own "launched from a startup shortcut" flag:
+        # it sets invokedOnStartup, so the window stays hidden and Slack shows
+        # up in the status tray only. Slack's help text calls that Win32-only,
+        # but it works on Linux (window never maps until the tray icon is
+        # clicked).
+        setsid -f slack -u >/dev/null 2>&1
+      fi
+    '')
   ];
 
   # ======================================================================

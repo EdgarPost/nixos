@@ -29,18 +29,28 @@ widget_order = []
 
     [desktop_widgets.widget]
 
+[hooks]
+session_locked = "noctalia-lock-hook"
+session_unlocked = "noctalia-unlock-hook"
+
 [idle]
-behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+behavior_order = [ "lock", "screen-off", "locked-screen-off", "lock-and-suspend" ]
 
     [idle.behavior.lock]
     action = "lock"
-    enabled = false
+    enabled = true
     timeout = 600
 
     [idle.behavior.lock-and-suspend]
     action = "lock_and_suspend"
     enabled = false
     timeout = 900
+
+    [idle.behavior.locked-screen-off]
+    action = "screen_off"
+    enabled = true
+    locked_timeout = 5
+    timeout = 0
 
     [idle.behavior.screen-off]
     action = "screen_off"
