@@ -36,7 +36,7 @@
   # Paths are relative to this file. Each import adds its config to the merge.
   imports = [
     ./users.nix # User account definitions
-    ../../modules/nixos/1password.nix # Password manager (CLI + SSH agent)
+    ../../modules/nixos/bitwarden.nix # Password manager SSH agent (Vaultwarden server)
     ../../modules/nixos/tailscale.nix # Mesh VPN
     ../../modules/nixos/syncthing.nix # File sync (Code folder on all hosts)
     ../../modules/nixos/printing.nix # CUPS + network printer discovery (Canon)

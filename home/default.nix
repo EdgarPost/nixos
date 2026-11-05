@@ -63,15 +63,16 @@
   # ==========================================================================
   # SSH CONFIGURATION
   # ==========================================================================
-  # 1Password acts as SSH agent - no ~/.ssh/id_* files needed
-  # Keys unlocked with biometric/1Password master password
+  # The Bitwarden desktop app acts as SSH agent - no ~/.ssh/id_* files needed
+  # Requires the app running with Settings -> SSH agent enabled; on Linux,
+  # unlocking uses the polkit action shipped by the bitwarden-desktop package.
 
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
     settings = {
       "*" = {
-        IdentityAgent = "~/.1password/agent.sock";
+        IdentityAgent = "~/.bitwarden-ssh-agent.sock";
       };
       "pbstation" = {
         HostName = "pbstation";

@@ -91,9 +91,10 @@ home-manager switch --flake .#edgar@server
 - **`hardware-configuration.nix` is machine-generated** — never hand-edit; copy
   from `/etc/nixos/` when adding a host.
 - **`system.stateVersion` is set once at host creation and never bumped.**
-- **No secrets in the repo.** Secrets flow through 1Password (SSH agent at
-  `~/.1password/agent.sock`, CLI injection). Never suggest committing keys or
-  tokens; reference them via `op://` items in per-user config instead.
+- **No secrets in the repo.** Secrets flow through Bitwarden/Vaultwarden (SSH
+  agent at `~/.bitwarden-ssh-agent.sock`, interactive CLI lookups via `rbw`).
+  Never suggest committing keys or tokens; machine-owned secrets belong in
+  sops-nix/agenix, not in a vault.
 - **Prefer nixpkgs over flake inputs.** Before adding a new `inputs.<name>`,
   check whether the package/module already exists in nixpkgs (`nix search nixpkgs
   <name>`, and check the resolved home-manager/nixpkgs revisions in

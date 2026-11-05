@@ -199,15 +199,18 @@ in
         # =====================================================================
         # STARTUP APPLICATIONS
         # =====================================================================
-        # 1Password starts once when Hyprland starts. The dbus/systemd env
-        # import and hyprland-session.target are handled by the module's
-        # systemd.enable integration.
+        # Bitwarden starts once when Hyprland starts: the SSH agent socket
+        # (~/.bitwarden-ssh-agent.sock) only exists while the app runs, so this
+        # entry is load-bearing for ssh. Hyprland does not process XDG autostart
+        # entries, so the app's own "start automatically" setting has no effect
+        # here. The dbus/systemd env import and hyprland-session.target are
+        # handled by the module's systemd.enable integration.
         on = {
           _args = [
             "hyprland.start"
             (lib.generators.mkLuaInline ''
               function()
-                hl.exec_cmd("1password --silent")
+                hl.exec_cmd("bitwarden")
               end
             '')
           ];

@@ -25,7 +25,7 @@
   imports = [
     # Shared configuration across all hosts
     ../common
-    # Desktop: 1password GUI, hyprland, greetd, podman, PipeWire, desktop groups
+    # Desktop: Bitwarden GUI, hyprland, greetd, podman, PipeWire, desktop groups
     ../common/desktop.nix
 
     # AUTO-GENERATED FILE - Do not edit manually!

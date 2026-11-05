@@ -83,9 +83,11 @@ Then available in any module:
 
 ### Secrets
 
-Secrets are handled via **1Password** (not SOPS): the 1Password CLI acts as the
-SSH agent (`~/.1password/agent.sock`) and provides secret injection for various
-CLIs. No secrets are stored in this repo.
+Secrets are handled via **Bitwarden/Vaultwarden** (not SOPS): the Bitwarden
+desktop app acts as the SSH agent (`~/.bitwarden-ssh-agent.sock`) and the vault
+holds the credentials. No secrets are stored in this repo. Machine-owned,
+non-interactive secrets are the exception and belong in sops-nix/agenix, since
+Vaultwarden offers no service-account API.
 
 ## Structure
 
