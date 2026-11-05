@@ -76,12 +76,6 @@
       url = "github:EdgarPost/roon-cli";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Envsec - per-directory environment variable management
-    envsec = {
-      url = "github:EdgarPost/envsec";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   # ==========================================================================
@@ -104,7 +98,6 @@
       nixos-hardware,
       zen-browser,
       roon-cli,
-      envsec,
       ...
     }@inputs:
 
@@ -187,8 +180,6 @@
                   inputs.catppuccin.homeModules.catppuccin
                   # Roon CLI - adds services.roon-cli options
                   inputs.roon-cli.homeManagerModules.default
-                  # Envsec - per-directory environment variable management
-                  inputs.envsec.homeManagerModules.default
                   # Home configuration (desktop or server)
                   homeModule
                 ]
