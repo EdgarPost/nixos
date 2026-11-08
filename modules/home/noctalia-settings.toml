@@ -14,6 +14,10 @@ enabled = true
     [calendar.account.home_nextcloud]
     type = "google"
 
+    [calendar.account.norday]
+    name = "Norday"
+    type = "google"
+
     [calendar.account.personal_google]
     type = "google"
 
