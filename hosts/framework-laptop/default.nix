@@ -76,13 +76,8 @@
   # FRAMEWORK-SPECIFIC HARDWARE
   # ==========================================================================
 
-  # Fingerprint reader (Framework uses Goodix sensor)
-  # After enabling, enroll fingerprint with: fprintd-enroll
-  services.fprintd.enable = true;
-
-  # Disable fingerprint authentication everywhere (password-only)
-  security.pam.services.sudo.fprintAuth = false;
-  security.pam.services.polkit-1.fprintAuth = false;
+  # Fingerprint reader: unused, off (nixos-hardware defaults it on).
+  services.fprintd.enable = false;
 
   # Load i915 early for faster GPU init and better power management
   boot.initrd.kernelModules = [ "i915" ];
