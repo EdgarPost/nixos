@@ -10,6 +10,14 @@ start = [ "workspaces" ]
 
 [calendar]
 enabled = true
+refresh_minutes = 5
+
+    [calendar.account.fastmail]
+    name = "Personal"
+    provider = "custom"
+    server_url = "https://caldav.fastmail.com/dav/principals/user/info@edgarpost.com"
+    type = "caldav"
+    username = "info@edgarpost.com"
 
     [calendar.account.home_nextcloud]
     type = "google"
@@ -20,6 +28,13 @@ enabled = true
 
     [calendar.account.personal_google]
     type = "google"
+
+[control_center]
+hidden_tabs = [ "media", "monitor", "weather", "screen-time" ]
+width = 1080
+
+    [control_center.calendar]
+    show_week_numbers = true
 
 [desktop_widgets]
 enabled = false
@@ -270,6 +285,7 @@ wallpaper_scheme = "m3-content"
 
 [wallpaper]
 directory = "/home/edgar/.wallpapers"
+directory_dark = "/home/edgar/Documents/Wallpapers Elden Ring"
 transition = [ "disc", "fade", "honeycomb", "stripes", "wipe", "zoom" ]
 transition_on_startup = true
 
@@ -277,13 +293,13 @@ transition_on_startup = true
     enabled = false
 
     [wallpaper.default]
-    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
+    path = "/home/edgar/Documents/Wallpapers Elden Ring/tZuH5Zs.jpeg"
 
     [wallpaper.last]
-    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
+    path = "/home/edgar/Documents/Wallpapers Elden Ring/tZuH5Zs.jpeg"
 
     [wallpaper.monitors.DP-4]
-    path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
+    path = "/home/edgar/Documents/Wallpapers Elden Ring/tZuH5Zs.jpeg"
 
     [wallpaper.monitors.eDP-1]
     path = "/home/edgar/.wallpapers/tropic_island_night.jpg"
