@@ -49,4 +49,17 @@ in
       export PATH="${patchelf0193}/bin:$PATH"
     '';
   });
+
+  # --------------------------------------------------------------------------
+  # herdr-desktop - build against the system libzstd
+  # --------------------------------------------------------------------------
+  # A dependency enables zstd-sys' `pkg-config` feature, so its build script
+  # probes for libzstd instead of compiling the bundled copy (which is present
+  # in the vendored crate), and the crate build fails with "Can't probe for
+  # zstd in pkg-config". nixpkgs' derivation has no zstd in buildInputs.
+  # The probe is static, so this only adds a .a to the link, not a runtime dep.
+  # Drop once nixpkgs' herdr-desktop builds unpatched (nixpkgs#herdr-desktop).
+  herdr-desktop = prev.herdr-desktop.overrideAttrs (old: {
+    buildInputs = (old.buildInputs or [ ]) ++ [ prev.zstd ];
+  });
 }

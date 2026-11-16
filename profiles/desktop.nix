@@ -54,6 +54,7 @@ in
     with pkgs;
     [
       impala # WiFi management TUI
+      herdr-desktop # Terminal/agent desktop app (the `herdr` TUI in dev.nix is separate)
       bitwarden-desktop # Password manager (Vaultwarden client; SSH agent later)
       signal-desktop # Encrypted messaging
       libreoffice # Office suite (Word/Excel/PowerPoint)
