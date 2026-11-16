@@ -123,12 +123,16 @@ in
           {
             name = "picture-in-picture";
             match = {
-              title = "^(Picture-in-Picture)$";
+              # Hyprland regexes are case-sensitive (re2, fullmatch) and Firefox
+              # renamed the window to "Picture-in-picture", so accept both cases.
+              title = "^[Pp]icture-[Ii]n-[Pp]icture$";
             };
             float = true;
             pin = true;
             size = "640 360";
-            move = "3437 68";
+            # Frame top-left, measured off the live window: left edge at x=34,
+            # bottom edge at y=1669 (= 1309 + the 360 above).
+            move = "34 1309";
             keep_aspect_ratio = true;
             no_initial_focus = true;
             no_follow_mouse = true;
@@ -547,7 +551,11 @@ in
           -- Hyprland 0.55 Lua config dropped the old `hyprctl dispatch
           -- focuswindow class:<X>` syntax. Focus via the Lua window query API
           -- instead: grab existing windows by WM_CLASS and focus the first.
-          return "hyprctl clients -j | jq -e '.[] | select(.class == \"" .. class .. "\")' > /dev/null 2>&1 && hyprctl dispatch 'hl.dsp.focus({window = hl.get_windows({class=\"" .. class .. "\"})[1]})' || " .. cmd
+          -- Prefer a tiled window: hl.get_windows returns z-order, so [1] is the
+          -- bottom-most window and an app's same-class floating windows (Zen's
+          -- "Picture-in-picture", dialogs) can win the pick.
+          local pick = "hl.get_windows({class=\"" .. class .. "\", floating=false})[1] or hl.get_windows({class=\"" .. class .. "\"})[1]"
+          return "hyprctl clients -j | jq -e '.[] | select(.class == \"" .. class .. "\")' > /dev/null 2>&1 && hyprctl dispatch 'hl.dsp.focus({window = " .. pick .. "})' || " .. cmd
         end
 
         -- =============================================================
